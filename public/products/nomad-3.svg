@@ -1,0 +1,13 @@
+<svg width="900" height="1200" viewBox="0 0 900 1200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="36%" r="70%">
+      <stop offset="0%" stop-color="#2D5EE8"/>
+      <stop offset="100%" stop-color="#0A122A"/>
+    </radialGradient>
+  </defs>
+  <rect width="900" height="1200" fill="url(#bg)"/>
+  <circle cx="450" cy="520" r="210" fill="#2B3D61"/>
+  <circle cx="450" cy="520" r="180" fill="#5F8BCD"/>
+  <circle cx="450" cy="520" r="140" fill="#A8C4E8" opacity="0.7"/>
+  <text x="450" y="560" text-anchor="middle" font-family="Arial" font-size="84" fill="#ECF3FF" font-weight="700">VETDZ</text>
+</svg>
