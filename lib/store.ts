@@ -106,11 +106,22 @@ export async function getProductTypes() {
     });
 }
 
-export async function getHomeProducts(gender: Gender | "ALL", productTypeSlug?: string) {
+export async function getHomeProducts(gender: Gender | "ALL", productTypeSlug?: string, search?: string) {
+    const trimmedSearch = search?.trim();
+
     const products = await prisma.product.findMany({
         include: productInclude,
         where: {
             ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
+            ...(trimmedSearch
+                ? {
+                    OR: [
+                        { nameAr: { contains: trimmedSearch } },
+                        { subtitleAr: { contains: trimmedSearch } },
+                        { descriptionAr: { contains: trimmedSearch } },
+                    ],
+                }
+                : {}),
             ...(gender === "ALL"
                 ? {}
                 : {
@@ -121,6 +132,82 @@ export async function getHomeProducts(gender: Gender | "ALL", productTypeSlug?: 
     });
 
     return products.map(toUiProduct);
+}
+
+export type ProductPageFilters = {
+    gender?: Gender | "ALL";
+    productTypeSlug?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+};
+
+export async function getProductsPage({
+    gender = "ALL",
+    productTypeSlug,
+    search,
+    page = 1,
+    limit = 8,
+}: ProductPageFilters) {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.max(1, limit);
+    const skip = (safePage - 1) * safeLimit;
+    const trimmedSearch = search?.trim();
+
+    const [totalCount, products] = await Promise.all([
+        prisma.product.count({
+            where: {
+                ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
+                ...(trimmedSearch
+                    ? {
+                        OR: [
+                            { nameAr: { contains: trimmedSearch } },
+                            { subtitleAr: { contains: trimmedSearch } },
+                            { descriptionAr: { contains: trimmedSearch } },
+                        ],
+                    }
+                    : {}),
+                ...(gender === "ALL"
+                    ? {}
+                    : {
+                        OR: [{ gender }, { gender: "BOTH" }],
+                    }),
+            },
+        }),
+        prisma.product.findMany({
+            include: productInclude,
+            where: {
+                ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
+                ...(trimmedSearch
+                    ? {
+                        OR: [
+                            { nameAr: { contains: trimmedSearch } },
+                            { subtitleAr: { contains: trimmedSearch } },
+                            { descriptionAr: { contains: trimmedSearch } },
+                        ],
+                    }
+                    : {}),
+                ...(gender === "ALL"
+                    ? {}
+                    : {
+                        OR: [{ gender }, { gender: "BOTH" }],
+                    }),
+            },
+            orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+            skip,
+            take: safeLimit + 1,
+        }),
+    ]);
+
+    const hasMore = products.length > safeLimit;
+    const items = products.slice(0, safeLimit).map(toUiProduct);
+
+    return {
+        items,
+        hasMore,
+        nextPage: hasMore ? safePage + 1 : null,
+        totalCount,
+    };
 }
 
 export async function getFeaturedProducts(limit = 6) {
