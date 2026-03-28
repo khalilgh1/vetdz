@@ -103,6 +103,7 @@ async function main() {
     await prisma.product.deleteMany();
     await prisma.productType.deleteMany();
     await prisma.admin.deleteMany();
+    await prisma.testimonial.deleteMany();
 
     await prisma.admin.create({
         data: {
@@ -210,6 +211,38 @@ async function main() {
             },
         ]
     );
+
+    // Seed testimonials
+    await prisma.testimonial.createMany({
+        data: [
+            {
+                nameAr: "سارة. ب",
+                roleAr: "مهندسة معمارية",
+                textAr: "جودة المنتجات ممتازة، والأسعار عادلة مقارنة بالسوق. المقاسات دقيقة والتوصيل سريع جداً.",
+                rating: 5,
+            },
+            {
+                nameAr: "ياسين. د",
+                roleAr: "مصور أزياء",
+                textAr: "تشكيلة رائعة من المنتجات! كل قطعة مختارة بعناية وتعكس ذوق عالي. أنا مشتري متكرر.",
+                rating: 5,
+            },
+            {
+                nameAr: "مريم. ع",
+                roleAr: "صانعة محتوى رقمي",
+                textAr: "التوصيل سريع والتغليف أنيق جداً. الألوان مطابقة تمامًا للصور والجودة ممتازة طوال الموسم.",
+                rating: 5,
+            },
+            {
+                nameAr: "علي. ك",
+                roleAr: "رجل أعمال",
+                textAr: "أنا مشتري متكرر! المنتجات تحتفظ بجودتها بعد الغسيل والاستخدام. الفريق حساس للملاحظات.",
+                rating: 5,
+            },
+        ],
+    });
+
+    console.log("✓ Database seeded successfully!");
 }
 
 main()

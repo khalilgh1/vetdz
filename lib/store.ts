@@ -315,3 +315,11 @@ export async function createOrder(input: CreateOrderInput) {
         },
     });
 }
+
+export async function getTestimonials() {
+    return prisma.testimonial.findMany({
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+}
