@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
 import { formatDzd } from "@/lib/format";
 import type { UiProduct } from "@/lib/store";
 
@@ -28,10 +27,6 @@ export function ProductCard({ product }: ProductCardProps) {
                     )}
                 </div>
             </Link>
-
-            <button type="button" aria-label="إضافة للمفضلة" className="favorite-btn">
-                <Heart size={19} />
-            </button>
 
             <div className="product-copy">
                 <h3>{product.nameAr}</h3>

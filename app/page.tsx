@@ -126,7 +126,6 @@ export default async function Home() {
           <div className="featured-header">
             <div>
               <h2>المنتجات المميزة</h2>
-              <p>اكتشف أفضل اختياراتنا هذا الأسبوع</p>
             </div>
             <Link href="/catalog" className="view-all-link">
               عرض الكل
