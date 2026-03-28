@@ -4,7 +4,6 @@ import { Footprints, Shirt, SquareDashedBottomCode, ArrowRight } from "lucide-re
 import { ProductFeed } from "@/components/product-feed";
 import { SiteHeader } from "@/components/site-header";
 import { HomeHero } from "@/components/home-hero";
-import { NewsletterSection } from "@/components/newsletter-section";
 import { getFeaturedProducts, getProductTypes, getProductsPage } from "@/lib/store";
 
 const GENDER_OPTIONS = [
@@ -161,8 +160,6 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Newsletter Section */}
-        <NewsletterSection />
       </main>
     </>
   );

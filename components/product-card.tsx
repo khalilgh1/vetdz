@@ -37,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
                         <>
                             <span className="price-original">{formatDzd(product.price)} دج</span>
                             <strong className="price-final">{formatDzd(product.discountedPrice)} دج</strong>
-                            <span className="discount-badge">-{product.discountPercent}%</span>
+                            <span className="discount-badge">{product.discountPercent}%-</span>
                         </>
                     ) : (
                         <strong className="price-final">{formatDzd(product.price)} دج</strong>
