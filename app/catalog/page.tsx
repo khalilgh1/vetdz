@@ -64,8 +64,8 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
 
             <main className="vetdz-shell catalog-page">
                 <section className="hero-box reveal">
-                    <p>صفحة التصفية</p>
-                    <h1>استعرض كل المنتجات مع الفلاتر</h1>
+                    <p>صفحة المنتجات</p>
+                    <h1>استعراض كل المنتجات مع التخصيص</h1>
                     <span>اختر الجنس أو النوع أو استخدم البحث للوصول إلى ما تريد، ثم استمر في التمرير لتحميل المزيد.</span>
                 </section>
 
@@ -76,6 +76,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                                 href={buildCatalogHref({ gender: option.value, type, search })}
                                 className={`catalog-filter-chip ${gender === option.value ? "is-active" : ""}`}
                                 key={option.value}
+                                scroll={false}
                             >
                                 {option.label}
                             </Link>
@@ -88,6 +89,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                                 href={buildCatalogHref({ gender, type: item.slug, search })}
                                 className={`type-item ${type === item.slug ? "is-active" : ""}`}
                                 key={item.id}
+                                scroll={false}
                             >
                                 <div className="type-icon">{TYPE_ICONS[item.slug] ?? <Shirt size={24} />}</div>
                                 <span>{item.nameAr}</span>

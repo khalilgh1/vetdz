@@ -27,7 +27,7 @@ export function HomeHero() {
                         تصاميم محدودة بجودة عالية وتفاصيل دقيقة لكل يوم
                     </p>
                     <Link href="/catalog" className="hero-cta-button">
-                        تصفح الكتالوج
+                        تصفح منتجاتنا
                         <ArrowRight size={20} />
                     </Link>
                 </div>

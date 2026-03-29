@@ -46,7 +46,6 @@ export default async function Home() {
     getFeaturedProducts(),
     getProductsPage({ page: 1, limit: 8 }),
   ]);
-
   return (
     <>
       <SiteHeader />
@@ -133,9 +132,9 @@ export default async function Home() {
           </div>
 
           <ProductFeed
-            initialItems={initialProducts.items}
-            initialHasMore={initialProducts.hasMore}
-            initialNextPage={initialProducts.nextPage}
+            initialItems={featured}
+            initialHasMore={false}
+            initialNextPage={null}
             query={{}}
           />
         </section>
@@ -143,8 +142,8 @@ export default async function Home() {
         {/* Secondary Hero with Fashion Image */}
         <section className="secondary-hero">
           <div className="secondary-hero-content">
-            <h2>جودة حرفية بتصاميم فريدة</h2>
-            <p>كل قطعة مصنوعة بعناية فائقة من خيوط عالية الجودة</p>
+            <h2>جودة عالية بتصاميم فريدة</h2>
+            <p>كل قطعة مختارة بعناية فائقة لضمان القيمة والجودة</p>
             <Link href="/about" className="learn-more-btn">
               تعرف على قصتنا
             </Link>

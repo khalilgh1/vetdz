@@ -206,6 +206,7 @@ async function main() {
                 discountActive: true,
                 discountedPrice: "27900",
                 gender: Gender.MALE,
+                isFeatured: true,
                 imageUrls: ["/products/boot-1.svg", "/products/boot-2.svg"],
                 variationValues: ["المقاس:41", "المقاس:42", "المقاس:43", "اللون:بني"],
             },
