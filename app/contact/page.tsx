@@ -1,5 +1,6 @@
-import { Clock3, LocateFixed, Mail, Phone, Share2 } from "lucide-react";
+import { Clock3, LocateFixed, Mail, Phone, Instagram, Facebook, Music2, Youtube } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
+import { ContactMap } from "@/components/contact-map";
 
 export default function ContactPage() {
     return (
@@ -16,19 +17,23 @@ export default function ContactPage() {
                     <article className="contact-card">
                         <Mail size={24} />
                         <span>راسلنا</span>
-                        <strong>hello@vetdz.com</strong>
+                        <a href="mailto:hello@vetdz.com" className="contact-link" dir="ltr">
+                            <strong>hello@vetdz.com</strong>
+                        </a>
                     </article>
 
                     <article className="contact-card">
                         <Phone size={24} />
                         <span>الهاتف</span>
-                        <strong>+213 555 928 340</strong>
+                        <a href="tel:+213555928340" className="contact-link" dir="ltr">
+                            <strong>+213 55 592 8340</strong>
+                        </a>
                     </article>
 
                     <article className="contact-card">
                         <LocateFixed size={24} />
                         <span>العنوان</span>
-                        <strong>128 شارع الإبداع، الجزائر العاصمة</strong>
+                        <strong>شارع ديدوش مراد، الجزائر العاصمة 16000</strong>
                     </article>
 
                     <article className="contact-card dark">
@@ -42,18 +47,23 @@ export default function ContactPage() {
                     <h2>تواصل رقميًا</h2>
                     <div className="social-row">
                         <a href="#" aria-label="instagram" className="social-item">
-                            <Share2 size={18} />
+                            <Instagram size={20} />
                         </a>
                         <a href="#" aria-label="facebook" className="social-item">
-                            <Share2 size={18} />
+                            <Facebook size={20} />
                         </a>
                         <a href="#" aria-label="tiktok" className="social-item">
-                            <Share2 size={18} />
+                            <Music2 size={20} />
                         </a>
                         <a href="#" aria-label="youtube" className="social-item">
-                            <Share2 size={18} />
+                            <Youtube size={20} />
                         </a>
                     </div>
+                </section>
+
+                <section className="map-section reveal">
+                    <h2>موقعنا</h2>
+                    <ContactMap />
                 </section>
             </main>
         </>

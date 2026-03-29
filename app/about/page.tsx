@@ -20,9 +20,9 @@ export default function AboutPage() {
                 <section className="about-cta-section">
                     <div className="cta-content">
                         <h2>انضم إلى عائلة VetDz</h2>
-                        <p>اكتشف تصاميمنا الفريدة واكون جزءًا من قصتنا</p>
+                        <p>اكتشف تشكيلتنا المختارة بعناية واكون جزءًا من قصتنا</p>
                         <a href="/catalog" className="cta-button">
-                            استكشف الكتالوج الآن
+                            استكشف المنتجات الآن
                         </a>
                     </div>
                 </section>

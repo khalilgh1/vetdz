@@ -23,8 +23,8 @@ export function ValuesSection() {
                     <div className="value-icon">
                         <Palette size={40} />
                     </div>
-                    <h3>الاختيار</h3>
-                    <p>مجموعة متنوعة من أفضل العلامات والتصاميم</p>
+                    <h3>التنوع</h3>
+                    <p>مجموعة متنوعة من أفضل العلامات والأنماط لكل الأذواق</p>
                 </div>
 
                 <div className="value-card">

@@ -7,7 +7,7 @@ export function TeamSection() {
         <section className="team-section">
             <div className="team-header">
                 <h2>الفريق خلف VetDz</h2>
-                <p>متخصصون مكرسون لجودة العمل</p>
+                <p>متخصصون مكرسون لرضاك وخدمتك</p>
             </div>
 
             <div className="team-grid">
@@ -15,28 +15,28 @@ export function TeamSection() {
                     <div className="team-card-image">
                         <Image
                             src="/fashion1.jpg"
-                            alt="المصمم"
+                            alt="المنتقي"
                             fill
                             className="team-image"
                             sizes="(max-width: 768px) 100vw, 300px"
                         />
                     </div>
-                    <h3>التصميم</h3>
-                    <p>فريق متخصص في الموضة المعاصرة</p>
+                    <h3>الاختيار</h3>
+                    <p>فريق متخصص في انتقاء أفضل القطع</p>
                 </div>
 
                 <div className="team-card">
                     <div className="team-card-image">
                         <Image
                             src="/fashion2.jpg"
-                            alt="الخياطة"
+                            alt="الخدمة"
                             fill
                             className="team-image"
                             sizes="(max-width: 768px) 100vw, 300px"
                         />
                     </div>
-                    <h3>الخياطة</h3>
-                    <p>حرفيون محترفون بخبرة عالية</p>
+                    <h3>الخدمة</h3>
+                    <p>فريق عميل احترافي جاهز لمساعدتك</p>
                 </div>
 
                 <div className="team-card">
@@ -50,7 +50,7 @@ export function TeamSection() {
                         />
                     </div>
                     <h3>الجودة</h3>
-                    <p>متابعة دقيقة في كل مرحلة إنتاج</p>
+                    <p>فحص صارم لكل قطعة قبل التسليم</p>
                 </div>
             </div>
         </section>

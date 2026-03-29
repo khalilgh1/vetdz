@@ -865,6 +865,57 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.social-item:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.contact-link {
+  display: flex;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  justify-content: flex-end;
+}
+
+.contact-link strong {
+  text-align: right;
+}
+
+.contact-link:hover strong {
+  color: var(--primary);
+}
+
+.map-section {
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.map-section h2 {
+  margin: 0 0 1rem;
+}
+
+.contact-map-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contact-map-container iframe {
+  max-height: 500px;
+}
+
+.map-info {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+  padding-top: 0.5rem;
 }
 
 /* Hero Section Styles */
