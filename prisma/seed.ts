@@ -93,9 +93,6 @@ async function seedProductType(
 }
 
 async function main() {
-    await prisma.orderItemSelection.deleteMany();
-    await prisma.orderItem.deleteMany();
-    await prisma.order.deleteMany();
     await prisma.productVariation.deleteMany();
     await prisma.productImage.deleteMany();
     await prisma.variationValue.deleteMany();

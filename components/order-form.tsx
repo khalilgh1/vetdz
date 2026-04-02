@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import type { UiVariationGroup } from "@/lib/store";
 import { formatDzd } from "@/lib/format";
-import { WILAYAS } from "@/lib/wilayas";
+import { getDeliveryFeeForWilaya, isDeliveryTypeAvailable, WILAYAS } from "@/lib/wilayas";
 
 type OrderFormProps = {
     productSlug: string;
@@ -17,6 +17,14 @@ type SubmitState = {
     type: "idle" | "success" | "error";
     message: string;
 };
+
+function normalizePhoneInput(value: string) {
+    return value
+        .replace(/[٠-٩]/g, (digit) => String(digit.charCodeAt(0) - 1632))
+        .replace(/[۰-۹]/g, (digit) => String(digit.charCodeAt(0) - 1776))
+        .replace(/\D/g, "")
+        .slice(0, 10);
+}
 
 export function OrderForm({ productSlug, productNameAr, unitPrice, variations }: OrderFormProps) {
     const [selectedVariationIds, setSelectedVariationIds] = useState<Record<number, number>>(() => {
@@ -32,7 +40,7 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
     const [quantity, setQuantity] = useState(1);
     const [fullName, setFullName] = useState("");
     const [phone, setPhone] = useState("");
-    const [wilaya, setWilaya] = useState("الجزائر");
+    const [wilaya, setWilaya] = useState(() => (WILAYAS.includes("الجزائر") ? "الجزائر" : (WILAYAS[0] ?? "")));
     const [address, setAddress] = useState("");
     const [deliveryType, setDeliveryType] = useState<"HOME" | "DESK">("HOME");
     const [notes, setNotes] = useState("");
@@ -44,11 +52,40 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
         [selectedVariationIds]
     );
 
-    const total = unitPrice * quantity;
+    const isHomeAvailable = isDeliveryTypeAvailable(wilaya, "HOME");
+    const isDeskAvailable = isDeliveryTypeAvailable(wilaya, "DESK");
+
+    useEffect(() => {
+        if (isDeliveryTypeAvailable(wilaya, deliveryType)) {
+            return;
+        }
+
+        if (isHomeAvailable) {
+            setDeliveryType("HOME");
+            return;
+        }
+
+        if (isDeskAvailable) {
+            setDeliveryType("DESK");
+        }
+    }, [deliveryType, isDeskAvailable, isHomeAvailable, wilaya]);
+
+    const itemsTotal = unitPrice * quantity;
+    const shippingFee = useMemo(() => getDeliveryFeeForWilaya(wilaya, deliveryType), [deliveryType, wilaya]);
+    const total = shippingFee === null ? itemsTotal : itemsTotal + shippingFee;
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setSubmitState({ type: "idle", message: "" });
+
+        if (shippingFee === null) {
+            setSubmitState({
+                type: "error",
+                message: "نوع التوصيل غير متاح للولاية المختارة.",
+            });
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -107,10 +144,14 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                     <span>رقم الهاتف</span>
                     <input
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={(e) => setPhone(normalizePhoneInput(e.target.value))}
                         required
-                        placeholder="05XXXXXXXX"
+                        placeholder="0XXXXXXXXX"
                         inputMode="tel"
+                        maxLength={10}
+                        minLength={10}
+                        pattern="0[0-9]{9}"
+                        title="رقم الهاتف يجب أن يكون 10 أرقام ويبدأ بـ 0"
                     />
                 </label>
 
@@ -132,6 +173,7 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                             className={deliveryType === "HOME" ? "is-active" : ""}
                             onClick={() => setDeliveryType("HOME")}
                             type="button"
+                            disabled={!isHomeAvailable}
                         >
                             منزلي
                         </button>
@@ -139,6 +181,7 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                             className={deliveryType === "DESK" ? "is-active" : ""}
                             onClick={() => setDeliveryType("DESK")}
                             type="button"
+                            disabled={!isDeskAvailable}
                         >
                             مكتب
                         </button>
@@ -186,7 +229,11 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                                             }))
                                         }
                                     >
-                                        {value.hexColor ? <span className="chip-color" style={{ backgroundColor: value.hexColor }} /> : null}
+                                        {value.hexColor ? (
+                                            <svg className="chip-color" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+                                                <circle cx="6" cy="6" r="6" fill={value.hexColor} />
+                                            </svg>
+                                        ) : null}
                                         {value.valueAr}
                                     </button>
                                 );
@@ -202,24 +249,44 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                             type="button"
                             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                             aria-label="تقليل الكمية"
+                            disabled={quantity <= 1}
                         >
                             -
                         </button>
                         <strong>{quantity}</strong>
-                        <button type="button" onClick={() => setQuantity((q) => q + 1)} aria-label="زيادة الكمية">
+                        <button
+                            type="button"
+                            onClick={() => setQuantity((q) => Math.min(10, q + 1))}
+                            aria-label="زيادة الكمية"
+                            disabled={quantity >= 10}
+                        >
                             +
                         </button>
                     </div>
                 </div>
 
                 <div className="field field-full total-row">
-                    <span>المجموع</span>
-                    <strong>{formatDzd(total)} دج</strong>
+                    <span>سعر المنتج</span>
+                    <strong>{formatDzd(itemsTotal)} دج</strong>
                 </div>
 
-                <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                <div className="field field-full total-row">
+                    <span>رسوم التوصيل</span>
+                    <strong>{shippingFee === null ? "غير متاح" : `${formatDzd(shippingFee)} دج`}</strong>
+                </div>
+
+                <div className="field field-full total-row">
+                    <span>المجموع</span>
+                    <strong>{shippingFee === null ? "غير متاح" : `${formatDzd(total)} دج`}</strong>
+                </div>
+
+                {shippingFee === null ? (
+                    <p className="feedback bad">التوصيل غير متاح للولاية المختارة بهذا النوع.</p>
+                ) : null}
+
+                <button type="submit" className="submit-btn" disabled={isSubmitting || shippingFee === null}>
                     {isSubmitting ? <LoaderCircle size={18} className="spin" /> : null}
-                    <span>{isSubmitting ? "جارٍ الإرسال..." : "تأكيد الطلب"}</span>
+                    <span>{isSubmitting ? "جارٍ الإرسال..." : shippingFee === null ? "التوصيل غير متاح" : "تأكيد الطلب"}</span>
                 </button>
 
                 {submitState.type !== "idle" ? (

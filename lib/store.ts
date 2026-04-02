@@ -4,9 +4,10 @@
  * database entities to UI-friendly formats.
  */
 
-import { type DeliveryType, type Gender, type Prisma } from "@prisma/client";
+import { type Gender, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { discountPercent, toNumber } from "@/lib/format";
+import { getDeliveryFeeForWilaya, type DeliveryTypeOption } from "@/lib/wilayas";
 
 /**
  * Prisma include configuration for Product queries.
@@ -332,21 +333,43 @@ export type CreateOrderInput = {
     phone: string;
     wilaya: string;
     address: string;
-    deliveryType: DeliveryType;
+    deliveryType: DeliveryTypeOption;
     notes?: string;
     productSlug: string;
     selectedVariationValueIds: number[];
     quantity: number;
 };
 
+export type PreparedOrderSummary = {
+    orderId: number;
+    fullName: string;
+    phone: string;
+    wilaya: string;
+    address: string;
+    deliveryType: DeliveryTypeOption;
+    notes?: string | null;
+    totalAmount: number;
+    itemNameAr: string;
+    selections: {
+        variationNameAr: string;
+        valueAr: string;
+    }[];
+};
+
+function generateOrderReference() {
+    const base = Number(String(Date.now()).slice(-9));
+    const randomSuffix = Math.floor(Math.random() * 90) + 10;
+    return Number(`${base}${randomSuffix}`);
+}
+
 /**
- * Creates a new order in the database.
+ * Prepares a validated order summary without persisting order records.
  * Validates that the selected variations are valid for the product.
- * Calculates order total based on quantity and applies active discounts.
- * Creates order items and variation selections in a transaction.
+ * Calculates order total based on quantity, discounts, and shipping fees.
+ * Returns a payload ready for downstream integrations (email / sheets).
  *
  * @param input - Order creation parameters including customer info and product selection
- * @returns The created order with all items and variation selections included
+ * @returns A validated order summary payload
  * @throws "PRODUCT_NOT_FOUND" if the product doesn't exist
  * @throws "INVALID_VARIATION_SELECTION" if a selected variation isn't valid for this product
  */
@@ -354,7 +377,15 @@ export async function createOrder(input: CreateOrderInput) {
     const product = await prisma.product.findUnique({
         where: { slug: input.productSlug },
         include: {
-            variations: true,
+            variations: {
+                include: {
+                    variationValue: {
+                        include: {
+                            variation: true,
+                        },
+                    },
+                },
+            },
         },
     });
 
@@ -374,49 +405,38 @@ export async function createOrder(input: CreateOrderInput) {
     const discountedPrice = product.discountedPrice ? toNumber(product.discountedPrice) : null;
     const unitPrice = product.discountActive && discountedPrice ? discountedPrice : basePrice;
     const lineTotal = unitPrice * input.quantity;
+    const deliveryFee = getDeliveryFeeForWilaya(input.wilaya, input.deliveryType);
 
-    return prisma.order.create({
-        data: {
-            fullName: input.fullName,
-            phone: input.phone,
-            wilaya: input.wilaya,
-            address: input.address,
-            deliveryType: input.deliveryType,
-            notes: input.notes,
-            totalAmount: lineTotal,
-            items: {
-                create: {
-                    quantity: input.quantity,
-                    productId: product.id,
-                    unitPrice,
-                    lineTotal,
-                    selections: {
-                        createMany: {
-                            data: input.selectedVariationValueIds.map((variationValueId) => ({
-                                variationValueId,
-                            })),
-                        },
-                    },
-                },
-            },
-        },
-        include: {
-            items: {
-                include: {
-                    product: true,
-                    selections: {
-                        include: {
-                            variationValue: {
-                                include: {
-                                    variation: true,
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    });
+    if (deliveryFee === null) {
+        throw new Error("DELIVERY_NOT_AVAILABLE");
+    }
+
+    const totalAmount = lineTotal + deliveryFee;
+    const uniqueSelectionIds = Array.from(new Set(input.selectedVariationValueIds));
+    const variationValueById = new Map(
+        product.variations.map((relation) => [relation.variationValueId, relation.variationValue] as const)
+    );
+
+    const selections = uniqueSelectionIds
+        .map((variationValueId) => variationValueById.get(variationValueId))
+        .filter((value): value is NonNullable<typeof value> => Boolean(value))
+        .map((value) => ({
+            variationNameAr: value.variation.nameAr,
+            valueAr: value.valueAr,
+        }));
+
+    return {
+        orderId: generateOrderReference(),
+        fullName: input.fullName,
+        phone: input.phone,
+        wilaya: input.wilaya,
+        address: input.address,
+        deliveryType: input.deliveryType,
+        notes: input.notes || null,
+        totalAmount,
+        itemNameAr: product.nameAr,
+        selections,
+    };
 }
 
 /**

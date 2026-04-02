@@ -1,18 +1,24 @@
-import { DeliveryType } from "@prisma/client";
 import { z } from "zod";
 import { appendOrderToGoogleSheet, sendOrderEmail } from "@/lib/integrations";
 import { createOrder } from "@/lib/store";
 
+const algerianPhoneRegex = /^0\d{9}$/;
+
 const orderSchema = z.object({
-    fullName: z.string().min(3, "الاسم الكامل مطلوب"),
-    phone: z.string().min(8, "رقم الهاتف غير صالح"),
-    wilaya: z.string().min(2, "الولاية مطلوبة"),
-    address: z.string().min(8, "العنوان التفصيلي مطلوب"),
-    deliveryType: z.nativeEnum(DeliveryType),
-    notes: z.string().max(500).optional(),
-    productSlug: z.string().min(2),
-    quantity: z.number().int().min(1).max(10),
-    selectedVariationValueIds: z.array(z.number().int()).default([]),
+    fullName: z.string().trim().min(3, "الاسم الكامل مطلوب"),
+    phone: z.preprocess(
+        (value) => (typeof value === "string" ? value.replace(/\s+/g, "") : value),
+        z
+            .string()
+            .regex(algerianPhoneRegex, "رقم الهاتف يجب أن يكون 10 أرقام ويبدأ بـ 0")
+    ),
+    wilaya: z.string().trim().min(2, "الولاية مطلوبة"),
+    address: z.string().trim().min(8, "العنوان التفصيلي مطلوب"),
+    deliveryType: z.enum(["HOME", "DESK"]),
+    notes: z.string().trim().max(500).optional(),
+    productSlug: z.string().trim().min(2),
+    quantity: z.coerce.number().int().min(1).max(10),
+    selectedVariationValueIds: z.array(z.coerce.number().int()).default([]),
 });
 
 export async function POST(request: Request) {
@@ -21,43 +27,42 @@ export async function POST(request: Request) {
         const parsed = orderSchema.safeParse(json);
 
         if (!parsed.success) {
+            const firstIssue = parsed.error.issues[0]?.message;
+
             return Response.json(
                 {
-                    error: "بيانات الطلب غير مكتملة. يرجى التحقق من الحقول.",
+                    error: firstIssue || "بيانات الطلب غير مكتملة. يرجى التحقق من الحقول.",
                     details: parsed.error.flatten(),
                 },
                 { status: 400 }
             );
         }
 
-        const order = await createOrder(parsed.data);
-        const firstItem = order.items[0];
+        const summary = await createOrder(parsed.data);
 
-        if (!firstItem) {
-            return Response.json({ error: "تعذر إنشاء عناصر الطلب." }, { status: 500 });
-        }
+        const integrationTasks = [
+            { name: "email", promise: sendOrderEmail(summary) },
+            { name: "googleSheets", promise: appendOrderToGoogleSheet(summary) },
+        ];
 
-        const summary = {
-            orderId: order.id,
-            fullName: order.fullName,
-            phone: order.phone,
-            wilaya: order.wilaya,
-            address: order.address,
-            deliveryType: order.deliveryType,
-            notes: order.notes,
-            totalAmount: order.totalAmount,
-            itemNameAr: firstItem.product.nameAr,
-            selections: firstItem.selections.map((selection) => ({
-                variationNameAr: selection.variationValue.variation.nameAr,
-                valueAr: selection.variationValue.valueAr,
-            })),
-        };
+        const integrationResults = await Promise.allSettled(integrationTasks.map((task) => task.promise));
 
-        await Promise.allSettled([sendOrderEmail(summary), appendOrderToGoogleSheet(summary)]);
+        integrationResults.forEach((result, index) => {
+            const taskName = integrationTasks[index]?.name || "unknown";
+
+            if (result.status === "rejected") {
+                console.error(`[orders] ${taskName} integration failed`, result.reason);
+                return;
+            }
+
+            if (result.value?.skipped) {
+                console.warn(`[orders] ${taskName} integration skipped due to missing configuration`);
+            }
+        });
 
         return Response.json({
             success: true,
-            orderId: order.id,
+            orderId: summary.orderId,
             message: "تم إرسال الطلب بنجاح. سنقوم بتأكيده عبر الهاتف قريبًا.",
         });
     } catch (error) {
@@ -69,6 +74,10 @@ export async function POST(request: Request) {
 
         if (message === "INVALID_VARIATION_SELECTION") {
             return Response.json({ error: "اختيارات المنتج غير صالحة." }, { status: 400 });
+        }
+
+        if (message === "DELIVERY_NOT_AVAILABLE") {
+            return Response.json({ error: "نوع التوصيل غير متاح للولاية المختارة." }, { status: 400 });
         }
 
         return Response.json({ error: "تعذر إتمام الطلب حاليًا. حاول لاحقًا." }, { status: 500 });

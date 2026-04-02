@@ -15,11 +15,40 @@ type OrderSummary = {
     selections: { variationNameAr: string; valueAr: string }[];
 };
 
-function buildMessage(summary: OrderSummary) {
-    const selectionsText =
-        summary.selections.length > 0
-            ? summary.selections.map((s) => `${s.variationNameAr}: ${s.valueAr}`).join(" | ")
-            : "بدون خيارات";
+type SmtpConfig = {
+    host: string;
+    port: number;
+    secure: boolean;
+    user: string;
+    pass: string;
+};
+
+function getSmtpConfig(): SmtpConfig | null {
+    const host = process.env.SMTP_HOST || process.env.EMAIL_HOST || "smtp.gmail.com";
+    const user = process.env.SMTP_USER || process.env.EMAIL_HOST_USER;
+    const pass = process.env.SMTP_PASS || process.env.EMAIL_HOST_PASSWORD;
+
+    if (!user || !pass) {
+        return null;
+    }
+
+    return {
+        host,
+        port: Number(process.env.SMTP_PORT || "587"),
+        secure: process.env.SMTP_SECURE === "true",
+        user,
+        pass,
+    };
+}
+
+function getSelectionsText(summary: OrderSummary) {
+    return summary.selections.length > 0
+        ? summary.selections.map((s) => `${s.variationNameAr}: ${s.valueAr}`).join(" | ")
+        : "بدون خيارات";
+}
+
+function buildAdminMessage(summary: OrderSummary) {
+    const selectionsText = getSelectionsText(summary);
 
     return [
         `طلب جديد رقم #${summary.orderId}`,
@@ -36,27 +65,26 @@ function buildMessage(summary: OrderSummary) {
 }
 
 export async function sendOrderEmail(summary: OrderSummary) {
-    const host = process.env.SMTP_HOST;
-    const user = process.env.SMTP_USER;
-    const pass = process.env.SMTP_PASS;
-    const to = process.env.ORDER_NOTIFICATION_TO;
+    const smtp = getSmtpConfig();
 
-    if (!host || !user || !pass || !to) {
+    if (!smtp) {
         return { skipped: true as const };
     }
 
+    const selfEmail = smtp.user;
+
     const transporter = nodemailer.createTransport({
-        host,
-        port: Number(process.env.SMTP_PORT || "587"),
-        secure: process.env.SMTP_SECURE === "true",
-        auth: { user, pass },
+        host: smtp.host,
+        port: smtp.port,
+        secure: smtp.secure,
+        auth: { user: smtp.user, pass: smtp.pass },
     });
 
     await transporter.sendMail({
-        from: process.env.SMTP_FROM || user,
-        to,
+        from: selfEmail,
+        to: selfEmail,
         subject: `VetDz | طلب جديد #${summary.orderId}`,
-        text: buildMessage(summary),
+        text: buildAdminMessage(summary),
     });
 
     return { skipped: false as const };
@@ -79,7 +107,7 @@ export async function appendOrderToGoogleSheet(summary: OrderSummary) {
 
     const sheets = google.sheets({ version: "v4", auth });
 
-    const selectionsText = summary.selections.map((s) => `${s.variationNameAr}: ${s.valueAr}`).join(" | ");
+    const selectionsText = getSelectionsText(summary);
 
     await sheets.spreadsheets.values.append({
         spreadsheetId: sheetId,

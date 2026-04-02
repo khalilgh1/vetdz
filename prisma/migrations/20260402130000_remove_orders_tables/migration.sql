@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS "OrderItemSelection";
+DROP TABLE IF EXISTS "OrderItem";
+DROP TABLE IF EXISTS "Order";

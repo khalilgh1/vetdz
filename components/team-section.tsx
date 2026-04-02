@@ -36,7 +36,7 @@ export function TeamSection() {
                         />
                     </div>
                     <h3>الخدمة</h3>
-                    <p>فريق عميل احترافي جاهز لمساعدتك</p>
+                    <p>فريق عمل احترافي جاهز لمساعدتك</p>
                 </div>
 
                 <div className="team-card">

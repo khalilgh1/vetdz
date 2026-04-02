@@ -13,19 +13,6 @@ enum Gender {
   BOTH
 }
 
-enum DeliveryType {
-  HOME
-  DESK
-}
-
-enum OrderStatus {
-  NEW
-  CONTACTED
-  DELIVERING
-  COMPLETED
-  CANCELED
-}
-
 model Admin {
   id           Int      @id @default(autoincrement())
   username     String   @unique
@@ -62,7 +49,6 @@ model Product {
   productType     ProductType        @relation(fields: [productTypeId], references: [id], onDelete: Restrict)
   images          ProductImage[]
   variations      ProductVariation[]
-  orderItems      OrderItem[]
 }
 
 model ProductImage {
@@ -91,7 +77,6 @@ model VariationValue {
   variationId        Int
   variation          Variation          @relation(fields: [variationId], references: [id], onDelete: Cascade)
   productVariations  ProductVariation[]
-  selectedInOrder    OrderItemSelection[]
 }
 
 model ProductVariation {
@@ -102,43 +87,6 @@ model ProductVariation {
   variationValue   VariationValue @relation(fields: [variationValueId], references: [id], onDelete: Cascade)
 
   @@unique([productId, variationValueId])
-}
-
-model Order {
-  id             Int         @id @default(autoincrement())
-  fullName       String
-  phone          String
-  wilaya         String
-  address        String
-  deliveryType   DeliveryType
-  notes          String?
-  status         OrderStatus  @default(NEW)
-  totalAmount    Decimal
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
-  items          OrderItem[]
-}
-
-model OrderItem {
-  id          Int                  @id @default(autoincrement())
-  orderId     Int
-  productId   Int
-  quantity    Int                  @default(1)
-  unitPrice   Decimal
-  lineTotal   Decimal
-  order       Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product     Product              @relation(fields: [productId], references: [id], onDelete: Restrict)
-  selections  OrderItemSelection[]
-}
-
-model OrderItemSelection {
-  id               Int            @id @default(autoincrement())
-  orderItemId      Int
-  variationValueId Int
-  orderItem        OrderItem      @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
-  variationValue   VariationValue @relation(fields: [variationValueId], references: [id], onDelete: Restrict)
-
-  @@unique([orderItemId, variationValueId])
 }
 
 model Testimonial {
