@@ -1,5 +1,6 @@
 import { Gender, type Prisma } from "@prisma/client";
 import { toNumber } from "@/lib/format";
+import { deleteCloudinaryImagesByUrls } from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
 
 const adminProductInclude = {
@@ -207,6 +208,15 @@ export async function updateAdminProduct(id: number, input: AdminProductInput) {
         throw new Error("PRODUCT_IMAGES_REQUIRED");
     }
 
+    const existingImages = await prisma.productImage.findMany({
+        where: {
+            productId: id,
+        },
+        select: {
+            url: true,
+        },
+    });
+
     const variationValueIds = await assertVariationValuesBelongToType(input.productTypeId, input.variationValueIds);
 
     const product = await prisma.product.update({
@@ -248,10 +258,42 @@ export async function updateAdminProduct(id: number, input: AdminProductInput) {
         include: adminProductInclude,
     });
 
+    const nextImageSet = new Set(imageUrls);
+    const removedImageUrls = existingImages
+        .map((image) => image.url)
+        .filter((url) => !nextImageSet.has(url));
+
+    if (removedImageUrls.length > 0) {
+        try {
+            await deleteCloudinaryImagesByUrls(removedImageUrls);
+        } catch (error) {
+            console.error("[admin-products] failed to remove replaced images from cloudinary", error);
+        }
+    }
+
     return toAdminProduct(product);
 }
 
 export async function deleteAdminProduct(id: number) {
+    const product = await prisma.product.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            images: {
+                select: {
+                    url: true,
+                },
+            },
+        },
+    });
+
+    if (!product) {
+        throw new Error("PRODUCT_NOT_FOUND");
+    }
+
+    await deleteCloudinaryImagesByUrls(product.images.map((image) => image.url));
+
     return prisma.product.delete({
         where: {
             id,

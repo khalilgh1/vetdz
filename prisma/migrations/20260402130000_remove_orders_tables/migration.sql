@@ -1,3 +1,3 @@
-DROP TABLE IF EXISTS "OrderItemSelection";
-DROP TABLE IF EXISTS "OrderItem";
-DROP TABLE IF EXISTS "Order";
+drop table if exists "OrderItemSelection";
+drop table if exists "OrderItem";
+drop table if exists "Order";

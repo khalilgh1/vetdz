@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import styles from "./admin-panel.module.css";
 
@@ -71,6 +72,19 @@ type ApiError = {
     error?: string;
 };
 
+type UploadItem = {
+    url: string;
+    publicId: string;
+};
+
+type DeleteDialogState = {
+    title: string;
+    description: string;
+    successText: string;
+    busyKey: string;
+    url: string;
+};
+
 const TABS: { key: TabKey; label: string; description: string }[] = [
     { key: "products", label: "المنتجات", description: "إنشاء وتعديل منتجات المتجر" },
     { key: "types", label: "الأنواع", description: "إدارة أنواع المنتجات (الفئات)" },
@@ -104,13 +118,6 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
     return data;
 }
 
-function splitLines(value: string) {
-    return value
-        .split("\n")
-        .map((line) => line.trim())
-        .filter(Boolean);
-}
-
 function formatPrice(value: number | null) {
     if (value === null) {
         return "-";
@@ -119,11 +126,34 @@ function formatPrice(value: number | null) {
     return new Intl.NumberFormat("ar-DZ").format(value);
 }
 
+async function uploadImagesToCloudinary(files: File[]) {
+    const formData = new FormData();
+
+    for (const file of files) {
+        formData.append("images", file);
+    }
+
+    const response = await fetch("/api/admin/uploads", {
+        method: "POST",
+        body: formData,
+    });
+
+    const data = (await response.json().catch(() => ({}))) as { items?: UploadItem[]; error?: string };
+
+    if (!response.ok) {
+        throw new Error(data.error || "فشل رفع الصور إلى Cloudinary");
+    }
+
+    return (data.items || []).map((item) => item.url);
+}
+
 export function AdminPanel() {
     const [activeTab, setActiveTab] = useState<TabKey>("products");
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState<string | null>(null);
+    const [isUploadingImages, setIsUploadingImages] = useState(false);
     const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+    const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState | null>(null);
 
     const [productTypes, setProductTypes] = useState<ProductTypeItem[]>([]);
     const [variations, setVariations] = useState<VariationItem[]>([]);
@@ -161,7 +191,7 @@ export function AdminPanel() {
         gender: "BOTH" as "MALE" | "FEMALE" | "BOTH",
         isFeatured: false,
         productTypeId: "",
-        imageUrls: "",
+        imageUrls: [] as string[],
         variationValueIds: [] as number[],
     });
 
@@ -330,7 +360,7 @@ export function AdminPanel() {
             gender: "BOTH",
             isFeatured: false,
             productTypeId: productTypes[0] ? String(productTypes[0].id) : "",
-            imageUrls: "",
+            imageUrls: [],
             variationValueIds: [],
         });
     }
@@ -347,6 +377,7 @@ export function AdminPanel() {
 
     function startEditProduct(item: ProductItem) {
         setActiveTab("products");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         setEditingProductId(item.id);
         setProductForm({
             slug: item.slug,
@@ -359,7 +390,7 @@ export function AdminPanel() {
             gender: item.gender,
             isFeatured: item.isFeatured,
             productTypeId: String(item.productTypeId),
-            imageUrls: item.imageUrls.join("\n"),
+            imageUrls: item.imageUrls,
             variationValueIds: item.variationValueIds,
         });
     }
@@ -411,6 +442,71 @@ export function AdminPanel() {
                     : [...current.variationValueIds, valueId],
             };
         });
+    }
+
+    function removeProductImage(url: string) {
+        setProductForm((current) => ({
+            ...current,
+            imageUrls: current.imageUrls.filter((item) => item !== url),
+        }));
+    }
+
+    async function handleProductImageSelection(event: React.ChangeEvent<HTMLInputElement>) {
+        const inputElement = event.currentTarget;
+        const fileList = inputElement.files;
+
+        if (!fileList || fileList.length === 0) {
+            return;
+        }
+
+        const files = Array.from(fileList);
+
+        // Clear immediately so the same file can be reselected later.
+        inputElement.value = "";
+
+        setIsUploadingImages(true);
+        setMessage(null);
+
+        try {
+            const uploadedUrls = await uploadImagesToCloudinary(files);
+
+            if (uploadedUrls.length === 0) {
+                throw new Error("لم يتم استلام روابط الصور من الخادم بعد الرفع.");
+            }
+
+            setProductForm((current) => ({
+                ...current,
+                imageUrls: Array.from(new Set([...current.imageUrls, ...uploadedUrls])),
+            }));
+
+            setMessage({ type: "success", text: "تم رفع الصور إلى Cloudinary بنجاح" });
+        } catch (error) {
+            setMessage({ type: "error", text: toErrorMessage(error) });
+        } finally {
+            setIsUploadingImages(false);
+        }
+    }
+
+    function openDeleteDialog(config: DeleteDialogState) {
+        setDeleteDialog(config);
+    }
+
+    async function confirmDeleteDialog() {
+        if (!deleteDialog) {
+            return;
+        }
+
+        const current = deleteDialog;
+
+        await withBusy(
+            current.busyKey,
+            async () => {
+                await requestJson(current.url, { method: "DELETE" });
+            },
+            current.successText
+        );
+
+        setDeleteDialog(null);
     }
 
     async function handleProductTypeSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -536,7 +632,7 @@ export function AdminPanel() {
             gender: productForm.gender,
             isFeatured: productForm.isFeatured,
             productTypeId: Number(productForm.productTypeId),
-            imageUrls: splitLines(productForm.imageUrls),
+            imageUrls: productForm.imageUrls,
             variationValueIds: productForm.variationValueIds,
         };
 
@@ -604,23 +700,11 @@ export function AdminPanel() {
         resetTestimonialForm();
     }
 
-    async function deleteItem(url: string, confirmText: string, successText: string, busyKey: string) {
-        if (!window.confirm(confirmText)) {
-            return;
-        }
-
-        await withBusy(
-            busyKey,
-            async () => {
-                await requestJson(url, { method: "DELETE" });
-            },
-            successText
-        );
-    }
-
     if (loading) {
         return <div className={styles.loading}>جارٍ تحميل لوحة التحكم...</div>;
     }
+
+    const isDeleteBusy = Boolean(deleteDialog && busy === deleteDialog.busyKey);
 
     return (
         <section className={styles.wrapper}>
@@ -728,12 +812,13 @@ export function AdminPanel() {
                                             type="button"
                                             className={styles.dangerButton}
                                             onClick={() =>
-                                                deleteItem(
-                                                    `/api/admin/product-types/${item.id}`,
-                                                    "حذف نوع المنتج؟ سيتم رفض العملية إذا كان مرتبطًا بمنتجات.",
-                                                    "تم حذف نوع المنتج",
-                                                    `delete-type-${item.id}`
-                                                )
+                                                openDeleteDialog({
+                                                    title: "تأكيد حذف نوع المنتج",
+                                                    description: "سيتم رفض الحذف إذا كان النوع مرتبطًا بمنتجات حالية.",
+                                                    successText: "تم حذف نوع المنتج",
+                                                    busyKey: `delete-type-${item.id}`,
+                                                    url: `/api/admin/product-types/${item.id}`,
+                                                })
                                             }
                                             disabled={busy !== null}
                                         >
@@ -796,8 +881,8 @@ export function AdminPanel() {
                                 {busy === "save-variation"
                                     ? "جارٍ الحفظ..."
                                     : editingVariationId
-                                      ? "حفظ المتغير"
-                                      : "إضافة المتغير"}
+                                        ? "حفظ المتغير"
+                                        : "إضافة المتغير"}
                             </button>
                             {editingVariationId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetVariationForm}>
@@ -868,8 +953,8 @@ export function AdminPanel() {
                                 {busy === "save-variation-value"
                                     ? "جارٍ الحفظ..."
                                     : editingVariationValueId
-                                      ? "حفظ القيمة"
-                                      : "إضافة القيمة"}
+                                        ? "حفظ القيمة"
+                                        : "إضافة القيمة"}
                             </button>
                             {editingVariationValueId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetVariationValueForm}>
@@ -907,12 +992,13 @@ export function AdminPanel() {
                                                 type="button"
                                                 className={styles.dangerButton}
                                                 onClick={() =>
-                                                    deleteItem(
-                                                        `/api/admin/variations/${variation.id}`,
-                                                        "حذف المتغير؟ سيتم حذف جميع القيم المرتبطة به.",
-                                                        "تم حذف المتغير",
-                                                        `delete-variation-${variation.id}`
-                                                    )
+                                                    openDeleteDialog({
+                                                        title: "تأكيد حذف المتغير",
+                                                        description: "سيتم حذف جميع القيم المرتبطة بهذا المتغير.",
+                                                        successText: "تم حذف المتغير",
+                                                        busyKey: `delete-variation-${variation.id}`,
+                                                        url: `/api/admin/variations/${variation.id}`,
+                                                    })
                                                 }
                                                 disabled={busy !== null}
                                             >
@@ -940,12 +1026,13 @@ export function AdminPanel() {
                                                         type="button"
                                                         className={styles.dangerButton}
                                                         onClick={() =>
-                                                            deleteItem(
-                                                                `/api/admin/variation-values/${value.id}`,
-                                                                "حذف قيمة المتغير؟",
-                                                                "تم حذف قيمة المتغير",
-                                                                `delete-variation-value-${value.id}`
-                                                            )
+                                                            openDeleteDialog({
+                                                                title: "تأكيد حذف قيمة المتغير",
+                                                                description: "سيتم إزالة هذه القيمة من جميع روابط المنتجات.",
+                                                                successText: "تم حذف قيمة المتغير",
+                                                                busyKey: `delete-variation-value-${value.id}`,
+                                                                url: `/api/admin/variation-values/${value.id}`,
+                                                            })
                                                         }
                                                         disabled={busy !== null}
                                                     >
@@ -1131,19 +1218,45 @@ export function AdminPanel() {
                         </label>
 
                         <label className={`${styles.field} ${styles.fieldFull}`}>
-                            <span>روابط الصور (كل رابط في سطر)</span>
-                            <textarea
-                                rows={4}
-                                value={productForm.imageUrls}
-                                onChange={(event) =>
-                                    setProductForm((current) => ({
-                                        ...current,
-                                        imageUrls: event.target.value,
-                                    }))
-                                }
-                                placeholder="/products/item-1.jpg"
-                                required
+                            <span>صور المنتج (رفع مباشر إلى Cloudinary)</span>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleProductImageSelection}
+                                disabled={busy !== null || isUploadingImages}
                             />
+                            <small className={styles.inlineInfo}>
+                                اختر صورة أو أكثر من جهازك. سيتم الرفع تلقائيًا ثم حفظ الرابط في قاعدة البيانات.
+                            </small>
+
+                            {productForm.imageUrls.length > 0 ? (
+                                <div className={styles.uploadedImageGrid}>
+                                    {productForm.imageUrls.map((url, index) => (
+                                        <article key={`${url}-${index}`} className={styles.uploadedImageCard}>
+                                            <div className={styles.uploadedImagePreviewWrap}>
+                                                <Image
+                                                    src={url}
+                                                    alt={`صورة المنتج ${index + 1}`}
+                                                    fill
+                                                    sizes="(max-width: 700px) 100vw, 25vw"
+                                                    className={styles.uploadedImagePreview}
+                                                />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                className={styles.ghostButton}
+                                                onClick={() => removeProductImage(url)}
+                                                disabled={busy !== null || isUploadingImages}
+                                            >
+                                                إزالة الصورة
+                                            </button>
+                                        </article>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className={styles.inlineInfo}>لم يتم رفع أي صورة بعد.</p>
+                            )}
                         </label>
 
                         <div className={`${styles.field} ${styles.fieldFull}`}>
@@ -1176,12 +1289,14 @@ export function AdminPanel() {
                         </div>
 
                         <div className={styles.formActions}>
-                            <button className={styles.primaryButton} type="submit" disabled={busy !== null}>
-                                {busy === "save-product"
-                                    ? "جارٍ الحفظ..."
-                                    : editingProductId
-                                      ? "حفظ المنتج"
-                                      : "إضافة المنتج"}
+                            <button className={styles.primaryButton} type="submit" disabled={busy !== null || isUploadingImages}>
+                                {isUploadingImages
+                                    ? "جارٍ رفع الصور..."
+                                    : busy === "save-product"
+                                        ? "جارٍ الحفظ..."
+                                        : editingProductId
+                                            ? "حفظ المنتج"
+                                            : "إضافة المنتج"}
                             </button>
                             {editingProductId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetProductForm}>
@@ -1224,12 +1339,14 @@ export function AdminPanel() {
                                             type="button"
                                             className={styles.dangerButton}
                                             onClick={() =>
-                                                deleteItem(
-                                                    `/api/admin/products/${item.id}`,
-                                                    "حذف المنتج؟",
-                                                    "تم حذف المنتج",
-                                                    `delete-product-${item.id}`
-                                                )
+                                                openDeleteDialog({
+                                                    title: "تأكيد حذف المنتج",
+                                                    description:
+                                                        "سيتم حذف المنتج من قاعدة البيانات وحذف صوره من Cloudinary لتفادي الصور غير المستخدمة.",
+                                                    successText: "تم حذف المنتج",
+                                                    busyKey: `delete-product-${item.id}`,
+                                                    url: `/api/admin/products/${item.id}`,
+                                                })
                                             }
                                             disabled={busy !== null}
                                         >
@@ -1316,8 +1433,8 @@ export function AdminPanel() {
                                 {busy === "save-testimonial"
                                     ? "جارٍ الحفظ..."
                                     : editingTestimonialId
-                                      ? "حفظ الرأي"
-                                      : "إضافة الرأي"}
+                                        ? "حفظ الرأي"
+                                        : "إضافة الرأي"}
                             </button>
                             {editingTestimonialId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetTestimonialForm}>
@@ -1351,12 +1468,13 @@ export function AdminPanel() {
                                             type="button"
                                             className={styles.dangerButton}
                                             onClick={() =>
-                                                deleteItem(
-                                                    `/api/admin/testimonials/${item.id}`,
-                                                    "حذف هذا الرأي؟",
-                                                    "تم حذف الرأي",
-                                                    `delete-testimonial-${item.id}`
-                                                )
+                                                openDeleteDialog({
+                                                    title: "تأكيد حذف الرأي",
+                                                    description: "هل أنت متأكد من حذف هذا الرأي؟",
+                                                    successText: "تم حذف الرأي",
+                                                    busyKey: `delete-testimonial-${item.id}`,
+                                                    url: `/api/admin/testimonials/${item.id}`,
+                                                })
                                             }
                                             disabled={busy !== null}
                                         >
@@ -1365,6 +1483,42 @@ export function AdminPanel() {
                                     </div>
                                 </article>
                             ))}
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+
+            {deleteDialog ? (
+                <div
+                    className={styles.modalBackdrop}
+                    role="presentation"
+                    onClick={() => {
+                        if (!isDeleteBusy) {
+                            setDeleteDialog(null);
+                        }
+                    }}
+                >
+                    <div className={styles.modalCard} role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+                        <h3>{deleteDialog.title}</h3>
+                        <p>{deleteDialog.description}</p>
+
+                        <div className={styles.modalActions}>
+                            <button
+                                type="button"
+                                className={styles.ghostButton}
+                                onClick={() => setDeleteDialog(null)}
+                                disabled={isDeleteBusy}
+                            >
+                                إلغاء
+                            </button>
+                            <button
+                                type="button"
+                                className={styles.dangerButton}
+                                onClick={() => void confirmDeleteDialog()}
+                                disabled={isDeleteBusy}
+                            >
+                                {isDeleteBusy ? "جارٍ الحذف..." : "تأكيد الحذف"}
+                            </button>
                         </div>
                     </div>
                 </div>
