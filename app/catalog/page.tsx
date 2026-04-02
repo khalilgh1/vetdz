@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Footprints, Shirt, SquareDashedBottomCode } from "lucide-react";
+import { Footprints, Shirt, SquareDashedBottomCode, Columns2 } from "lucide-react";
 import { ProductFeed } from "@/components/product-feed";
 import { SiteHeader } from "@/components/site-header";
 import { getProductTypes, getProductsPage } from "@/lib/store";
@@ -91,7 +91,8 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                                 key={item.id}
                                 scroll={false}
                             >
-                                <div className="type-icon">{TYPE_ICONS[item.slug] ?? <Shirt size={24} />}</div>
+                                
+                                <div className="type-icon">{TYPE_ICONS[item.slug] ?? <Columns2 size={24} />}</div>
                                 <span>{item.nameAr}</span>
                             </Link>
                         ))}
