@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./admin-panel.module.css";
 
 type TabKey = "products" | "types" | "variations" | "testimonials";
@@ -85,6 +86,8 @@ type DeleteDialogState = {
     url: string;
 };
 
+const ADMIN_UNAUTHORIZED_ERROR = "ADMIN_UNAUTHORIZED";
+
 const TABS: { key: TabKey; label: string; description: string }[] = [
     { key: "products", label: "المنتجات", description: "إنشاء وتعديل منتجات المتجر" },
     { key: "types", label: "الأنواع", description: "إدارة أنواع المنتجات (الفئات)" },
@@ -112,6 +115,10 @@ async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
     const data = (await response.json().catch(() => ({}))) as T & ApiError;
 
     if (!response.ok) {
+        if (response.status === 401) {
+            throw new Error(ADMIN_UNAUTHORIZED_ERROR);
+        }
+
         throw new Error(data.error || "فشل تنفيذ الطلب");
     }
 
@@ -141,6 +148,10 @@ async function uploadImagesToCloudinary(files: File[]) {
     const data = (await response.json().catch(() => ({}))) as { items?: UploadItem[]; error?: string };
 
     if (!response.ok) {
+        if (response.status === 401) {
+            throw new Error(ADMIN_UNAUTHORIZED_ERROR);
+        }
+
         throw new Error(data.error || "فشل رفع الصور إلى Cloudinary");
     }
 
@@ -148,6 +159,7 @@ async function uploadImagesToCloudinary(files: File[]) {
 }
 
 export function AdminPanel() {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState<TabKey>("products");
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState<string | null>(null);
@@ -203,7 +215,16 @@ export function AdminPanel() {
         rating: "5",
     });
 
-    async function loadData(usePageLoader = false) {
+    const handleUnauthorizedError = useCallback((error: unknown) => {
+        if (error instanceof Error && error.message === ADMIN_UNAUTHORIZED_ERROR) {
+            router.replace("/admin/login");
+            return true;
+        }
+
+        return false;
+    }, [router]);
+
+    const loadData = useCallback(async (usePageLoader = false) => {
         if (usePageLoader) {
             setLoading(true);
         }
@@ -221,6 +242,10 @@ export function AdminPanel() {
             setProducts(productsResponse.items);
             setTestimonials(testimonialsResponse.items);
         } catch (error) {
+            if (handleUnauthorizedError(error)) {
+                return;
+            }
+
             setMessage({
                 type: "error",
                 text: toErrorMessage(error),
@@ -230,11 +255,11 @@ export function AdminPanel() {
                 setLoading(false);
             }
         }
-    }
+    }, [handleUnauthorizedError]);
 
     useEffect(() => {
         void loadData(true);
-    }, []);
+    }, [loadData]);
 
     useEffect(() => {
         if (productTypes.length === 0) {
@@ -319,6 +344,10 @@ export function AdminPanel() {
             await loadData(false);
             setMessage({ type: "success", text: successMessage });
         } catch (error) {
+            if (handleUnauthorizedError(error)) {
+                return;
+            }
+
             setMessage({ type: "error", text: toErrorMessage(error) });
         } finally {
             setBusy(null);

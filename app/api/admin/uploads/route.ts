@@ -1,4 +1,4 @@
-import { resolveApiError } from "@/app/api/admin/_shared";
+import { requireAdminApiAuth, resolveApiError } from "@/app/api/admin/_shared";
 import { uploadProductImageBuffer } from "@/lib/cloudinary";
 
 export const runtime = "nodejs";
@@ -35,6 +35,11 @@ function toImageFiles(values: FormDataEntryValue[]) {
 }
 
 export async function POST(request: Request) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const formData = await request.formData();
         const files = toImageFiles(formData.getAll("images"));

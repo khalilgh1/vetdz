@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { parsePositiveIntId, getFirstZodError, resolveApiError } from "@/app/api/admin/_shared";
+import { parsePositiveIntId, getFirstZodError, requireAdminApiAuth, resolveApiError } from "@/app/api/admin/_shared";
 import { deleteAdminVariation, updateAdminVariation } from "@/lib/admin-store";
 
 const variationSchema = z.object({
@@ -11,6 +11,11 @@ type RouteContext = {
 };
 
 export async function PATCH(request: Request, context: RouteContext) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const params = await context.params;
         const id = parsePositiveIntId(params.id);
@@ -31,6 +36,11 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_: Request, context: RouteContext) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const params = await context.params;
         const id = parsePositiveIntId(params.id);

@@ -1,0 +1,42 @@
+.page {
+    display: grid;
+    gap: 1rem;
+}
+
+.hero {
+    background: linear-gradient(130deg, #f8fafc 0%, #eceff4 100%);
+    border: 1px solid rgba(95, 103, 117, 0.12);
+    border-radius: 1.2rem;
+    padding: 1.2rem;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+}
+
+.hero p {
+    margin: 0;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-size: 0.82rem;
+}
+
+.hero h1 {
+    margin: 0.65rem 0;
+    font-size: clamp(1.8rem, 4.8vw, 2.7rem);
+    line-height: 1.2;
+}
+
+.hero span {
+    color: var(--muted);
+    line-height: 1.9;
+}
+
+@media (min-width: 960px) {
+    .page {
+        grid-template-columns: 1.15fr 0.85fr;
+        align-items: start;
+    }
+
+    .hero {
+        min-height: 100%;
+    }
+}

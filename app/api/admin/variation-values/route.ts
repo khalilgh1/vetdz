@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createAdminVariationValue } from "@/lib/admin-store";
-import { getFirstZodError, resolveApiError } from "@/app/api/admin/_shared";
+import { getFirstZodError, requireAdminApiAuth, resolveApiError } from "@/app/api/admin/_shared";
 
 const HEX_COLOR_REGEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 
@@ -28,6 +28,11 @@ const variationValueSchema = z.object({
 });
 
 export async function POST(request: Request) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const json = (await request.json()) as unknown;
         const parsed = variationValueSchema.safeParse(json);

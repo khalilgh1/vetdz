@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createAdminProductType, listAdminProductTypes } from "@/lib/admin-store";
-import { getFirstZodError, resolveApiError } from "@/app/api/admin/_shared";
+import { getFirstZodError, requireAdminApiAuth, resolveApiError } from "@/app/api/admin/_shared";
 
 const productTypeSchema = z.object({
     slug: z
@@ -13,11 +13,21 @@ const productTypeSchema = z.object({
 });
 
 export async function GET() {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     const items = await listAdminProductTypes();
     return Response.json({ items });
 }
 
 export async function POST(request: Request) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const json = (await request.json()) as unknown;
         const parsed = productTypeSchema.safeParse(json);

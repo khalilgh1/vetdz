@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createAdminVariation, listAdminVariations } from "@/lib/admin-store";
-import { getFirstZodError, resolveApiError } from "@/app/api/admin/_shared";
+import { getFirstZodError, requireAdminApiAuth, resolveApiError } from "@/app/api/admin/_shared";
 
 const variationSchema = z.object({
     productTypeId: z.coerce.number().int().positive("نوع المنتج غير صالح"),
@@ -8,6 +8,11 @@ const variationSchema = z.object({
 });
 
 export async function GET(request: Request) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     const url = new URL(request.url);
     const rawProductTypeId = url.searchParams.get("productTypeId");
     const productTypeId = rawProductTypeId ? Number(rawProductTypeId) : undefined;
@@ -20,6 +25,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const json = (await request.json()) as unknown;
         const parsed = variationSchema.safeParse(json);

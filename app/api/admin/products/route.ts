@@ -1,7 +1,7 @@
 import { Gender } from "@prisma/client";
 import { z } from "zod";
 import { createAdminProduct, listAdminProducts } from "@/lib/admin-store";
-import { getFirstZodError, resolveApiError } from "@/app/api/admin/_shared";
+import { getFirstZodError, requireAdminApiAuth, resolveApiError } from "@/app/api/admin/_shared";
 
 const productSchema = z
     .object({
@@ -55,11 +55,21 @@ const productSchema = z
     });
 
 export async function GET() {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     const items = await listAdminProducts();
     return Response.json({ items });
 }
 
 export async function POST(request: Request) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const json = (await request.json()) as unknown;
         const parsed = productSchema.safeParse(json);

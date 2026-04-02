@@ -1,0 +1,17 @@
+.page {
+    padding-block: 1rem 2.4rem;
+}
+
+.topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.9rem;
+}
+
+.topBar p {
+    margin: 0;
+    color: var(--muted);
+    font-weight: 700;
+}

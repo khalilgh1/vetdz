@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isAdminAuthenticated } from "@/lib/admin-auth";
 
 export function getFirstZodError(error: z.ZodError) {
     return error.issues[0]?.message ?? "البيانات غير صالحة.";
@@ -12,6 +13,16 @@ export function parsePositiveIntId(raw: string) {
     }
 
     return id;
+}
+
+export async function requireAdminApiAuth() {
+    const authenticated = await isAdminAuthenticated();
+
+    if (!authenticated) {
+        return Response.json({ error: "غير مصرح. يرجى تسجيل الدخول كمدير." }, { status: 401 });
+    }
+
+    return null;
 }
 
 type ErrorWithCode = {

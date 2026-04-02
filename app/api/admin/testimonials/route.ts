@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createAdminTestimonial, listAdminTestimonials } from "@/lib/admin-store";
-import { getFirstZodError, resolveApiError } from "@/app/api/admin/_shared";
+import { getFirstZodError, requireAdminApiAuth, resolveApiError } from "@/app/api/admin/_shared";
 
 const testimonialSchema = z.object({
     nameAr: z.string().trim().min(2, "الاسم مطلوب"),
@@ -10,11 +10,21 @@ const testimonialSchema = z.object({
 });
 
 export async function GET() {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     const items = await listAdminTestimonials();
     return Response.json({ items });
 }
 
 export async function POST(request: Request) {
+    const unauthorized = await requireAdminApiAuth();
+    if (unauthorized) {
+        return unauthorized;
+    }
+
     try {
         const json = (await request.json()) as unknown;
         const parsed = testimonialSchema.safeParse(json);
