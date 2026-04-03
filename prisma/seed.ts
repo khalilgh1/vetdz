@@ -12,9 +12,82 @@ type ProductSeed = {
     discountedPrice?: string;
     gender: Gender;
     isFeatured?: boolean;
-    imageUrls: string[];
+    imageSearchQueries: string[];
+    fallbackImageUrls: string[];
     variationValues: string[];
 };
+
+type UnsplashSearchResponse = {
+    results: Array<{
+        urls: {
+            regular: string;
+        };
+    }>;
+};
+
+const unsplashAccessKey =
+    process.env.UNSPLASH_ACCESS_KEY ?? process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
+
+async function fetchUnsplashImageUrl(query: string, page: number) {
+    if (!unsplashAccessKey) {
+        return null;
+    }
+
+    const searchParams = new URLSearchParams({
+        query,
+        orientation: "portrait",
+        per_page: "1",
+        page: String(page),
+        content_filter: "high",
+        client_id: unsplashAccessKey,
+    });
+
+    try {
+        const response = await fetch(`https://api.unsplash.com/search/photos?${searchParams.toString()}`, {
+            headers: {
+                "Accept-Version": "v1",
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            console.warn(
+                `[seed] Unsplash API request failed for "${query}": ${response.status} ${response.statusText}`
+            );
+            return null;
+        }
+
+        const payload = (await response.json()) as UnsplashSearchResponse;
+        const firstPhoto = payload.results[0];
+
+        return firstPhoto?.urls.regular ?? null;
+    } catch (error) {
+        console.warn(`[seed] Unsplash API request error for "${query}":`, error);
+        return null;
+    }
+}
+
+async function resolveProductImageUrls(product: ProductSeed) {
+    if (!unsplashAccessKey) {
+        return product.fallbackImageUrls;
+    }
+
+    const fetchedUrls = await Promise.all(
+        product.imageSearchQueries.map((query, index) => fetchUnsplashImageUrl(query, index + 1))
+    );
+
+    const validUrls = fetchedUrls.filter((url): url is string => Boolean(url));
+
+    if (validUrls.length === product.imageSearchQueries.length) {
+        return validUrls;
+    }
+
+    console.warn(
+        `[seed] Falling back to bundled Unsplash URLs for ${product.slug} (${validUrls.length}/${product.imageSearchQueries.length} API matches).`
+    );
+
+    return product.fallbackImageUrls;
+}
 
 async function seedProductType(
     typeSlug: string,
@@ -61,6 +134,8 @@ async function seedProductType(
             return valueId;
         });
 
+        const imageUrls = await resolveProductImageUrls(product);
+
         await prisma.product.create({
             data: {
                 slug: product.slug,
@@ -74,7 +149,7 @@ async function seedProductType(
                 isFeatured: product.isFeatured ?? false,
                 productTypeId: productType.id,
                 images: {
-                    create: product.imageUrls.map((url, index) => ({
+                    create: imageUrls.map((url, index) => ({
                         url,
                         altAr: product.nameAr,
                         sortOrder: index,
@@ -133,10 +208,15 @@ async function main() {
                 discountedPrice: "12600",
                 gender: Gender.MALE,
                 isFeatured: true,
-                imageUrls: [
-                    "/products/nomad-1.svg",
-                    "/products/nomad-2.svg",
-                    "/products/nomad-3.svg",
+                imageSearchQueries: [
+                    "men overshirt neutral fashion",
+                    "beige overshirt menswear portrait",
+                    "streetwear shirt jacket men",
+                ],
+                fallbackImageUrls: [
+                    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80",
+                    "https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?auto=format&fit=crop&w=1200&q=80",
+                    "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1200&q=80",
                 ],
                 variationValues: ["المقاس:M", "المقاس:L", "اللون:أسود", "اللون:رمادي"],
             },
@@ -147,7 +227,11 @@ async function main() {
                 descriptionAr: "بلايزر من الكتان الخفيف مناسب للمواسم الدافئة مع قصّة مستقيمة أنيقة.",
                 price: "12200",
                 gender: Gender.BOTH,
-                imageUrls: ["/products/linen-1.svg", "/products/linen-2.svg"],
+                imageSearchQueries: ["linen blazer fashion model", "minimal blazer outfit"],
+                fallbackImageUrls: [
+                    "https://images.unsplash.com/photo-1495385794356-15371f348c31?auto=format&fit=crop&w=1200&q=80",
+                    "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80",
+                ],
                 variationValues: ["المقاس:S", "المقاس:M", "المقاس:L", "اللون:بيج", "اللون:أسود"],
             },
         ]
@@ -172,7 +256,11 @@ async function main() {
                 price: "15500",
                 gender: Gender.BOTH,
                 isFeatured: true,
-                imageUrls: ["/products/denim-1.svg", "/products/denim-2.svg"],
+                imageSearchQueries: ["selvedge denim jeans fashion", "dark denim outfit"],
+                fallbackImageUrls: [
+                    "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=1200&q=80",
+                    "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200&q=80",
+                ],
                 variationValues: ["المقاس:S", "المقاس:M", "المقاس:L", "اللون:أزرق داكن"],
             },
         ]
@@ -204,7 +292,11 @@ async function main() {
                 discountedPrice: "27900",
                 gender: Gender.MALE,
                 isFeatured: true,
-                imageUrls: ["/products/boot-1.svg", "/products/boot-2.svg"],
+                imageSearchQueries: ["chelsea boots leather men fashion", "brown leather boots studio"],
+                fallbackImageUrls: [
+                    "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=1200&q=80",
+                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80",
+                ],
                 variationValues: ["المقاس:41", "المقاس:42", "المقاس:43", "اللون:بني"],
             },
         ]
