@@ -7,13 +7,13 @@ import { HomeHero } from "@/components/home-hero";
 import { getFeaturedProducts, getProductTypes, getProductsPage } from "@/lib/store";
 
 const GENDER_OPTIONS = [
-  { label: "رجالي", value: "MALE", image: "/men.jfif" },
-  { label: "نسائي", value: "FEMALE", image: "/women.jfif" },
+  { label: "رجالي", value: "MALE", image: "/men.jpg" },
+  { label: "نسائي", value: "FEMALE", image: "/women.jpg" },
 ] as const;
 
 const CATEGORY_OPTIONS = [
-  { label: "الأقمصة", value: "toppings", image: "/shirt.jfif" },
-  { label: "السراويل", value: "leggings", image: "/pant.jfif" },
+  { label: "الأقمصة", value: "toppings", image: "/shirt.jpg" },
+  { label: "السراويل", value: "leggings", image: "/pant.jpg" },
   { label: "الأحذية", value: "shoes", image: "/shoes.jpg" },
 ] as const;
 

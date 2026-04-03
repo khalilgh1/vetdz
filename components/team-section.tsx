@@ -42,7 +42,7 @@ export function TeamSection() {
                 <div className="team-card">
                     <div className="team-card-image">
                         <Image
-                            src="/shirt.jfif"
+                            src="/shirt.jpg"
                             alt="الجودة"
                             fill
                             className="team-image"
