@@ -41,6 +41,9 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+/generated
 
 # local files I defined
 /schema.txt
+prisma/dev.db.bak
+prisma/migrate.js
