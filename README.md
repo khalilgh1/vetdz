@@ -17,7 +17,7 @@
 
 - Next.js 16 (App Router)
 - React 19
-- Prisma ORM + SQLite
+- Prisma ORM + PostgreSQL (Neon)
 - TypeScript
 
 ## Local Setup
@@ -28,13 +28,15 @@
 npm install
 ```
 
-2. نسخ ملف البيئة:
+2. إعداد متغيرات البيئة داخل `.env.local`:
 
 ```bash
-copy .env.example .env
+DATABASE_URL="postgresql://..."
+DIRECT_URL="postgresql://..."
+ADMIN_AUTH_SECRET="your-strong-secret"
 ```
 
-3. إنشاء قاعدة البيانات وتوليد Prisma Client:
+3. توليد Prisma Client ومزامنة المخطط:
 
 ```bash
 npx prisma generate
@@ -53,6 +55,17 @@ npm run db:seed
 npm run dev
 ```
 
+## Deployment (Vercel)
+
+1. ادفع آخر نسخة من الكود إلى GitHub.
+2. داخل Vercel أضف متغيرات البيئة التالية على الأقل:
+	- `DATABASE_URL`
+	- `DIRECT_URL`
+	- `ADMIN_AUTH_SECRET`
+3. متغيرات التكاملات اختيارية حسب الاستخدام (`SMTP_*`, `GOOGLE_*`, `CLOUDINARY_*`).
+4. أمر البناء في المشروع يشغل Prisma تلقائيًا (`prisma generate && next build`).
+5. إذا كان لديك Deploy قديم، نفذ إعادة نشر مع مسح Build Cache مرة واحدة.
+
 ## Optional Integrations
 
-عند تعبئة متغيرات SMTP و Google Sheets في `.env` سيتم تنفيذها تلقائيًا عند إرسال الطلب من `app/api/orders/route.ts`.
+عند تعبئة متغيرات SMTP و Google Sheets في `.env.local` سيتم تنفيذها تلقائيًا عند إرسال الطلب من `app/api/orders/route.ts`.
