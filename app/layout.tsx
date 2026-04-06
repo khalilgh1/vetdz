@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import { Cairo, Changa } from "next/font/google";
 import "./globals.css";
 
+
+console.log("Fetching database info...");
+const url = process.env.DATABASE_URL
+  console.log('DATABASE_URL:', url ?? 'NOT SET')
+  console.log('Provider:', url?.startsWith('postgresql') ? 'postgresql' : url?.startsWith('file:') ? 'sqlite' : 'unknown')
+
 const cairo = Cairo({
   variable: "--font-cairo",
   subsets: ["arabic", "latin"],
