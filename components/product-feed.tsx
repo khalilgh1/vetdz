@@ -93,7 +93,7 @@ export function ProductFeed({ initialItems, initialHasMore, initialNextPage, que
             <div ref={sentinelRef} className="load-sentinel" aria-hidden="true" />
 
             {loading ? <p className="load-more-state">جار تحميل المزيد...</p> : null}
-            {!hasMore ? <p className="load-more-state">تم عرض كل المنتجات.</p> : null}
+            {!hasMore ? <p className="load-more-state">تم عرض كل المنتجات المميزة.</p> : null}
         </>
     );
 }

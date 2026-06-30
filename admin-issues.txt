@@ -1,4 +1,0 @@
-- when clicking edit product the page must scroll to the top; since the form is in the top
-- product images should not be added as urls , this is not user friendly, we must allow the user to upload images from their device, add them to cloudinary and then save the url in the database
-- when deleting a product, a validation modal should appear not an alert since using alert is not professional and it does not look good
-- when deleting a product, we should also delete the images from cloudinary to avoid having unused images in our cloudinary account
