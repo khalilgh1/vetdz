@@ -45,63 +45,74 @@ class GeminiGenerator:
     def generate_response(self, prompt):
         """
         Sends the prompt to Google's Gemini API and returns the generated response text.
+        Tries each model in the fallback chain on 429/503 before giving up.
         """
         if not self.api_key:
             raise ValueError("GEMINI_KEY or GEMINI_API_KEY is required to generate responses. Please add it to your .env.local file.")
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent?key={self.api_key}"
-        headers = {
-            "Content-Type": "application/json"
-        }
+        headers = {"Content-Type": "application/json"}
         payload = {
-            "contents": [
-                {
-                    "parts": [
-                        {
-                            "text": prompt
-                        }
-                    ]
-                }
-            ]
+            "contents": [{"parts": [{"text": prompt}]}]
         }
-        
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers=headers,
-            method="POST"
-        )
-        
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                with urllib.request.urlopen(req, timeout=30) as response:
-                    res_data = json.loads(response.read().decode("utf-8"))
-                    # Extract text response from Gemini structure
-                    candidates = res_data.get("candidates", [])
-                    if candidates and len(candidates) > 0:
-                        content = candidates[0].get("content", {})
-                        parts = content.get("parts", [])
-                        if parts and len(parts) > 0:
-                            return parts[0].get("text", "")
-                    raise ValueError(f"Unexpected response format from Gemini: {res_data}")
-            except urllib.error.HTTPError as e:
+
+        # Ordered fallback chain — tries each model on 429/503 before giving up.
+        # gemma-4-26b-a4b-it is last: different quota pool from Gemini models.
+        fallback_models = [
+            self.model,
+            "gemini-2.5-flash",
+            "gemini-2.0-flash",
+            "gemini-2.0-flash-lite",
+            "gemma-4-26b-a4b-it",
+        ]
+        # De-duplicate while preserving order
+        seen, models_to_try = set(), []
+        for m in fallback_models:
+            if m not in seen:
+                seen.add(m)
+                models_to_try.append(m)
+
+        last_error = None
+        for model_name in models_to_try:
+            url = (
+                f"https://generativelanguage.googleapis.com/v1beta/models/"
+                f"{model_name}:generateContent?key={self.api_key}"
+            )
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers=headers,
+                method="POST",
+            )
+            for attempt in range(2):
                 try:
-                    err_content = e.read().decode("utf-8")
-                    err_msg = json.loads(err_content)
-                except Exception:
-                    err_msg = err_content
-                
-                print(f"HTTP Error {e.code}: {err_msg}", file=sys.stderr)
-                if e.code in [503, 429]:
-                    time.sleep(5)
-                    continue
-                raise e
-            except Exception as e:
-                print(f"Network error: {e}", file=sys.stderr)
-                time.sleep(2)
-                
-        raise Exception("Failed to generate response from Gemini API after maximum retries.")
+                    with urllib.request.urlopen(req, timeout=30) as response:
+                        res_data = json.loads(response.read().decode("utf-8"))
+                        candidates = res_data.get("candidates", [])
+                        if candidates:
+                            parts = candidates[0].get("content", {}).get("parts", [])
+                            if parts:
+                                print(f"[generator] responded with model: {model_name}", file=sys.stderr)
+                                return parts[0].get("text", "")
+                        raise ValueError(f"Unexpected response format: {res_data}")
+                except urllib.error.HTTPError as e:
+                    try:
+                        err_msg = json.loads(e.read().decode("utf-8"))
+                    except Exception:
+                        err_msg = str(e)
+                    print(f"[generator] {model_name} HTTP {e.code}: {err_msg}", file=sys.stderr)
+                    last_error = e
+                    if e.code in (429, 503):
+                        time.sleep(3)
+                        break   # skip remaining retries → try next model
+                    raise      # hard error (401, 400, …) — stop immediately
+                except Exception as e:
+                    print(f"[generator] {model_name} error on attempt {attempt+1}: {e}", file=sys.stderr)
+                    last_error = e
+                    time.sleep(2)
+
+        raise Exception(
+            f"All fallback models exhausted. Last error: {last_error}"
+        )
 
 def main():
     # Configure stdout to handle UTF-8 if outputting to Windows terminal

@@ -58,7 +58,7 @@ class QueryEmbedder:
         max_retries = 5
         for attempt in range(max_retries):
             try:
-                with urllib.request.urlopen(req) as response:
+                with urllib.request.urlopen(req, timeout=60) as response:
                     res = json.loads(response.read().decode("utf-8"))
                     # Return the single embedding vector (the first element of the batch)
                     if isinstance(res, list) and len(res) > 0:

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Cairo, Changa } from "next/font/google";
 import "./globals.css";
-
+import { Chatbot } from "@/components/chatbot";
 
 console.log("Fetching database info...");
 const url = process.env.DATABASE_URL
@@ -36,7 +36,10 @@ export default function RootLayout({
       dir="rtl"
       className={`${cairo.variable} ${changa.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <Chatbot />
+      </body>
     </html>
   );
 }

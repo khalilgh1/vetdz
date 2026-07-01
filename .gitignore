@@ -47,3 +47,4 @@ next-env.d.ts
 /schema.txt
 pics/**
 backend/rag/__pycache__/**
+backend/__pycache__/**
