@@ -27,11 +27,13 @@ def load_env(dotenv_path):
 
 class QueryEmbedder:
     def __init__(self):
-        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-        env_vars = load_env(os.path.join(root_dir, ".env.local"))
-        self.hf_token = env_vars.get("HF_TOKEN")
+        self.hf_token = os.environ.get("HF_TOKEN")
         if not self.hf_token:
-            raise ValueError("HF_TOKEN not found in .env.local")
+            root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+            env_vars = load_env(os.path.join(root_dir, ".env.local"))
+            self.hf_token = env_vars.get("HF_TOKEN")
+        if not self.hf_token:
+            raise ValueError("HF_TOKEN not found in environment or .env.local")
         self.url = "https://router.huggingface.co/hf-inference/models/intfloat/multilingual-e5-base/pipeline/feature-extraction"
 
     def embed_query(self, query):

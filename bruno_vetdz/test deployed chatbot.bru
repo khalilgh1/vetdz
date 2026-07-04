@@ -1,0 +1,17 @@
+meta {
+  name: test deployed chatbot
+  type: http
+  seq: 2
+}
+
+post {
+  url: https://khalilgh.pythonanywhere.com/api/chat
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "query": "ما هي طرق الدفع المتوفرة؟"
+  }
+}
