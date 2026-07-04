@@ -18,6 +18,7 @@ export function Chatbot() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const requestTimestamps = useRef<number[]>([]);
 
   // Initialize with greeting message on mount
   useEffect(() => {
@@ -47,8 +48,33 @@ export function Chatbot() {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
+    // Rate Limiting Check: Max 5 requests per 60 seconds
+    const now = Date.now();
+    requestTimestamps.current = requestTimestamps.current.filter(t => now - t < 60000);
+    if (requestTimestamps.current.length >= 5) {
+      const userMessage: Message = {
+        id: now.toString(),
+        text: input.trim(),
+        sender: "user",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [
+        ...prev, 
+        userMessage,
+        {
+          id: (now + 1).toString(),
+          text: "لقد تجاوزت حد إرسال الرسائل (الحد الأقصى هو 5 رسائل في الدقيقة). يرجى الانتظار قليلاً قبل المحاولة مرة أخرى.",
+          sender: "bot",
+          timestamp: new Date(),
+        }
+      ]);
+      setInput("");
+      return;
+    }
+    requestTimestamps.current.push(now);
+
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: now.toString(),
       text: input.trim(),
       sender: "user",
       timestamp: new Date(),
