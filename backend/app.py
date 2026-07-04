@@ -39,10 +39,12 @@ ALLOWED_MODELS = {
 }
 
 # Initialize RAG Pipeline
+pipeline_error = None
 try:
     pipeline = RAGPipeline()
 except Exception as e:
-    logger.error(f"Error initializing RAG Pipeline: {e}")
+    logger.exception("Error initializing RAG Pipeline")
+    pipeline_error = str(e)
     pipeline = None
 
 
@@ -50,7 +52,10 @@ except Exception as e:
 @limiter.limit("10 per minute")
 def chat():
     if not pipeline:
-        return jsonify({"error": "RAG pipeline not initialized. Ensure embeddings.json exists and environment is configured."}), 500
+        return jsonify({
+            "error": "RAG pipeline not initialized. Ensure embeddings.json exists and environment is configured.",
+            "details": pipeline_error
+        }), 500
 
     data = request.get_json(silent=True) or {}
 
