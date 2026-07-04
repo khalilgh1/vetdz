@@ -59,9 +59,14 @@ class GeminiGenerator:
         # gemma-4-26b-a4b-it is last: different quota pool from Gemini models.
         fallback_models = [
             self.model,
+            "gemini-3-flash-preview",
+            "gemini-3.1-flash-lite",
+            "gemini-3-pro-preview",
             "gemini-2.5-flash",
+            "gemini-2.5-pro",
             "gemini-2.0-flash",
             "gemini-2.0-flash-lite",
+            "gemma-4-31b-it",
             "gemma-4-26b-a4b-it",
         ]
         # De-duplicate while preserving order
@@ -101,7 +106,7 @@ class GeminiGenerator:
                         err_msg = str(e)
                     print(f"[generator] {model_name} HTTP {e.code}: {err_msg}", file=sys.stderr)
                     last_error = e
-                    if e.code in (429, 503):
+                    if e.code in (429, 500, 503):
                         time.sleep(3)
                         break   # skip remaining retries → try next model
                     raise      # hard error (401, 400, …) — stop immediately
