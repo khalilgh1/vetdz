@@ -53,7 +53,7 @@ except Exception as e:
 def chat():
     if not pipeline:
         return jsonify({
-            "error": "RAG pipeline not initialized. Ensure embeddings.json exists and environment is configured.",
+            "error": "RAG pipeline not initialized. Ensure HF_TOKEN and GEMINI_KEY are in .env.local and database/embeddings are configured.",
             "details": pipeline_error
         }), 500
 

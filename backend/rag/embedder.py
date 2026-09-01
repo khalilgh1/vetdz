@@ -50,41 +50,48 @@ class QueryEmbedder:
             "options": {"wait_for_model": True}
         }
         
-        req = urllib.request.Request(
-            self.url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers=headers,
-            method="POST"
-        )
+        urls = [
+            "https://router.huggingface.co/hf-inference/models/intfloat/multilingual-e5-base/pipeline/feature-extraction",
+            "https://api-inference.huggingface.co/pipeline/feature-extraction/intfloat/multilingual-e5-base",
+            "https://api-inference.huggingface.co/models/intfloat/multilingual-e5-base"
+        ]
         
-        max_retries = 5
-        for attempt in range(max_retries):
-            try:
-                with urllib.request.urlopen(req, timeout=60) as response:
-                    res = json.loads(response.read().decode("utf-8"))
-                    # Return the single embedding vector (the first element of the batch)
-                    if isinstance(res, list) and len(res) > 0:
-                        return res[0]
-                    raise ValueError(f"Unexpected response format from API: {res}")
-            except urllib.error.HTTPError as e:
+        last_error = None
+        for url in urls:
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers=headers,
+                method="POST"
+            )
+            for attempt in range(3):
                 try:
-                    err_content = e.read().decode("utf-8")
-                    err_msg = json.loads(err_content)
-                except Exception:
-                    err_msg = err_content
-                
-                print(f"HTTP Error {e.code}: {err_msg}", file=sys.stderr)
-                if e.code in [503, 429]:
-                    wait_time = 15 if e.code == 503 else 10
-                    print(f"Retrying in {wait_time} seconds (attempt {attempt + 1}/{max_retries})...", file=sys.stderr)
-                    time.sleep(wait_time)
-                    continue
-                raise e
-            except Exception as e:
-                print(f"Network error: {e}", file=sys.stderr)
-                time.sleep(2)
-                
-        raise Exception("Failed to get query embedding after maximum retries.")
+                    with urllib.request.urlopen(req, timeout=60) as response:
+                        res = json.loads(response.read().decode("utf-8"))
+                        if isinstance(res, list) and len(res) > 0:
+                            return res[0]
+                        raise ValueError(f"Unexpected response format from API: {res}")
+                except urllib.error.HTTPError as e:
+                    try:
+                        err_content = e.read().decode("utf-8")
+                        err_msg = json.loads(err_content)
+                    except Exception:
+                        err_msg = err_content
+                    
+                    print(f"[{url}] HTTP Error {e.code}: {err_msg}", file=sys.stderr)
+                    last_error = e
+                    if e.code in [503, 429]:
+                        wait_time = 12 if e.code == 503 else 5
+                        print(f"Retrying in {wait_time} seconds (attempt {attempt + 1}/3)...", file=sys.stderr)
+                        time.sleep(wait_time)
+                        continue
+                    break # try next url
+                except Exception as e:
+                    print(f"Network error on {url}: {e}", file=sys.stderr)
+                    last_error = e
+                    time.sleep(2)
+                    
+        raise Exception(f"Failed to get query embedding after trying all endpoints: {last_error}")
 
 def main():
     if len(sys.argv) < 2:
