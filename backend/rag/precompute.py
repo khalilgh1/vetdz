@@ -139,5 +139,41 @@ def main():
         
     print("Embedding generation completed successfully!")
 
+    # Synchronize with Neon pgvector database if configured
+    db_url = os.environ.get("DATABASE_URL") or env_vars.get("DATABASE_URL") or env_vars.get("DIRECT_URL")
+    if db_url:
+        try:
+            print("Syncing embeddings to Neon PostgreSQL document_embeddings table...")
+            import psycopg
+            with psycopg.connect(db_url) as conn:
+                with conn.cursor() as cur:
+                    cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+                    cur.execute("""
+                        CREATE TABLE IF NOT EXISTS document_embeddings (
+                            id SERIAL PRIMARY KEY,
+                            text TEXT NOT NULL,
+                            metadata JSONB NOT NULL DEFAULT '{}',
+                            embedding vector(768) NOT NULL,
+                            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                        );
+                    """)
+                    cur.execute("""
+                        CREATE INDEX IF NOT EXISTS document_embeddings_embedding_idx 
+                        ON document_embeddings USING hnsw (embedding vector_cosine_ops);
+                    """)
+                    cur.execute("TRUNCATE TABLE document_embeddings RESTART IDENTITY;")
+                    for chunk in processed_chunks:
+                        vec_str = f"[{','.join(str(x) for x in chunk['embedding'])}]"
+                        meta_str = json.dumps(chunk.get("metadata", {}))
+                        cur.execute(
+                            "INSERT INTO document_embeddings (text, metadata, embedding) VALUES (%s, %s::jsonb, %s::vector)",
+                            (chunk["text"], meta_str, vec_str)
+                        )
+                conn.commit()
+            print("Successfully synced all embeddings to Neon pgvector!")
+        except Exception as e:
+            print(f"Warning: Could not sync to Neon PostgreSQL ({e}). Local embeddings.json was saved.")
+
 if __name__ == "__main__":
     main()

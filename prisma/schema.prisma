@@ -99,3 +99,15 @@ model Testimonial {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model DocumentEmbedding {
+  id        Int                     @id @default(autoincrement())
+  text      String
+  metadata  Json                    @default("{}")
+  embedding Unsupported("vector(768)")
+  createdAt DateTime                @default(now()) @map("created_at")
+  updatedAt DateTime                @default(now()) @updatedAt @map("updated_at")
+
+  @@map("document_embeddings")
+}
+
