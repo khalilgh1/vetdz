@@ -112,7 +112,7 @@ export default async function CatalogPage({ searchParams }: CatalogPageProps) {
                     {gender !== "ALL" || type || search ? (
                         <p className="results-hint">
                             {gender !== "ALL" ? `الجنس: ${gender === "MALE" ? "رجالي" : "نسائي"}` : null}
-                            {type ? `${gender !== "ALL" ? " | " : ""}النوع: ${type}` : null}
+                            {type ? `${gender !== "ALL" ? " | " : ""}النوع: ${productTypes.find((t) => t.slug === type)?.nameAr ?? type}` : null}
                             {search ? `${gender !== "ALL" || type ? " | " : ""}البحث: ${search}` : null}
                         </p>
                     ) : null}

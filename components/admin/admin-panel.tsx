@@ -799,7 +799,7 @@ export function AdminPanel() {
                                         nameAr: event.target.value,
                                     }))
                                 }
-                                placeholder="توبينغز"
+                                placeholder="أقمصة"
                                 required
                             />
                         </label>

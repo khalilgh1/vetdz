@@ -188,7 +188,7 @@ async function main() {
     // 1. TOPPINGS (Tops/Shirts/Blazers) - 18 Products
     await seedProductType(
         "toppings",
-        "توبينغز",
+        "أقمصة",
         {
             "المقاس": [{ valueAr: "S" }, { valueAr: "M" }, { valueAr: "L" }, { valueAr: "XL" }],
             "اللون": [
@@ -202,7 +202,7 @@ async function main() {
         [
             {
                 slug: "nomad-sculpted-overshirt",
-                nameAr: "قميص نوماد المنحوت",
+                nameAr: "قميص صوف خفيف",
                 subtitleAr: "قصة معمارية مريحة",
                 descriptionAr: "قطعة مميزة من صوف معاد تدويره بقصة نظيفة وتفاصيل دقيقة مناسبة للإطلالات اليومية الأنيقة.",
                 price: "14500",
@@ -216,7 +216,7 @@ async function main() {
             },
             {
                 slug: "linen-architecture-blazer",
-                nameAr: "بلايزر لينن آركيتكتشر",
+                nameAr: "فيست كتان",
                 subtitleAr: "أناقة خفيفة بلمسة فاخرة",
                 descriptionAr: "بلايزر من الكتان الخفيف مناسب للمواسم الدافئة مع قصّة مستقيمة أنيقة.",
                 price: "12200",
@@ -228,7 +228,7 @@ async function main() {
             },
             {
                 slug: "sage-knit-sweater",
-                nameAr: "سترة محبوكة بلون المريمية",
+                nameAr: "بول صوف خفيف",
                 subtitleAr: "خامة صوفية دافئة",
                 descriptionAr: "سترة صوفية مريحة وعالية الجودة بلون أخضر مريمي وتصميم ناعم.",
                 price: "11500",
@@ -242,7 +242,7 @@ async function main() {
             },
             {
                 slug: "classic-organic-tshirt",
-                nameAr: "تيشيرت قطن عضوي كلاسيكي",
+                nameAr: "تيشيرت قطني كلاسيكي",
                 subtitleAr: "بساطة وراحة تدوم",
                 descriptionAr: "تيشيرت مصنوع من القطن العضوي 100%، خفيف ومناسب للارتداء اليومي.",
                 price: "4500",
@@ -253,7 +253,7 @@ async function main() {
             },
             {
                 slug: "streetwear-heavy-hoodie",
-                nameAr: "هودي الشارع الثقيل",
+                nameAr: "هودي قطني دافئ",
                 subtitleAr: "تصميم عصري مريح",
                 descriptionAr: "هودي سميك ومقاوم للبرد بتصميم فضفاض يناسب الإطلالات اليومية البسيطة والحديثة.",
                 price: "9800",
@@ -267,7 +267,7 @@ async function main() {
             },
             {
                 slug: "minimalist-oversized-jacket",
-                nameAr: "سترة فضفاضة مبسطة",
+                nameAr: "جاكيت واسعة وخفيفة",
                 subtitleAr: "سترة خريفية خفيفة",
                 descriptionAr: "سترة خفيفة الوزن بتصميم مريح وعصري باللون البيج الدافئ لمظهر يومي متناسق.",
                 price: "16500",
@@ -278,7 +278,7 @@ async function main() {
             },
             {
                 slug: "premium-wool-blazer",
-                nameAr: "بلايزر صوف فاخر",
+                nameAr: "فيست صوف كلاسيكية",
                 subtitleAr: "أناقة رسمية كلاسيكية",
                 descriptionAr: "بلايزر مصنوع من أجود أنواع الصوف ليوفر الدفء والأناقة الرسمية في آن واحد.",
                 price: "21000",
@@ -289,7 +289,7 @@ async function main() {
             },
             {
                 slug: "textured-crewneck-sweater",
-                nameAr: "كنزة صوفية دائرية الرقبة",
+                nameAr: "بول صوف برقبة دائرية",
                 subtitleAr: "ملمس ناعم ودافئ",
                 descriptionAr: "كنزة صوفية منسوجة بنمط كلاسيكي مريح ومناسب للأجواء الباردة.",
                 price: "12800",
@@ -300,7 +300,7 @@ async function main() {
             },
             {
                 slug: "minimalist-black-tee",
-                nameAr: "تيشيرت أسود أساسي",
+                nameAr: "تيشيرت أسود بسيط",
                 subtitleAr: "قطن مميز ناعم",
                 descriptionAr: "تيشيرت بلون أسود داكن وقصة مثالية تناسب جميع الإطلالات اليومية والرياضية.",
                 price: "4200",
@@ -311,7 +311,7 @@ async function main() {
             },
             {
                 slug: "urban-street-hoodie",
-                nameAr: "هودي أوربان الحضري",
+                nameAr: "هودي كاجوال مريح",
                 subtitleAr: "قصة مريحة يومية",
                 descriptionAr: "هودي مصنوع من خامة قطنية ممتازة بتصميم عصري وألوان محايدة يمنحك الراحة والدفء.",
                 price: "9500",
@@ -333,7 +333,7 @@ async function main() {
             },
             {
                 slug: "vintage-denim-jacket",
-                nameAr: "سترة جينز كلاسيكية",
+                nameAr: "جاكيت جينز كلاسيكية",
                 subtitleAr: "جاكيت جينز متين",
                 descriptionAr: "سترة جينز كلاسيكية بتصميم مستوحى من التسعينات، متينة وعملية للغاية.",
                 price: "18500",
@@ -355,7 +355,7 @@ async function main() {
             },
             {
                 slug: "cable-knit-cardigan",
-                nameAr: "كارديجان منسوج بضفائر",
+                nameAr: "كارديغان صوف طويل",
                 subtitleAr: "دفء وأناقة مريحة",
                 descriptionAr: "كارديجان مفتوح بأزرار أمامية مصنوع من خيوط صوفية سميكة ومريحة للمنزل والخارج.",
                 price: "14800",
@@ -366,7 +366,7 @@ async function main() {
             },
             {
                 slug: "activewear-zipper-jacket",
-                nameAr: "سترة رياضية بسحاب",
+                nameAr: "جاكيت رياضية بسحاب",
                 subtitleAr: "مناسبة للتمارين والأنشطة",
                 descriptionAr: "سترة رياضية خفيفة ومرنة بسحاب كامل وجيوب جانبية آمنة للمحافظة على الأغراض.",
                 price: "11000",
@@ -377,7 +377,7 @@ async function main() {
             },
             {
                 slug: "luxury-trench-coat",
-                nameAr: "معطف ترنش فاخر",
+                nameAr: "مونطو طويل كلاسيكي",
                 subtitleAr: "تصميم كلاسيكي طويل",
                 descriptionAr: "معطف طويل واقٍ من المطر والرياح، يضفي لمسة من الرقي على إطلالتك الشتوية.",
                 price: "29500",
@@ -390,7 +390,7 @@ async function main() {
             },
             {
                 slug: "casual-flannel-shirt",
-                nameAr: "قميص فلانيل مربعات",
+                nameAr: "قميص كاروهات شتوي",
                 subtitleAr: "مظهر شتوي دافئ",
                 descriptionAr: "قميص فلانيل ناعم بنقشة المربعات الكلاسيكية، مثالي للارتداء اليومي أو كقطعة خارجية.",
                 price: "8900",
@@ -401,7 +401,7 @@ async function main() {
             },
             {
                 slug: "bomber-flight-jacket",
-                nameAr: "سترة بومبر للطيران",
+                nameAr: "جاكيت بومبر",
                 subtitleAr: "تصميم عصري رياضي",
                 descriptionAr: "سترة بومبر متينة ومقاومة للماء بتصميم مستوحى من ملابس الطيارين الكلاسيكية.",
                 price: "19200",
@@ -416,7 +416,7 @@ async function main() {
     // 2. LEGGINGS (Pants/Jeans/Trousers) - 15 Products
     await seedProductType(
         "leggings",
-        "ليغينغز",
+        "سراويل",
         {
             "المقاس": [{ valueAr: "S" }, { valueAr: "M" }, { valueAr: "L" }, { valueAr: "XL" }],
             "اللون": [
@@ -430,7 +430,7 @@ async function main() {
         [
             {
                 slug: "selvage-denim",
-                nameAr: "جينز سلفاج",
+                nameAr: "جينز بقصة مستقيمة",
                 subtitleAr: "قصة مستقيمة",
                 descriptionAr: "جينز بخامة متينة ومريحة للاستخدام اليومي مع مظهر عصري وجذاب.",
                 price: "15500",
@@ -442,7 +442,7 @@ async function main() {
             },
             {
                 slug: "slim-indigo-jeans",
-                nameAr: "جينز نيلي ضيق",
+                nameAr: "جينز كحلي سليم",
                 subtitleAr: "قصة عصرية ضيقة",
                 descriptionAr: "جينز ضيق بلون نيلي كلاسيكي، مصنوع من القطن المرن لراحة تدوم طويلاً.",
                 price: "13500",
@@ -456,7 +456,7 @@ async function main() {
             },
             {
                 slug: "utility-cargo-pants",
-                nameAr: "بنطال كارغو عملي",
+                nameAr: "سروال كارجو بجيوب",
                 subtitleAr: "جيوب متعددة وتصميم عصري",
                 descriptionAr: "بنطال كارغو متين وعملي بجيوب جانبية كافية لجميع أغراضك اليومية، رائع للمغامرات.",
                 price: "12500",
@@ -467,7 +467,7 @@ async function main() {
             },
             {
                 slug: "premium-chino-pants",
-                nameAr: "بنطال تشينو فاخر",
+                nameAr: "سروال تشينو كاجوال",
                 subtitleAr: "أناقة يومية ورسمية",
                 descriptionAr: "بنطال تشينو بقصة ضيقة وألوان هادئة، مناسب للعمل والنزهات الكاجوال على حد سواء.",
                 price: "11800",
@@ -478,7 +478,7 @@ async function main() {
             },
             {
                 slug: "relaxed-linen-trousers",
-                nameAr: "بنطال كتان مريح",
+                nameAr: "سروال كتان صيفي",
                 subtitleAr: "مثالي للأجواء الصيفية",
                 descriptionAr: "بنطال صيفي من الكتان الطبيعي بقصة واسعة ومريحة مع حزام مطاطي ناعم.",
                 price: "9500",
@@ -489,7 +489,7 @@ async function main() {
             },
             {
                 slug: "heavy-fleece-sweatpants",
-                nameAr: "بنطال رياضي ثقيل",
+                nameAr: "سروال رياضي قطني",
                 subtitleAr: "راحة فائقة ودفء كامل",
                 descriptionAr: "بنطال رياضي مبطن بالصوف الناعم من الداخل، مناسب للاسترخاء أو للأنشطة الرياضية الباردة.",
                 price: "8500",
@@ -500,7 +500,7 @@ async function main() {
             },
             {
                 slug: "classic-black-chinos",
-                nameAr: "بنطال تشينو أسود كلاسيكي",
+                nameAr: "سروال تشينو أسود",
                 subtitleAr: "أناقة بسيطة ومريحة",
                 descriptionAr: "بنطال تشينو بلون أسود قاتم وقماش عالي الجودة يقاوم التجعد ويحافظ على مظهره الأنيق.",
                 price: "11500",
@@ -511,7 +511,7 @@ async function main() {
             },
             {
                 slug: "distressed-slim-jeans",
-                nameAr: "جينز ممزق ضيق",
+                nameAr: "جينز مقطع سليم",
                 subtitleAr: "تصميم شبابي جريء",
                 descriptionAr: "جينز ممزق بلمسات عصرية ممتازة تناسب الإطلالات الكاجوال اليومية والشبابية.",
                 price: "14000",
@@ -522,7 +522,7 @@ async function main() {
             },
             {
                 slug: "pleated-tailored-trousers",
-                nameAr: "بنطال رسمي بكسرات",
+                nameAr: "سروال قماش كلاسيكي",
                 subtitleAr: "مظهر كلاسيكي أنيق",
                 descriptionAr: "بنطال رسمي بتفاصيل الخياطة اليدوية وكسرات أمامية تمنحك إطلالة مهندمة للمكتب والمناسبات.",
                 price: "16500",
@@ -533,7 +533,7 @@ async function main() {
             },
             {
                 slug: "athleisure-tech-pants",
-                nameAr: "بنطال تقني رياضي",
+                nameAr: "سروال رياضي خفيف",
                 subtitleAr: "مقاوم للماء ومرن",
                 descriptionAr: "بنطال رياضي بخامات مطورة تقاوم الماء وتوفر حرية حركة كاملة طوال اليوم.",
                 price: "12800",
@@ -544,7 +544,7 @@ async function main() {
             },
             {
                 slug: "mens-relaxed-chinos",
-                nameAr: "بنطال تشينو واسع مريح",
+                nameAr: "سروال تشينو واسع",
                 subtitleAr: "قصة فضفاضة عصرية",
                 descriptionAr: "بنطال تشينو قطني بقصة مريحة واسعة تعطي إحساساً بالراحة الفائقة والحرية.",
                 price: "12000",
@@ -555,7 +555,7 @@ async function main() {
             },
             {
                 slug: "light-wash-denim",
-                nameAr: "جينز غسيل فاتح",
+                nameAr: "جينز أزرق فاتح",
                 subtitleAr: "لون صيفي رائع",
                 descriptionAr: "جينز بلون أزرق فاتح مميز، مناسب للارتداء مع تيشيرتات بيضاء لإطلالة كلاسيكية صيفية.",
                 price: "13200",
@@ -566,7 +566,7 @@ async function main() {
             },
             {
                 slug: "knit-lounge-pants",
-                nameAr: "بنطال منزلي محبوك",
+                nameAr: "سروال مريح للدار",
                 subtitleAr: "راحة تامة في المنزل",
                 descriptionAr: "بنطال منزلي ناعم للغاية من مزيج القطن والألياف المرنة عالية الجودة.",
                 price: "7900",
@@ -588,7 +588,7 @@ async function main() {
             },
             {
                 slug: "wool-blend-trousers",
-                nameAr: "بنطال مزيج الصوف الشتوي",
+                nameAr: "سروال صوف شتوي",
                 subtitleAr: "أناقة ودفء متكامل",
                 descriptionAr: "بنطال شتوي أنيق من الصوف المختلط مع قصة مستقيمة ومريحة ومظهر مهندم وراقي.",
                 price: "18500",
@@ -623,7 +623,7 @@ async function main() {
         [
             {
                 slug: "chelsea-boot",
-                nameAr: "حذاء تشيلسي",
+                nameAr: "بوط تشيلسي جلد",
                 subtitleAr: "جلد إيطالي فاخر",
                 descriptionAr: "حذاء كلاسيكي بلمسة عصرية مصنوع من جلد طبيعي فاخر يدوم طويلاً ويمنحك إطلالة فريدة.",
                 price: "31000",
@@ -637,7 +637,7 @@ async function main() {
             },
             {
                 slug: "minimal-white-sneakers",
-                nameAr: "حذاء رياضي أبيض مبسط",
+                nameAr: "باسكيت بيضاء كلاسيكية",
                 subtitleAr: "جلد طبيعي فاخر",
                 descriptionAr: "حذاء رياضي أبيض كلاسيكي ومبسط يناسب جميع أنواع الملابس والأنشطة اليومية المختلفة.",
                 price: "18500",
@@ -649,7 +649,7 @@ async function main() {
             },
             {
                 slug: "leather-penny-loafers",
-                nameAr: "حذاء لوفيرز جلدي",
+                nameAr: "صباط جلد كلاسيكي",
                 subtitleAr: "تصميم كلاسيكي إيطالي",
                 descriptionAr: "حذاء بدون أربطة مصنوع يدوياً من الجلد الفاخر لإطلالة رسمية أنيقة ومثيرة للإعجاب.",
                 price: "24500",
@@ -660,7 +660,7 @@ async function main() {
             },
             {
                 slug: "urban-running-shoes",
-                nameAr: "حذاء جري حضري",
+                nameAr: "باسكيت للجري",
                 subtitleAr: "وسادة قدم مريحة ودعم كامل",
                 descriptionAr: "حذاء رياضي خفيف مصمم للجري والمشي لمسافات طويلة مع تهوية مثالية لحماية القدم وتوفير المرونة.",
                 price: "19500",
@@ -673,7 +673,7 @@ async function main() {
             },
             {
                 slug: "rugged-combat-boots",
-                nameAr: "حذاء كومبات قوي",
+                nameAr: "بوط عالي متين",
                 subtitleAr: "مقاوم لظروف الطقس الصعبة",
                 descriptionAr: "حذاء برقبة مرتفعة مصمم ليدوم طويلاً مع نعل مطاطي مانع للانزلاق وحماية فائقة للكاحل.",
                 price: "28500",
@@ -684,7 +684,7 @@ async function main() {
             },
             {
                 slug: "suede-desert-boots",
-                nameAr: "حذاء ديرت شامواه",
+                nameAr: "بوط شامواه",
                 subtitleAr: "مظهر كاجوال أنيق",
                 descriptionAr: "حذاء ديرت برقبة منخفضة مصنوع من جلد الغزال الفاخر بألوان ترابية كلاسيكية وجميلة.",
                 price: "22000",
@@ -695,7 +695,7 @@ async function main() {
             },
             {
                 slug: "classic-oxford-shoes",
-                nameAr: "حذاء أكسفورد كلاسيكي",
+                nameAr: "صباط رسمي بالخيط",
                 subtitleAr: "للأناقة الرسمية المطلقة",
                 descriptionAr: "حذاء أكسفورد رسمي برباط، مصمم من جلد لامع ومثالي للمناسبات الرسمية والبدلات الكاملة.",
                 price: "27500",
@@ -706,7 +706,7 @@ async function main() {
             },
             {
                 slug: "breathable-knit-sneakers",
-                nameAr: "حذاء رياضي محبوك مسامي",
+                nameAr: "باسكيت خفيفة ومريحة",
                 subtitleAr: "خفيف مثل الريشة",
                 descriptionAr: "حذاء رياضي مريح بجزء علوي من النسيج المحبوك لتوفير تهوية تامة للقدم طوال فترة الاستخدام اليومي.",
                 price: "16000",
@@ -717,7 +717,7 @@ async function main() {
             },
             {
                 slug: "leather-slip-on-sandals",
-                nameAr: "صندل جلدي مريح",
+                nameAr: "صندل جلد مريح",
                 subtitleAr: "لأيام الصيف والراحة",
                 descriptionAr: "صندل صيفي مصنوع من الجلد الطبيعي مع وسادة قدم مبطنة لراحة إضافية وسهولة في الحركة.",
                 price: "9800",
@@ -728,7 +728,7 @@ async function main() {
             },
             {
                 slug: "casual-canvas-sneakers",
-                nameAr: "حذاء كانفاس كاجوال",
+                nameAr: "باسكيت قماش",
                 subtitleAr: "خفيف وعصري",
                 descriptionAr: "حذاء قماشي كلاسيكي بنعل مطاطي مسطح، مثالي للارتداء اليومي السريع والمريح.",
                 price: "11500",
@@ -739,7 +739,7 @@ async function main() {
             },
             {
                 slug: "winter-insulated-boots",
-                nameAr: "حذاء شتوي معزول",
+                nameAr: "بوط شتوي دافئ",
                 subtitleAr: "مقاوم للثلج والماء",
                 descriptionAr: "حذاء شتوي برقبة يوفر عزلاً حرارياً ممتازاً للحفاظ على دفء قدميك في أصعب الظروف المناخية.",
                 price: "29500",
@@ -750,7 +750,7 @@ async function main() {
             },
             {
                 slug: "monk-strap-shoes",
-                nameAr: "حذاء بمشبك مونك",
+                nameAr: "صباط كلاسيكي بإبزيم",
                 subtitleAr: "أناقة فريدة ومميزة",
                 descriptionAr: "حذاء رسمي بمشبك ثنائي مميز مصنوع من أجود الجلود لمظهر متألق وجريء في العمل والمناسبات.",
                 price: "28900",

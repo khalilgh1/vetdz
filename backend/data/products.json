@@ -1,131 +1,64 @@
 [
   {
-    "id": 41,
-    "slug": "nomad-sculpted-overshirt",
-    "nameAR": "قميص نوماد المنحوت",
-    "subtitleAR": "قصة معمارية مريحة",
-    "descriptionAR": "قطعة مميزة من صوف معاد تدويره بقصة نظيفة وتفاصيل دقيقة مناسبة للإطلالات اليومية الأنيقة.",
-    "price": 14500,
-    "discountActive": true,
-    "discountedPrice": 12600,
-    "gender": "MALE",
-    "isFeatured": true,
-    "producttypeID": 7,
-    "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
-    "variations": [
-      {
-        "id": 13,
-        "nameAr": "المقاس",
-        "values": [
-          "M",
-          "L"
-        ]
-      },
-      {
-        "id": 14,
-        "nameAr": "اللون",
-        "values": [
-          "أسود",
-          "رمادي"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 42,
-    "slug": "linen-architecture-blazer",
-    "nameAR": "بلايزر لينن آركيتكتشر",
-    "subtitleAR": "أناقة خفيفة بلمسة فاخرة",
-    "descriptionAR": "بلايزر من الكتان الخفيف مناسب للمواسم الدافئة مع قصّة مستقيمة أنيقة.",
-    "price": 12200,
+    "id": 127,
+    "slug": "leather-slip-on-sandals",
+    "nameAR": "صندل جلد مريح",
+    "subtitleAR": "لأيام الصيف والراحة",
+    "descriptionAR": "صندل صيفي مصنوع من الجلد الطبيعي مع وسادة قدم مبطنة لراحة إضافية وسهولة في الحركة.",
+    "price": 9800,
     "discountActive": false,
     "discountedPrice": null,
     "gender": "BOTH",
-    "isFeatured": true,
-    "producttypeID": 7,
-    "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "isFeatured": false,
+    "producttypeID": 12,
+    "type_slug": "shoes",
+    "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 13,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
-          "S",
-          "M",
-          "L"
+          "40",
+          "41",
+          "42"
         ]
       },
       {
-        "id": 14,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
-          "بيج",
+          "بني",
           "أسود"
         ]
       }
     ]
   },
   {
-    "id": 43,
-    "slug": "sage-knit-sweater",
-    "nameAR": "سترة محبوكة بلون المريمية",
-    "subtitleAR": "خامة صوفية دافئة",
-    "descriptionAR": "سترة صوفية مريحة وعالية الجودة بلون أخضر مريمي وتصميم ناعم.",
+    "id": 128,
+    "slug": "casual-canvas-sneakers",
+    "nameAR": "باسكيت قماش",
+    "subtitleAR": "خفيف وعصري",
+    "descriptionAR": "حذاء قماشي كلاسيكي بنعل مطاطي مسطح، مثالي للارتداء اليومي السريع والمريح.",
     "price": 11500,
-    "discountActive": true,
-    "discountedPrice": 9500,
-    "gender": "FEMALE",
-    "isFeatured": true,
-    "producttypeID": 7,
-    "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
-    "variations": [
-      {
-        "id": 13,
-        "nameAr": "المقاس",
-        "values": [
-          "M",
-          "L"
-        ]
-      },
-      {
-        "id": 14,
-        "nameAr": "اللون",
-        "values": [
-          "أخضر مريمي",
-          "رمادي"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 44,
-    "slug": "classic-organic-tshirt",
-    "nameAR": "تيشيرت قطن عضوي كلاسيكي",
-    "subtitleAR": "بساطة وراحة تدوم",
-    "descriptionAR": "تيشيرت مصنوع من القطن العضوي 100%، خفيف ومناسب للارتداء اليومي.",
-    "price": 4500,
     "discountActive": false,
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 7,
-    "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "producttypeID": 12,
+    "type_slug": "shoes",
+    "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 13,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
-          "S",
-          "M",
-          "L",
-          "XL"
+          "40",
+          "41",
+          "42"
         ]
       },
       {
-        "id": 14,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "أبيض",
@@ -135,89 +68,90 @@
     ]
   },
   {
-    "id": 45,
-    "slug": "streetwear-heavy-hoodie",
-    "nameAR": "هودي الشارع الثقيل",
-    "subtitleAR": "تصميم عصري مريح",
-    "descriptionAR": "هودي سميك ومقاوم للبرد بتصميم فضفاض يناسب الإطلالات اليومية البسيطة والحديثة.",
-    "price": 9800,
-    "discountActive": true,
-    "discountedPrice": 8500,
+    "id": 129,
+    "slug": "winter-insulated-boots",
+    "nameAR": "بوط شتوي دافئ",
+    "subtitleAR": "مقاوم للثلج والماء",
+    "descriptionAR": "حذاء شتوي برقبة يوفر عزلاً حرارياً ممتازاً للحفاظ على دفء قدميك في أصعب الظروف المناخية.",
+    "price": 29500,
+    "discountActive": false,
+    "discountedPrice": null,
     "gender": "BOTH",
+    "isFeatured": false,
+    "producttypeID": 12,
+    "type_slug": "shoes",
+    "type_nameAR": "أحذية",
+    "variations": [
+      {
+        "id": 23,
+        "nameAr": "المقاس",
+        "values": [
+          "41",
+          "42",
+          "43"
+        ]
+      },
+      {
+        "id": 24,
+        "nameAr": "اللون",
+        "values": [
+          "أسود",
+          "بني"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 130,
+    "slug": "monk-strap-shoes",
+    "nameAR": "صباط كلاسيكي بإبزيم",
+    "subtitleAR": "أناقة فريدة ومميزة",
+    "descriptionAR": "حذاء رسمي بمشبك ثنائي مميز مصنوع من أجود الجلود لمظهر متألق وجريء في العمل والمناسبات.",
+    "price": 28900,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "MALE",
+    "isFeatured": false,
+    "producttypeID": 12,
+    "type_slug": "shoes",
+    "type_nameAR": "أحذية",
+    "variations": [
+      {
+        "id": 23,
+        "nameAr": "المقاس",
+        "values": [
+          "41",
+          "42",
+          "43"
+        ]
+      },
+      {
+        "id": 24,
+        "nameAr": "اللون",
+        "values": [
+          "أسود",
+          "بني"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 86,
+    "slug": "nomad-sculpted-overshirt",
+    "nameAR": "قميص صوف خفيف",
+    "subtitleAR": "قصة معمارية مريحة",
+    "descriptionAR": "قطعة مميزة من صوف معاد تدويره بقصة نظيفة وتفاصيل دقيقة مناسبة للإطلالات اليومية الأنيقة.",
+    "price": 14500,
+    "discountActive": true,
+    "discountedPrice": 12600,
+    "gender": "MALE",
     "isFeatured": true,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
-        "nameAr": "المقاس",
-        "values": [
-          "M",
-          "L",
-          "XL"
-        ]
-      },
-      {
-        "id": 14,
-        "nameAr": "اللون",
-        "values": [
-          "رمادي",
-          "أسود"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 46,
-    "slug": "minimalist-oversized-jacket",
-    "nameAR": "سترة فضفاضة مبسطة",
-    "subtitleAR": "سترة خريفية خفيفة",
-    "descriptionAR": "سترة خفيفة الوزن بتصميم مريح وعصري باللون البيج الدافئ لمظهر يومي متناسق.",
-    "price": 16500,
-    "discountActive": false,
-    "discountedPrice": null,
-    "gender": "MALE",
-    "isFeatured": false,
-    "producttypeID": 7,
-    "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
-    "variations": [
-      {
-        "id": 13,
-        "nameAr": "المقاس",
-        "values": [
-          "L",
-          "XL"
-        ]
-      },
-      {
-        "id": 14,
-        "nameAr": "اللون",
-        "values": [
-          "بيج",
-          "أسود"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 47,
-    "slug": "premium-wool-blazer",
-    "nameAR": "بلايزر صوف فاخر",
-    "subtitleAR": "أناقة رسمية كلاسيكية",
-    "descriptionAR": "بلايزر مصنوع من أجود أنواع الصوف ليوفر الدفء والأناقة الرسمية في آن واحد.",
-    "price": 21000,
-    "discountActive": false,
-    "discountedPrice": null,
-    "gender": "MALE",
-    "isFeatured": false,
-    "producttypeID": 7,
-    "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
-    "variations": [
-      {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -225,7 +159,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "أسود",
@@ -235,9 +169,211 @@
     ]
   },
   {
-    "id": 48,
+    "id": 87,
+    "slug": "linen-architecture-blazer",
+    "nameAR": "فيست كتان",
+    "subtitleAR": "أناقة خفيفة بلمسة فاخرة",
+    "descriptionAR": "بلايزر من الكتان الخفيف مناسب للمواسم الدافئة مع قصّة مستقيمة أنيقة.",
+    "price": 12200,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "BOTH",
+    "isFeatured": true,
+    "producttypeID": 10,
+    "type_slug": "toppings",
+    "type_nameAR": "أقمصة",
+    "variations": [
+      {
+        "id": 19,
+        "nameAr": "المقاس",
+        "values": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": 20,
+        "nameAr": "اللون",
+        "values": [
+          "بيج",
+          "أسود"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 88,
+    "slug": "sage-knit-sweater",
+    "nameAR": "بول صوف خفيف",
+    "subtitleAR": "خامة صوفية دافئة",
+    "descriptionAR": "سترة صوفية مريحة وعالية الجودة بلون أخضر مريمي وتصميم ناعم.",
+    "price": 11500,
+    "discountActive": true,
+    "discountedPrice": 9500,
+    "gender": "FEMALE",
+    "isFeatured": true,
+    "producttypeID": 10,
+    "type_slug": "toppings",
+    "type_nameAR": "أقمصة",
+    "variations": [
+      {
+        "id": 19,
+        "nameAr": "المقاس",
+        "values": [
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": 20,
+        "nameAr": "اللون",
+        "values": [
+          "أخضر مريمي",
+          "رمادي"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 89,
+    "slug": "classic-organic-tshirt",
+    "nameAR": "تيشيرت قطني كلاسيكي",
+    "subtitleAR": "بساطة وراحة تدوم",
+    "descriptionAR": "تيشيرت مصنوع من القطن العضوي 100%، خفيف ومناسب للارتداء اليومي.",
+    "price": 4500,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "BOTH",
+    "isFeatured": false,
+    "producttypeID": 10,
+    "type_slug": "toppings",
+    "type_nameAR": "أقمصة",
+    "variations": [
+      {
+        "id": 19,
+        "nameAr": "المقاس",
+        "values": [
+          "S",
+          "M",
+          "L",
+          "XL"
+        ]
+      },
+      {
+        "id": 20,
+        "nameAr": "اللون",
+        "values": [
+          "أبيض",
+          "أسود"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 90,
+    "slug": "streetwear-heavy-hoodie",
+    "nameAR": "هودي قطني دافئ",
+    "subtitleAR": "تصميم عصري مريح",
+    "descriptionAR": "هودي سميك ومقاوم للبرد بتصميم فضفاض يناسب الإطلالات اليومية البسيطة والحديثة.",
+    "price": 9800,
+    "discountActive": true,
+    "discountedPrice": 8500,
+    "gender": "BOTH",
+    "isFeatured": true,
+    "producttypeID": 10,
+    "type_slug": "toppings",
+    "type_nameAR": "أقمصة",
+    "variations": [
+      {
+        "id": 19,
+        "nameAr": "المقاس",
+        "values": [
+          "M",
+          "L",
+          "XL"
+        ]
+      },
+      {
+        "id": 20,
+        "nameAr": "اللون",
+        "values": [
+          "رمادي",
+          "أسود"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 91,
+    "slug": "minimalist-oversized-jacket",
+    "nameAR": "جاكيت واسعة وخفيفة",
+    "subtitleAR": "سترة خريفية خفيفة",
+    "descriptionAR": "سترة خفيفة الوزن بتصميم مريح وعصري باللون البيج الدافئ لمظهر يومي متناسق.",
+    "price": 16500,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "MALE",
+    "isFeatured": false,
+    "producttypeID": 10,
+    "type_slug": "toppings",
+    "type_nameAR": "أقمصة",
+    "variations": [
+      {
+        "id": 19,
+        "nameAr": "المقاس",
+        "values": [
+          "L",
+          "XL"
+        ]
+      },
+      {
+        "id": 20,
+        "nameAr": "اللون",
+        "values": [
+          "بيج",
+          "أسود"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 92,
+    "slug": "premium-wool-blazer",
+    "nameAR": "فيست صوف كلاسيكية",
+    "subtitleAR": "أناقة رسمية كلاسيكية",
+    "descriptionAR": "بلايزر مصنوع من أجود أنواع الصوف ليوفر الدفء والأناقة الرسمية في آن واحد.",
+    "price": 21000,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "MALE",
+    "isFeatured": false,
+    "producttypeID": 10,
+    "type_slug": "toppings",
+    "type_nameAR": "أقمصة",
+    "variations": [
+      {
+        "id": 19,
+        "nameAr": "المقاس",
+        "values": [
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": 20,
+        "nameAr": "اللون",
+        "values": [
+          "أسود",
+          "رمادي"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 93,
     "slug": "textured-crewneck-sweater",
-    "nameAR": "كنزة صوفية دائرية الرقبة",
+    "nameAR": "بول صوف برقبة دائرية",
     "subtitleAR": "ملمس ناعم ودافئ",
     "descriptionAR": "كنزة صوفية منسوجة بنمط كلاسيكي مريح ومناسب للأجواء الباردة.",
     "price": 12800,
@@ -245,12 +381,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -258,7 +394,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "أخضر مريمي",
@@ -268,9 +404,9 @@
     ]
   },
   {
-    "id": 49,
+    "id": 94,
     "slug": "minimalist-black-tee",
-    "nameAR": "تيشيرت أسود أساسي",
+    "nameAR": "تيشيرت أسود بسيط",
     "subtitleAR": "قطن مميز ناعم",
     "descriptionAR": "تيشيرت بلون أسود داكن وقصة مثالية تناسب جميع الإطلالات اليومية والرياضية.",
     "price": 4200,
@@ -278,12 +414,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -292,7 +428,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "أسود"
@@ -301,9 +437,9 @@
     ]
   },
   {
-    "id": 50,
+    "id": 95,
     "slug": "urban-street-hoodie",
-    "nameAR": "هودي أوربان الحضري",
+    "nameAR": "هودي كاجوال مريح",
     "subtitleAR": "قصة مريحة يومية",
     "descriptionAR": "هودي مصنوع من خامة قطنية ممتازة بتصميم عصري وألوان محايدة يمنحك الراحة والدفء.",
     "price": 9500,
@@ -311,12 +447,12 @@
     "discountedPrice": null,
     "gender": "FEMALE",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -324,7 +460,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "رمادي",
@@ -334,7 +470,7 @@
     ]
   },
   {
-    "id": 51,
+    "id": 96,
     "slug": "casual-cotton-shirt",
     "nameAR": "قميص قطني كاجوال",
     "subtitleAR": "مظهر يومي مريح",
@@ -344,12 +480,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -357,7 +493,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "أبيض",
@@ -367,9 +503,9 @@
     ]
   },
   {
-    "id": 52,
+    "id": 97,
     "slug": "vintage-denim-jacket",
-    "nameAR": "سترة جينز كلاسيكية",
+    "nameAR": "جاكيت جينز كلاسيكية",
     "subtitleAR": "جاكيت جينز متين",
     "descriptionAR": "سترة جينز كلاسيكية بتصميم مستوحى من التسعينات، متينة وعملية للغاية.",
     "price": 18500,
@@ -377,12 +513,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -391,7 +527,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "أسود",
@@ -401,7 +537,7 @@
     ]
   },
   {
-    "id": 53,
+    "id": 98,
     "slug": "summer-linen-shirt",
     "nameAR": "قميص كتان صيفي",
     "subtitleAR": "خفيف وبارد للحر",
@@ -411,12 +547,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -424,7 +560,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -434,9 +570,9 @@
     ]
   },
   {
-    "id": 54,
+    "id": 99,
     "slug": "cable-knit-cardigan",
-    "nameAR": "كارديجان منسوج بضفائر",
+    "nameAR": "كارديغان صوف طويل",
     "subtitleAR": "دفء وأناقة مريحة",
     "descriptionAR": "كارديجان مفتوح بأزرار أمامية مصنوع من خيوط صوفية سميكة ومريحة للمنزل والخارج.",
     "price": 14800,
@@ -444,12 +580,12 @@
     "discountedPrice": null,
     "gender": "FEMALE",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -457,7 +593,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -467,9 +603,9 @@
     ]
   },
   {
-    "id": 55,
+    "id": 100,
     "slug": "activewear-zipper-jacket",
-    "nameAR": "سترة رياضية بسحاب",
+    "nameAR": "جاكيت رياضية بسحاب",
     "subtitleAR": "مناسبة للتمارين والأنشطة",
     "descriptionAR": "سترة رياضية خفيفة ومرنة بسحاب كامل وجيوب جانبية آمنة للمحافظة على الأغراض.",
     "price": 11000,
@@ -477,12 +613,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -491,7 +627,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "أسود",
@@ -501,9 +637,9 @@
     ]
   },
   {
-    "id": 56,
+    "id": 101,
     "slug": "luxury-trench-coat",
-    "nameAR": "معطف ترنش فاخر",
+    "nameAR": "مونطو طويل كلاسيكي",
     "subtitleAR": "تصميم كلاسيكي طويل",
     "descriptionAR": "معطف طويل واقٍ من المطر والرياح، يضفي لمسة من الرقي على إطلالتك الشتوية.",
     "price": 29500,
@@ -511,12 +647,12 @@
     "discountedPrice": 24500,
     "gender": "FEMALE",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -524,7 +660,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -534,9 +670,9 @@
     ]
   },
   {
-    "id": 57,
+    "id": 102,
     "slug": "casual-flannel-shirt",
-    "nameAR": "قميص فلانيل مربعات",
+    "nameAR": "قميص كاروهات شتوي",
     "subtitleAR": "مظهر شتوي دافئ",
     "descriptionAR": "قميص فلانيل ناعم بنقشة المربعات الكلاسيكية، مثالي للارتداء اليومي أو كقطعة خارجية.",
     "price": 8900,
@@ -544,12 +680,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -557,7 +693,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "رمادي",
@@ -567,9 +703,9 @@
     ]
   },
   {
-    "id": 58,
+    "id": 103,
     "slug": "bomber-flight-jacket",
-    "nameAR": "سترة بومبر للطيران",
+    "nameAR": "جاكيت بومبر",
     "subtitleAR": "تصميم عصري رياضي",
     "descriptionAR": "سترة بومبر متينة ومقاومة للماء بتصميم مستوحى من ملابس الطيارين الكلاسيكية.",
     "price": 19200,
@@ -577,12 +713,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 7,
+    "producttypeID": 10,
     "type_slug": "toppings",
-    "type_nameAR": "توبينغز",
+    "type_nameAR": "أقمصة",
     "variations": [
       {
-        "id": 13,
+        "id": 19,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -591,7 +727,7 @@
         ]
       },
       {
-        "id": 14,
+        "id": 20,
         "nameAr": "اللون",
         "values": [
           "أسود",
@@ -601,9 +737,9 @@
     ]
   },
   {
-    "id": 59,
+    "id": 104,
     "slug": "selvage-denim",
-    "nameAR": "جينز سلفاج",
+    "nameAR": "جينز بقصة مستقيمة",
     "subtitleAR": "قصة مستقيمة",
     "descriptionAR": "جينز بخامة متينة ومريحة للاستخدام اليومي مع مظهر عصري وجذاب.",
     "price": 15500,
@@ -611,12 +747,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": true,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -625,7 +761,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "أزرق داكن"
@@ -634,9 +770,9 @@
     ]
   },
   {
-    "id": 60,
+    "id": 105,
     "slug": "slim-indigo-jeans",
-    "nameAR": "جينز نيلي ضيق",
+    "nameAR": "جينز كحلي سليم",
     "subtitleAR": "قصة عصرية ضيقة",
     "descriptionAR": "جينز ضيق بلون نيلي كلاسيكي، مصنوع من القطن المرن لراحة تدوم طويلاً.",
     "price": 13500,
@@ -644,12 +780,12 @@
     "discountedPrice": 11500,
     "gender": "MALE",
     "isFeatured": true,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -657,7 +793,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "أزرق داكن"
@@ -666,9 +802,9 @@
     ]
   },
   {
-    "id": 61,
+    "id": 106,
     "slug": "utility-cargo-pants",
-    "nameAR": "بنطال كارغو عملي",
+    "nameAR": "سروال كارجو بجيوب",
     "subtitleAR": "جيوب متعددة وتصميم عصري",
     "descriptionAR": "بنطال كارغو متين وعملي بجيوب جانبية كافية لجميع أغراضك اليومية، رائع للمغامرات.",
     "price": 12500,
@@ -676,12 +812,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -690,7 +826,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "زيتوني",
@@ -700,9 +836,9 @@
     ]
   },
   {
-    "id": 62,
+    "id": 107,
     "slug": "premium-chino-pants",
-    "nameAR": "بنطال تشينو فاخر",
+    "nameAR": "سروال تشينو كاجوال",
     "subtitleAR": "أناقة يومية ورسمية",
     "descriptionAR": "بنطال تشينو بقصة ضيقة وألوان هادئة، مناسب للعمل والنزهات الكاجوال على حد سواء.",
     "price": 11800,
@@ -710,12 +846,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -723,7 +859,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -733,9 +869,9 @@
     ]
   },
   {
-    "id": 63,
+    "id": 108,
     "slug": "relaxed-linen-trousers",
-    "nameAR": "بنطال كتان مريح",
+    "nameAR": "سروال كتان صيفي",
     "subtitleAR": "مثالي للأجواء الصيفية",
     "descriptionAR": "بنطال صيفي من الكتان الطبيعي بقصة واسعة ومريحة مع حزام مطاطي ناعم.",
     "price": 9500,
@@ -743,12 +879,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -757,7 +893,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -767,9 +903,43 @@
     ]
   },
   {
-    "id": 65,
+    "id": 109,
+    "slug": "heavy-fleece-sweatpants",
+    "nameAR": "سروال رياضي قطني",
+    "subtitleAR": "راحة فائقة ودفء كامل",
+    "descriptionAR": "بنطال رياضي مبطن بالصوف الناعم من الداخل، مناسب للاسترخاء أو للأنشطة الرياضية الباردة.",
+    "price": 8500,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "BOTH",
+    "isFeatured": false,
+    "producttypeID": 11,
+    "type_slug": "leggings",
+    "type_nameAR": "سراويل",
+    "variations": [
+      {
+        "id": 21,
+        "nameAr": "المقاس",
+        "values": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": 22,
+        "nameAr": "اللون",
+        "values": [
+          "رمادي",
+          "أسود"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 110,
     "slug": "classic-black-chinos",
-    "nameAR": "بنطال تشينو أسود كلاسيكي",
+    "nameAR": "سروال تشينو أسود",
     "subtitleAR": "أناقة بسيطة ومريحة",
     "descriptionAR": "بنطال تشينو بلون أسود قاتم وقماش عالي الجودة يقاوم التجعد ويحافظ على مظهره الأنيق.",
     "price": 11500,
@@ -777,12 +947,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -791,7 +961,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "أسود"
@@ -800,9 +970,9 @@
     ]
   },
   {
-    "id": 66,
+    "id": 111,
     "slug": "distressed-slim-jeans",
-    "nameAR": "جينز ممزق ضيق",
+    "nameAR": "جينز مقطع سليم",
     "subtitleAR": "تصميم شبابي جريء",
     "descriptionAR": "جينز ممزق بلمسات عصرية ممتازة تناسب الإطلالات الكاجوال اليومية والشبابية.",
     "price": 14000,
@@ -810,12 +980,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -823,7 +993,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "أزرق داكن",
@@ -833,9 +1003,76 @@
     ]
   },
   {
-    "id": 69,
+    "id": 112,
+    "slug": "pleated-tailored-trousers",
+    "nameAR": "سروال قماش كلاسيكي",
+    "subtitleAR": "مظهر كلاسيكي أنيق",
+    "descriptionAR": "بنطال رسمي بتفاصيل الخياطة اليدوية وكسرات أمامية تمنحك إطلالة مهندمة للمكتب والمناسبات.",
+    "price": 16500,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "FEMALE",
+    "isFeatured": false,
+    "producttypeID": 11,
+    "type_slug": "leggings",
+    "type_nameAR": "سراويل",
+    "variations": [
+      {
+        "id": 21,
+        "nameAr": "المقاس",
+        "values": [
+          "S",
+          "M"
+        ]
+      },
+      {
+        "id": 22,
+        "nameAr": "اللون",
+        "values": [
+          "أسود",
+          "رمادي"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 113,
+    "slug": "athleisure-tech-pants",
+    "nameAR": "سروال رياضي خفيف",
+    "subtitleAR": "مقاوم للماء ومرن",
+    "descriptionAR": "بنطال رياضي بخامات مطورة تقاوم الماء وتوفر حرية حركة كاملة طوال اليوم.",
+    "price": 12800,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "BOTH",
+    "isFeatured": false,
+    "producttypeID": 11,
+    "type_slug": "leggings",
+    "type_nameAR": "سراويل",
+    "variations": [
+      {
+        "id": 21,
+        "nameAr": "المقاس",
+        "values": [
+          "S",
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": 22,
+        "nameAr": "اللون",
+        "values": [
+          "أسود",
+          "رمادي"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 114,
     "slug": "mens-relaxed-chinos",
-    "nameAR": "بنطال تشينو واسع مريح",
+    "nameAR": "سروال تشينو واسع",
     "subtitleAR": "قصة فضفاضة عصرية",
     "descriptionAR": "بنطال تشينو قطني بقصة مريحة واسعة تعطي إحساساً بالراحة الفائقة والحرية.",
     "price": 12000,
@@ -843,12 +1080,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -857,7 +1094,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -867,9 +1104,9 @@
     ]
   },
   {
-    "id": 70,
+    "id": 115,
     "slug": "light-wash-denim",
-    "nameAR": "جينز غسيل فاتح",
+    "nameAR": "جينز أزرق فاتح",
     "subtitleAR": "لون صيفي رائع",
     "descriptionAR": "جينز بلون أزرق فاتح مميز، مناسب للارتداء مع تيشيرتات بيضاء لإطلالة كلاسيكية صيفية.",
     "price": 13200,
@@ -877,12 +1114,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -891,7 +1128,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "رمادي",
@@ -901,9 +1138,9 @@
     ]
   },
   {
-    "id": 71,
+    "id": 116,
     "slug": "knit-lounge-pants",
-    "nameAR": "بنطال منزلي محبوك",
+    "nameAR": "سروال مريح للدار",
     "subtitleAR": "راحة تامة في المنزل",
     "descriptionAR": "بنطال منزلي ناعم للغاية من مزيج القطن والألياف المرنة عالية الجودة.",
     "price": 7900,
@@ -911,12 +1148,12 @@
     "discountedPrice": null,
     "gender": "FEMALE",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "S",
@@ -924,7 +1161,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -934,7 +1171,7 @@
     ]
   },
   {
-    "id": 72,
+    "id": 117,
     "slug": "summer-cotton-shorts",
     "nameAR": "شورت قطني صيفي",
     "subtitleAR": "خفيف وعملي للشاطئ",
@@ -944,12 +1181,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 8,
+    "producttypeID": 11,
     "type_slug": "leggings",
-    "type_nameAR": "ليغينغز",
+    "type_nameAR": "سراويل",
     "variations": [
       {
-        "id": 15,
+        "id": 21,
         "nameAr": "المقاس",
         "values": [
           "M",
@@ -957,7 +1194,7 @@
         ]
       },
       {
-        "id": 16,
+        "id": 22,
         "nameAr": "اللون",
         "values": [
           "بيج",
@@ -967,9 +1204,42 @@
     ]
   },
   {
-    "id": 74,
+    "id": 118,
+    "slug": "wool-blend-trousers",
+    "nameAR": "سروال صوف شتوي",
+    "subtitleAR": "أناقة ودفء متكامل",
+    "descriptionAR": "بنطال شتوي أنيق من الصوف المختلط مع قصة مستقيمة ومريحة ومظهر مهندم وراقي.",
+    "price": 18500,
+    "discountActive": false,
+    "discountedPrice": null,
+    "gender": "MALE",
+    "isFeatured": false,
+    "producttypeID": 11,
+    "type_slug": "leggings",
+    "type_nameAR": "سراويل",
+    "variations": [
+      {
+        "id": 21,
+        "nameAr": "المقاس",
+        "values": [
+          "M",
+          "L"
+        ]
+      },
+      {
+        "id": 22,
+        "nameAr": "اللون",
+        "values": [
+          "أسود",
+          "رمادي"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 119,
     "slug": "chelsea-boot",
-    "nameAR": "حذاء تشيلسي",
+    "nameAR": "بوط تشيلسي جلد",
     "subtitleAR": "جلد إيطالي فاخر",
     "descriptionAR": "حذاء كلاسيكي بلمسة عصرية مصنوع من جلد طبيعي فاخر يدوم طويلاً ويمنحك إطلالة فريدة.",
     "price": 31000,
@@ -977,21 +1247,21 @@
     "discountedPrice": 27900,
     "gender": "MALE",
     "isFeatured": true,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
+          "43",
           "41",
-          "42",
-          "43"
+          "42"
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "بني"
@@ -1000,9 +1270,9 @@
     ]
   },
   {
-    "id": 75,
+    "id": 120,
     "slug": "minimal-white-sneakers",
-    "nameAR": "حذاء رياضي أبيض مبسط",
+    "nameAR": "باسكيت بيضاء كلاسيكية",
     "subtitleAR": "جلد طبيعي فاخر",
     "descriptionAR": "حذاء رياضي أبيض كلاسيكي ومبسط يناسب جميع أنواع الملابس والأنشطة اليومية المختلفة.",
     "price": 18500,
@@ -1010,12 +1280,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": true,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
           "40",
@@ -1024,7 +1294,7 @@
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "أبيض"
@@ -1033,9 +1303,9 @@
     ]
   },
   {
-    "id": 76,
+    "id": 121,
     "slug": "leather-penny-loafers",
-    "nameAR": "حذاء لوفيرز جلدي",
+    "nameAR": "صباط جلد كلاسيكي",
     "subtitleAR": "تصميم كلاسيكي إيطالي",
     "descriptionAR": "حذاء بدون أربطة مصنوع يدوياً من الجلد الفاخر لإطلالة رسمية أنيقة ومثيرة للإعجاب.",
     "price": 24500,
@@ -1043,12 +1313,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
           "41",
@@ -1057,7 +1327,7 @@
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "أسود",
@@ -1067,9 +1337,9 @@
     ]
   },
   {
-    "id": 77,
+    "id": 122,
     "slug": "urban-running-shoes",
-    "nameAR": "حذاء جري حضري",
+    "nameAR": "باسكيت للجري",
     "subtitleAR": "وسادة قدم مريحة ودعم كامل",
     "descriptionAR": "حذاء رياضي خفيف مصمم للجري والمشي لمسافات طويلة مع تهوية مثالية لحماية القدم وتوفير المرونة.",
     "price": 19500,
@@ -1077,12 +1347,12 @@
     "discountedPrice": 16500,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
           "42",
@@ -1091,7 +1361,7 @@
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "أحمر",
@@ -1101,9 +1371,9 @@
     ]
   },
   {
-    "id": 78,
+    "id": 123,
     "slug": "rugged-combat-boots",
-    "nameAR": "حذاء كومبات قوي",
+    "nameAR": "بوط عالي متين",
     "subtitleAR": "مقاوم لظروف الطقس الصعبة",
     "descriptionAR": "حذاء برقبة مرتفعة مصمم ليدوم طويلاً مع نعل مطاطي مانع للانزلاق وحماية فائقة للكاحل.",
     "price": 28500,
@@ -1111,12 +1381,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
           "40",
@@ -1125,7 +1395,7 @@
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "أسود"
@@ -1134,9 +1404,9 @@
     ]
   },
   {
-    "id": 79,
+    "id": 124,
     "slug": "suede-desert-boots",
-    "nameAR": "حذاء ديرت شامواه",
+    "nameAR": "بوط شامواه",
     "subtitleAR": "مظهر كاجوال أنيق",
     "descriptionAR": "حذاء ديرت برقبة منخفضة مصنوع من جلد الغزال الفاخر بألوان ترابية كلاسيكية وجميلة.",
     "price": 22000,
@@ -1144,12 +1414,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
           "41",
@@ -1158,7 +1428,7 @@
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "بني",
@@ -1168,9 +1438,9 @@
     ]
   },
   {
-    "id": 80,
+    "id": 125,
     "slug": "classic-oxford-shoes",
-    "nameAR": "حذاء أكسفورد كلاسيكي",
+    "nameAR": "صباط رسمي بالخيط",
     "subtitleAR": "للأناقة الرسمية المطلقة",
     "descriptionAR": "حذاء أكسفورد رسمي برباط، مصمم من جلد لامع ومثالي للمناسبات الرسمية والبدلات الكاملة.",
     "price": 27500,
@@ -1178,12 +1448,12 @@
     "discountedPrice": null,
     "gender": "MALE",
     "isFeatured": false,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
           "41",
@@ -1192,7 +1462,7 @@
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "أسود"
@@ -1201,9 +1471,9 @@
     ]
   },
   {
-    "id": 81,
+    "id": 126,
     "slug": "breathable-knit-sneakers",
-    "nameAR": "حذاء رياضي محبوك مسامي",
+    "nameAR": "باسكيت خفيفة ومريحة",
     "subtitleAR": "خفيف مثل الريشة",
     "descriptionAR": "حذاء رياضي مريح بجزء علوي من النسيج المحبوك لتوفير تهوية تامة للقدم طوال فترة الاستخدام اليومي.",
     "price": 16000,
@@ -1211,12 +1481,12 @@
     "discountedPrice": null,
     "gender": "BOTH",
     "isFeatured": false,
-    "producttypeID": 9,
+    "producttypeID": 12,
     "type_slug": "shoes",
     "type_nameAR": "أحذية",
     "variations": [
       {
-        "id": 17,
+        "id": 23,
         "nameAr": "المقاس",
         "values": [
           "40",
@@ -1225,147 +1495,11 @@
         ]
       },
       {
-        "id": 18,
+        "id": 24,
         "nameAr": "اللون",
         "values": [
           "أبيض",
           "أسود"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 82,
-    "slug": "leather-slip-on-sandals",
-    "nameAR": "صندل جلدي مريح",
-    "subtitleAR": "لأيام الصيف والراحة",
-    "descriptionAR": "صندل صيفي مصنوع من الجلد الطبيعي مع وسادة قدم مبطنة لراحة إضافية وسهولة في الحركة.",
-    "price": 9800,
-    "discountActive": false,
-    "discountedPrice": null,
-    "gender": "BOTH",
-    "isFeatured": false,
-    "producttypeID": 9,
-    "type_slug": "shoes",
-    "type_nameAR": "أحذية",
-    "variations": [
-      {
-        "id": 17,
-        "nameAr": "المقاس",
-        "values": [
-          "40",
-          "41",
-          "42"
-        ]
-      },
-      {
-        "id": 18,
-        "nameAr": "اللون",
-        "values": [
-          "بني",
-          "أسود"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 83,
-    "slug": "casual-canvas-sneakers",
-    "nameAR": "حذاء كانفاس كاجوال",
-    "subtitleAR": "خفيف وعصري",
-    "descriptionAR": "حذاء قماشي كلاسيكي بنعل مطاطي مسطح، مثالي للارتداء اليومي السريع والمريح.",
-    "price": 11500,
-    "discountActive": false,
-    "discountedPrice": null,
-    "gender": "BOTH",
-    "isFeatured": false,
-    "producttypeID": 9,
-    "type_slug": "shoes",
-    "type_nameAR": "أحذية",
-    "variations": [
-      {
-        "id": 17,
-        "nameAr": "المقاس",
-        "values": [
-          "40",
-          "41",
-          "42"
-        ]
-      },
-      {
-        "id": 18,
-        "nameAr": "اللون",
-        "values": [
-          "أبيض",
-          "أسود"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 84,
-    "slug": "winter-insulated-boots",
-    "nameAR": "حذاء شتوي معزول",
-    "subtitleAR": "مقاوم للثلج والماء",
-    "descriptionAR": "حذاء شتوي برقبة يوفر عزلاً حرارياً ممتازاً للحفاظ على دفء قدميك في أصعب الظروف المناخية.",
-    "price": 29500,
-    "discountActive": false,
-    "discountedPrice": null,
-    "gender": "BOTH",
-    "isFeatured": false,
-    "producttypeID": 9,
-    "type_slug": "shoes",
-    "type_nameAR": "أحذية",
-    "variations": [
-      {
-        "id": 17,
-        "nameAr": "المقاس",
-        "values": [
-          "41",
-          "42",
-          "43"
-        ]
-      },
-      {
-        "id": 18,
-        "nameAr": "اللون",
-        "values": [
-          "أسود",
-          "بني"
-        ]
-      }
-    ]
-  },
-  {
-    "id": 85,
-    "slug": "monk-strap-shoes",
-    "nameAR": "حذاء بمشبك مونك",
-    "subtitleAR": "أناقة فريدة ومميزة",
-    "descriptionAR": "حذاء رسمي بمشبك ثنائي مميز مصنوع من أجود الجلود لمظهر متألق وجريء في العمل والمناسبات.",
-    "price": 28900,
-    "discountActive": false,
-    "discountedPrice": null,
-    "gender": "MALE",
-    "isFeatured": false,
-    "producttypeID": 9,
-    "type_slug": "shoes",
-    "type_nameAR": "أحذية",
-    "variations": [
-      {
-        "id": 17,
-        "nameAr": "المقاس",
-        "values": [
-          "41",
-          "42",
-          "43"
-        ]
-      },
-      {
-        "id": 18,
-        "nameAr": "اللون",
-        "values": [
-          "أسود",
-          "بني"
         ]
       }
     ]
