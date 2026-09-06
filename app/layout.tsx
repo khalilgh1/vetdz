@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cairo, Changa, Inter, Outfit } from "next/font/google";
+import { Cairo, Changa, Inter, Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Chatbot } from "@/components/chatbot";
 
@@ -27,6 +27,12 @@ const outfit = Outfit({
   weight: ["500", "600", "700", "800"],
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
 export const metadata: Metadata = {
   title: "VetDz | متجر أزياء جزائري | Algerian Fashion Store",
   description: "VetDz store for curated apparel and fast home delivery in Algeria.",
@@ -39,7 +45,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className={`${cairo.variable} ${changa.variable} ${inter.variable} ${outfit.variable} h-full antialiased`}
+      className={`${cairo.variable} ${changa.variable} ${inter.variable} ${outfit.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

@@ -51,10 +51,10 @@ export default async function HomePage({ params }: HomePageProps) {
         <>
             <SiteHeader locale={locale} dict={dict} />
 
-            <main className="home-page">
-                {/* Hero Section */}
-                <HomeHero locale={locale} dict={dict} />
+            {/* Full-bleed Luxury Hero Section */}
+            <HomeHero locale={locale} dict={dict} />
 
+            <main className="home-page">
                 {/* Gender Categories with Images */}
                 <section className="categories-section">
                     <div className="section-header">

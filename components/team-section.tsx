@@ -53,7 +53,7 @@ export function TeamSection({ locale = "ar", dict }: TeamSectionProps) {
                 <div className="team-card">
                     <div className="team-card-image">
                         <Image
-                            src="/shirt.jpg"
+                            src="/fashion3.jpg"
                             alt="Quality"
                             fill
                             className="team-image"

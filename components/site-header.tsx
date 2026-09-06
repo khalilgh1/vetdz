@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Globe, Menu, Search, X } from "lucide-react";
+import { Globe, Menu, Search, ShoppingBag, X } from "lucide-react";
 import { type Locale, DEFAULT_LOCALE } from "@/lib/i18n";
 import { type Dictionary, ar } from "@/lib/dictionaries/ar";
 
@@ -23,6 +23,16 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
     const [menuClosing, setMenuClosing] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
     const [searchValue, setSearchValue] = useState("");
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        function handleScroll() {
+            setScrolled(window.scrollY > 40);
+        }
+        handleScroll();
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const targetLocale: Locale = locale === "ar" ? "en" : "ar";
 
@@ -100,9 +110,9 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
     }
 
     return (
-        <header className={`vetdz-header ${light ? "vetdz-header-light" : "vetdz-header-dark"}`}>
+        <header className={`vetdz-header ${scrolled ? "is-scrolled" : ""} ${light ? "vetdz-header-light" : "vetdz-header-dark"}`}>
             <div className="vetdz-shell vetdz-header-row">
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <div className="vetdz-header-left">
                     <button
                         className="icon-btn nav-toggle"
                         aria-label="Menu"
@@ -116,25 +126,32 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
                         }}
                         type="button"
                     >
-                        <Menu size={22} />
+                        <Menu size={20} />
                     </button>
 
                     <Link href={`/${locale}`} className="brand-title" aria-label="VetDz">
                         VETDZ
                     </Link>
+
+                    <div className="brand-divider" aria-hidden="true" />
+
+                    <nav className="desktop-nav" aria-label="Main navigation">
+                        {navLinks.map((item) => {
+                            const isActive = pathname === item.href || (item.href !== `/${locale}` && pathname.startsWith(item.href));
+                            return (
+                                <Link
+                                    href={item.href}
+                                    className={`desktop-nav-link ${isActive ? "is-active" : ""}`}
+                                    key={item.href}
+                                >
+                                    {item.label}
+                                </Link>
+                            );
+                        })}
+                    </nav>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                    {/* Language Switcher */}
-                    <Link
-                        href={switchHref}
-                        className="lang-switch-btn"
-                        aria-label={`Switch to ${targetLocale === "en" ? "English" : "العربية"}`}
-                    >
-                        <Globe size={16} />
-                        <span>{dict.nav.switchLanguage}</span>
-                    </Link>
-
+                <div className="vetdz-header-right">
                     <button
                         className="icon-btn"
                         aria-label={searchOpen ? "Close search" : dict.nav.searchButton}
@@ -145,8 +162,29 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
                         }}
                         type="button"
                     >
-                        <Search size={22} />
+                        <Search size={19} />
                     </button>
+
+                    {/* Language Switcher */}
+                    <Link
+                        href={switchHref}
+                        className="lang-switch-btn"
+                        aria-label={`Switch to ${targetLocale === "en" ? "English" : "العربية"}`}
+                    >
+                        <Globe size={15} />
+                        <span>{dict.nav.switchLanguage}</span>
+                    </Link>
+
+                    <div className="header-actions-divider" aria-hidden="true" />
+
+                    {/* Cart / Bag Icon */}
+                    <Link
+                        href={`/${locale}/catalog`}
+                        className="icon-btn cart-btn"
+                        aria-label="Shopping Bag"
+                    >
+                        <ShoppingBag size={19} />
+                    </Link>
                 </div>
             </div>
 
@@ -164,14 +202,6 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
                     </button>
                 </form>
             ) : null}
-
-            <nav className="vetdz-shell top-nav" aria-label="Main navigation">
-                {navLinks.map((item) => (
-                    <Link href={item.href} className="top-nav-link" key={item.href}>
-                        {item.label}
-                    </Link>
-                ))}
-            </nav>
 
             {menuOpen ? (
                 <>
