@@ -5,12 +5,17 @@ import { LoaderCircle } from "lucide-react";
 import type { UiVariationGroup } from "@/lib/store";
 import { formatDzd } from "@/lib/format";
 import { getDeliveryFeeForWilaya, isDeliveryTypeAvailable, WILAYAS } from "@/lib/wilayas";
+import type { Locale } from "@/lib/i18n";
+import type { Dictionary } from "@/lib/dictionaries/ar";
 
 type OrderFormProps = {
     productSlug: string;
     productNameAr: string;
+    productNameEn?: string;
     unitPrice: number;
     variations: UiVariationGroup[];
+    locale?: Locale;
+    dict?: Dictionary;
 };
 
 type SubmitState = {
@@ -26,7 +31,19 @@ function normalizePhoneInput(value: string) {
         .slice(0, 10);
 }
 
-export function OrderForm({ productSlug, productNameAr, unitPrice, variations }: OrderFormProps) {
+export function OrderForm({
+    productSlug,
+    productNameAr,
+    productNameEn,
+    unitPrice,
+    variations,
+    locale = "ar",
+    dict,
+}: OrderFormProps) {
+    const isEn = locale === "en";
+    const productName = isEn && productNameEn ? productNameEn : productNameAr;
+    const currency = isEn ? "DZD" : "دج";
+
     const [selectedVariationIds, setSelectedVariationIds] = useState<Record<number, number>>(() => {
         const initial: Record<number, number> = {};
         for (const variation of variations) {
@@ -78,10 +95,18 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
         event.preventDefault();
         setSubmitState({ type: "idle", message: "" });
 
+        if (!productSlug) {
+            setSubmitState({
+                type: "error",
+                message: isEn ? "Please select a product first." : "يرجى اختيار منتج أولاً.",
+            });
+            return;
+        }
+
         if (shippingFee === null) {
             setSubmitState({
                 type: "error",
-                message: "نوع التوصيل غير متاح للولاية المختارة.",
+                message: isEn ? "Delivery is not available for this wilaya." : "التوصيل غير متاح لهذه الولاية بهذا النوع.",
             });
             return;
         }
@@ -95,35 +120,40 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    productSlug,
-                    selectedVariationValueIds: selectedValueIds,
-                    quantity,
                     fullName,
                     phone,
                     wilaya,
                     address,
                     deliveryType,
-                    notes,
+                    notes: notes || undefined,
+                    productSlug,
+                    quantity,
+                    selectedVariationValueIds: selectedValueIds,
                 }),
             });
 
-            const result = (await response.json()) as { message?: string; error?: string };
+            const payload = (await response.json()) as { error?: string; orderReference?: string };
 
             if (!response.ok) {
-                throw new Error(result.error || result.message || "تعذر إرسال الطلب.");
+                setSubmitState({
+                    type: "error",
+                    message: payload.error || (isEn ? "An error occurred while submitting." : "حدث خطأ أثناء إرسال الطلب."),
+                });
+                return;
             }
 
             setSubmitState({
                 type: "success",
-                message: result.message || "تم إرسال طلبك بنجاح. سنتواصل معك قريبًا.",
+                message: dict?.order.successAlert ?? (isEn
+                    ? "Your order has been placed! We will call you shortly to confirm delivery."
+                    : "تم تسجيل طلبك بنجاح! سنتصل بك هاتفيًا قريبًا لتأكيد التوصيل."),
             });
-            setAddress("");
+
             setNotes("");
-            setQuantity(1);
-        } catch (error) {
+        } catch {
             setSubmitState({
                 type: "error",
-                message: error instanceof Error ? error.message : "حدث خطأ أثناء إرسال الطلب.",
+                message: isEn ? "Failed to connect to server. Please try again." : "تعذر الاتصال بالخادم، يرجى المحاولة مرة أخرى.",
             });
         } finally {
             setIsSubmitting(false);
@@ -131,32 +161,45 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
     }
 
     return (
-        <section className="order-form-box" aria-label={`طلب ${productNameAr}`}>
-            <h2>إتمام الطلب</h2>
+        <section className="order-box reveal">
+            <div className="order-box-header">
+                <h2>{dict?.order.heroHeading ?? (isEn ? "Place Your Order" : "أرسل طلبك الآن")}</h2>
+                <p>
+                    {isEn
+                        ? `Selected Product: ${productName}`
+                        : `المنتج المختار: ${productName}`}
+                </p>
+            </div>
 
-            <form onSubmit={handleSubmit} className="order-form-grid">
+            <form className="order-form" onSubmit={handleSubmit}>
                 <label className="field">
-                    <span>الاسم الكامل</span>
-                    <input value={fullName} onChange={(e) => setFullName(e.target.value)} required placeholder="اكتب الاسم الكامل" />
-                </label>
-
-                <label className="field">
-                    <span>رقم الهاتف</span>
+                    <span>{dict?.order.fullName ?? (isEn ? "Full Name" : "الاسم الكامل")}</span>
                     <input
-                        value={phone}
-                        onChange={(e) => setPhone(normalizePhoneInput(e.target.value))}
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
                         required
-                        placeholder="0XXXXXXXXX"
-                        inputMode="tel"
-                        maxLength={10}
-                        minLength={10}
-                        pattern="0[0-9]{9}"
-                        title="رقم الهاتف يجب أن يكون 10 أرقام ويبدأ بـ 0"
+                        placeholder={dict?.order.fullNamePlaceholder ?? (isEn ? "e.g. Amine Belkacem" : "مثال: أمين بلقاسم")}
                     />
                 </label>
 
                 <label className="field">
-                    <span>الولاية</span>
+                    <span>{dict?.order.phone ?? (isEn ? "Phone Number" : "رقم الهاتف")}</span>
+                    <input
+                        value={phone}
+                        onChange={(e) => setPhone(normalizePhoneInput(e.target.value))}
+                        required
+                        placeholder="05XXXXXXXX"
+                        dir="ltr"
+                        inputMode="tel"
+                        maxLength={10}
+                        minLength={10}
+                        pattern="0[0-9]{9}"
+                        title={isEn ? "Phone must be 10 digits starting with 0" : "رقم الهاتف يجب أن يكون 10 أرقام ويبدأ بـ 0"}
+                    />
+                </label>
+
+                <label className="field">
+                    <span>{dict?.order.wilaya ?? (isEn ? "Wilaya" : "الولاية")}</span>
                     <select value={wilaya} onChange={(e) => setWilaya(e.target.value)}>
                         {WILAYAS.map((item) => (
                             <option key={item} value={item}>
@@ -167,7 +210,7 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                 </label>
 
                 <div className="field">
-                    <span>نوع التوصيل</span>
+                    <span>{dict?.order.deliveryType ?? (isEn ? "Delivery Method" : "نوع التوصيل")}</span>
                     <div className="toggle-pill">
                         <button
                             className={deliveryType === "HOME" ? "is-active" : ""}
@@ -175,7 +218,7 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                             type="button"
                             disabled={!isHomeAvailable}
                         >
-                            منزلي
+                            {dict?.order.homeDelivery ?? (isEn ? "Home Delivery" : "منزلي")}
                         </button>
                         <button
                             className={deliveryType === "DESK" ? "is-active" : ""}
@@ -183,72 +226,77 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                             type="button"
                             disabled={!isDeskAvailable}
                         >
-                            مكتب
+                            {dict?.order.deskDelivery ?? (isEn ? "Stop Desk" : "مكتب")}
                         </button>
                     </div>
                 </div>
 
                 <label className="field field-full">
-                    <span>العنوان التفصيلي</span>
+                    <span>{dict?.order.address ?? (isEn ? "Full Address" : "العنوان التفصيلي")}</span>
                     <textarea
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         required
-                        placeholder="الحي، الشارع، رقم البناية..."
+                        placeholder={dict?.order.addressPlaceholder ?? (isEn ? "Street, neighborhood, building..." : "الحي، الشارع، رقم البناية...")}
                         rows={4}
                     />
                 </label>
 
                 <label className="field field-full">
-                    <span>ملاحظات إضافية (اختياري)</span>
+                    <span>{dict?.order.notes ?? (isEn ? "Notes (Optional)" : "ملاحظات إضافية (اختياري)")}</span>
                     <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="أي ملاحظة خاصة بالتوصيل أو المقاس"
+                        placeholder={dict?.order.notesPlaceholder ?? (isEn ? "Special delivery instructions..." : "أي ملاحظة خاصة بالتوصيل أو المقاس")}
                         rows={3}
                     />
                 </label>
 
-                {variations.map((variation) => (
-                    <div key={variation.variationId} className="field field-full">
-                        <span>{variation.variationNameAr}</span>
-                        <div className="choice-list">
-                            {variation.values.map((value) => {
-                                const selected = selectedVariationIds[variation.variationId] === value.id;
-                                const hasColor = Boolean(value.hexColor);
+                {variations.map((variation) => {
+                    const varLabel = isEn && variation.variationNameEn ? variation.variationNameEn : variation.variationNameAr;
 
-                                return (
-                                    <button
-                                        key={value.id}
-                                        type="button"
-                                        className={`chip ${selected ? "is-selected" : ""} ${hasColor ? "has-color" : ""}`}
-                                        onClick={() =>
-                                            setSelectedVariationIds((prev) => ({
-                                                ...prev,
-                                                [variation.variationId]: value.id,
-                                            }))
-                                        }
-                                    >
-                                        {value.hexColor ? (
-                                            <svg className="chip-color" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
-                                                <circle cx="6" cy="6" r="6" fill={value.hexColor} />
-                                            </svg>
-                                        ) : null}
-                                        {value.valueAr}
-                                    </button>
-                                );
-                            })}
+                    return (
+                        <div key={variation.variationId} className="field field-full">
+                            <span>{varLabel}</span>
+                            <div className="choice-list">
+                                {variation.values.map((value) => {
+                                    const selected = selectedVariationIds[variation.variationId] === value.id;
+                                    const hasColor = Boolean(value.hexColor);
+                                    const valLabel = isEn && value.valueEn ? value.valueEn : value.valueAr;
+
+                                    return (
+                                        <button
+                                            key={value.id}
+                                            type="button"
+                                            className={`chip ${selected ? "is-selected" : ""} ${hasColor ? "has-color" : ""}`}
+                                            onClick={() =>
+                                                setSelectedVariationIds((prev) => ({
+                                                    ...prev,
+                                                    [variation.variationId]: value.id,
+                                                }))
+                                            }
+                                        >
+                                            {value.hexColor ? (
+                                                <svg className="chip-color" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+                                                    <circle cx="6" cy="6" r="6" fill={value.hexColor} />
+                                                </svg>
+                                            ) : null}
+                                            {valLabel}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
 
                 <div className="field field-full quantity-row">
-                    <span>الكمية</span>
+                    <span>{dict?.order.quantity ?? (isEn ? "Quantity" : "الكمية")}</span>
                     <div className="quantity-controls">
                         <button
                             type="button"
                             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                            aria-label="تقليل الكمية"
+                            aria-label={isEn ? "Decrease quantity" : "تقليل الكمية"}
                             disabled={quantity <= 1}
                         >
                             -
@@ -257,7 +305,7 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                         <button
                             type="button"
                             onClick={() => setQuantity((q) => Math.min(10, q + 1))}
-                            aria-label="زيادة الكمية"
+                            aria-label={isEn ? "Increase quantity" : "زيادة الكمية"}
                             disabled={quantity >= 10}
                         >
                             +
@@ -266,27 +314,35 @@ export function OrderForm({ productSlug, productNameAr, unitPrice, variations }:
                 </div>
 
                 <div className="field field-full total-row">
-                    <span>سعر المنتج</span>
-                    <strong>{formatDzd(itemsTotal)} دج</strong>
+                    <span>{dict?.order.productPrice ?? (isEn ? "Item Price" : "سعر المنتج")}</span>
+                    <strong>{formatDzd(itemsTotal)} {currency}</strong>
                 </div>
 
                 <div className="field field-full total-row">
-                    <span>رسوم التوصيل</span>
-                    <strong>{shippingFee === null ? "غير متاح" : `${formatDzd(shippingFee)} دج`}</strong>
+                    <span>{dict?.order.shippingFee ?? (isEn ? "Delivery Fee" : "رسوم التوصيل")}</span>
+                    <strong>{shippingFee === null ? (isEn ? "Unavailable" : "غير متاح") : `${formatDzd(shippingFee)} ${currency}`}</strong>
                 </div>
 
                 <div className="field field-full total-row">
-                    <span>المجموع</span>
-                    <strong>{shippingFee === null ? "غير متاح" : `${formatDzd(total)} دج`}</strong>
+                    <span>{dict?.order.total ?? (isEn ? "Total" : "المجموع")}</span>
+                    <strong>{shippingFee === null ? (isEn ? "Unavailable" : "غير متاح") : `${formatDzd(total)} ${currency}`}</strong>
                 </div>
 
                 {shippingFee === null ? (
-                    <p className="feedback bad">التوصيل غير متاح للولاية المختارة بهذا النوع.</p>
+                    <p className="feedback bad">
+                        {dict?.order.deliveryUnavailable ?? (isEn ? "Delivery not available for this wilaya." : "التوصيل غير متاح للولاية المختارة بهذا النوع.")}
+                    </p>
                 ) : null}
 
                 <button type="submit" className="submit-btn" disabled={isSubmitting || shippingFee === null}>
                     {isSubmitting ? <LoaderCircle size={18} className="spin" /> : null}
-                    <span>{isSubmitting ? "جارٍ الإرسال..." : shippingFee === null ? "التوصيل غير متاح" : "تأكيد الطلب"}</span>
+                    <span>
+                        {isSubmitting
+                            ? (dict?.order.submitting ?? (isEn ? "Submitting..." : "جارٍ الإرسال..."))
+                            : shippingFee === null
+                                ? (isEn ? "Delivery Unavailable" : "التوصيل غير متاح")
+                                : (dict?.order.submitButton ?? (isEn ? "Confirm Order Now" : "تأكيد الطلب"))}
+                    </span>
                 </button>
 
                 {submitState.type !== "idle" ? (

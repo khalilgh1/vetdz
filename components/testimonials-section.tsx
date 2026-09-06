@@ -1,13 +1,21 @@
 import { getTestimonials } from "@/lib/store";
+import type { Locale } from "@/lib/i18n";
+import type { Dictionary } from "@/lib/dictionaries/ar";
 
-export async function TestimonialsSection() {
+type TestimonialsSectionProps = {
+    locale?: Locale;
+    dict?: Dictionary;
+};
+
+export async function TestimonialsSection({ locale = "ar", dict }: TestimonialsSectionProps) {
     const testimonials = await getTestimonials();
+    const isEn = locale === "en";
 
     return (
         <section className="testimonials-section-enhanced">
             <div className="section-header">
-                <h2>أصوات من مجتمعنا</h2>
-                <p>تجارب حقيقية من عملائنا داخل الجزائر وخارجها</p>
+                <h2>{dict?.about.testimonials.header ?? (isEn ? "Community Voices" : "أصوات من مجتمعنا")}</h2>
+                <p>{dict?.about.testimonials.subheader ?? (isEn ? "Genuine reviews from our clients across Algeria and beyond" : "تجارب حقيقية من عملائنا داخل الجزائر وخارجها")}</p>
             </div>
 
             <div className="testimonials-grid-enhanced">

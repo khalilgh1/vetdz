@@ -51,9 +51,11 @@ type RawProduct = Prisma.ProductGetPayload<{ include: typeof productInclude }>;
 export type UiVariationGroup = {
     variationId: number;
     variationNameAr: string;
+    variationNameEn: string | null;
     values: {
         id: number;
         valueAr: string;
+        valueEn: string | null;
         hexColor: string | null;
     }[];
 };
@@ -62,22 +64,21 @@ export type UiVariationGroup = {
  * UiProduct type - Product data formatted for frontend UI consumption.
  * This is the normalized, easy-to-use format for components.
  * All prices are converted to numbers, variations are grouped, and images are simplified.
- * @property id, slug, nameAr, etc. - Basic product information
- * @property productTypeSlug, productTypeNameAr - Category information
- * @property price, discountActive, discountedPrice, finalPrice, discountPercent - Pricing details
- * @property variations - Grouped variation options ready for UI rendering
- * @property images - Sorted product images with metadata
  */
 export type UiProduct = {
     id: number;
     slug: string;
     nameAr: string;
+    nameEn: string;
     subtitleAr: string;
+    subtitleEn: string;
     descriptionAr: string;
+    descriptionEn: string;
     gender: Gender;
     productTypeSlug: string;
     productTypeNameAr: string;
-    images: { id: number; url: string; altAr: string }[];
+    productTypeNameEn: string;
+    images: { id: number; url: string; altAr: string; altEn: string }[];
     price: number;
     discountActive: boolean;
     discountedPrice: number | null;
@@ -88,15 +89,6 @@ export type UiProduct = {
 
 /**
  * Converts a raw Prisma product entity to a UI-friendly format.
- * Transforms:
- * - Decimal prices to numbers
- * - Calculates final price based on active discounts
- * - Groups variations by type for easier UI rendering
- * - Simplifies image data
- * - Calculates discount percentage when applicable
- *
- * @param product - Raw product data from Prisma query
- * @returns Formatted product ready for frontend consumption
  */
 function toUiProduct(product: RawProduct): UiProduct {
     const price = toNumber(product.price);
@@ -112,6 +104,7 @@ function toUiProduct(product: RawProduct): UiProduct {
             grouped.set(variation.id, {
                 variationId: variation.id,
                 variationNameAr: variation.nameAr,
+                variationNameEn: variation.nameEn,
                 values: [],
             });
         }
@@ -119,6 +112,7 @@ function toUiProduct(product: RawProduct): UiProduct {
         grouped.get(variation.id)?.values.push({
             id: value.id,
             valueAr: value.valueAr,
+            valueEn: value.valueEn,
             hexColor: value.hexColor,
         });
     }
@@ -127,15 +121,20 @@ function toUiProduct(product: RawProduct): UiProduct {
         id: product.id,
         slug: product.slug,
         nameAr: product.nameAr,
+        nameEn: product.nameEn || product.nameAr,
         subtitleAr: product.subtitleAr,
+        subtitleEn: product.subtitleEn || product.subtitleAr,
         descriptionAr: product.descriptionAr,
+        descriptionEn: product.descriptionEn || product.descriptionAr,
         gender: product.gender,
         productTypeSlug: product.productType.slug,
         productTypeNameAr: product.productType.nameAr,
+        productTypeNameEn: product.productType.nameEn || product.productType.nameAr,
         images: product.images.map((image) => ({
             id: image.id,
             url: image.url,
             altAr: image.altAr,
+            altEn: image.altEn || image.altAr,
         })),
         price,
         discountActive: product.discountActive,
@@ -228,19 +227,24 @@ export async function getProductsPage({
     const skip = (safePage - 1) * safeLimit;
     const trimmedSearch = search?.trim();
 
+    const searchFilter = trimmedSearch
+        ? {
+            OR: [
+                { nameAr: { contains: trimmedSearch, mode: "insensitive" as const } },
+                { nameEn: { contains: trimmedSearch, mode: "insensitive" as const } },
+                { subtitleAr: { contains: trimmedSearch, mode: "insensitive" as const } },
+                { subtitleEn: { contains: trimmedSearch, mode: "insensitive" as const } },
+                { descriptionAr: { contains: trimmedSearch, mode: "insensitive" as const } },
+                { descriptionEn: { contains: trimmedSearch, mode: "insensitive" as const } },
+            ],
+        }
+        : {};
+
     const [totalCount, products] = await Promise.all([
         prisma.product.count({
             where: {
                 ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
-                ...(trimmedSearch
-                    ? {
-                        OR: [
-                            { nameAr: { contains: trimmedSearch } },
-                            { subtitleAr: { contains: trimmedSearch } },
-                            { descriptionAr: { contains: trimmedSearch } },
-                        ],
-                    }
-                    : {}),
+                ...searchFilter,
                 ...(gender === "ALL"
                     ? {}
                     : {
@@ -252,15 +256,7 @@ export async function getProductsPage({
             include: productInclude,
             where: {
                 ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
-                ...(trimmedSearch
-                    ? {
-                        OR: [
-                            { nameAr: { contains: trimmedSearch } },
-                            { subtitleAr: { contains: trimmedSearch } },
-                            { descriptionAr: { contains: trimmedSearch } },
-                        ],
-                    }
-                    : {}),
+                ...searchFilter,
                 ...(gender === "ALL"
                     ? {}
                     : {

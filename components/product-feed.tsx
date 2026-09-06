@@ -3,12 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { ProductCard } from "@/components/product-card";
 import type { UiProduct } from "@/lib/store";
+import type { Locale } from "@/lib/i18n";
 
 type ProductFeedProps = {
     initialItems: UiProduct[];
     initialHasMore: boolean;
     initialNextPage: number | null;
     query: Record<string, string | undefined>;
+    locale?: Locale;
 };
 
 function buildUrl(page: number, query: Record<string, string | undefined>) {
@@ -25,7 +27,7 @@ function buildUrl(page: number, query: Record<string, string | undefined>) {
     return `/api/products?${params.toString()}`;
 }
 
-export function ProductFeed({ initialItems, initialHasMore, initialNextPage, query }: ProductFeedProps) {
+export function ProductFeed({ initialItems, initialHasMore, initialNextPage, query, locale = "ar" }: ProductFeedProps) {
     const [items, setItems] = useState(initialItems);
     const [hasMore, setHasMore] = useState(initialHasMore);
     const [nextPage, setNextPage] = useState(initialNextPage);
@@ -86,14 +88,22 @@ export function ProductFeed({ initialItems, initialHasMore, initialNextPage, que
         <>
             <div className="product-grid">
                 {items.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <ProductCard key={product.id} product={product} locale={locale} />
                 ))}
             </div>
 
             <div ref={sentinelRef} className="load-sentinel" aria-hidden="true" />
 
-            {loading ? <p className="load-more-state">جار تحميل المزيد...</p> : null}
-            {!hasMore ? <p className="load-more-state">تم عرض كل المنتجات المميزة.</p> : null}
+            {loading ? (
+                <p className="load-more-state">
+                    {locale === "en" ? "Loading more..." : "جار تحميل المزيد..."}
+                </p>
+            ) : null}
+            {!hasMore && items.length > 0 ? (
+                <p className="load-more-state">
+                    {locale === "en" ? "All products loaded." : "تم عرض كل المنتجات المميزة."}
+                </p>
+            ) : null}
         </>
     );
 }

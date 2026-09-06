@@ -2,16 +2,28 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
-import BlurText from "@/components/BlurText";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import type { Locale } from "@/lib/i18n";
+import type { Dictionary } from "@/lib/dictionaries/ar";
 
-export function HomeHero() {
+type HomeHeroProps = {
+    locale?: Locale;
+    dict?: Dictionary;
+};
+
+export function HomeHero({ locale = "ar", dict }: HomeHeroProps) {
+    const isEn = locale === "en";
+    const title = dict?.home.hero.title ?? (isEn ? "Wear Pieces That Elevate Your Presence" : "اختَر القطعة التي تعكس حضورك");
+    const description = dict?.home.hero.description ?? (isEn ? "Limited high-grade designs crafted with precision for everyday distinction." : "تصاميم محدودة بجودة عالية وتفاصيل دقيقة لكل يوم");
+    const cta = dict?.home.hero.cta ?? (isEn ? "Explore Collection" : "تصفح منتجاتنا");
+    const badge = dict?.home.hero.badge ?? (isEn ? "Contemporary Algerian Tailoring" : "خياطة جزائرية معاصرة");
+
     return (
         <section className="hero-section">
             <div className="hero-image-container">
                 <Image
                     src="/fashion1.jpg"
-                    alt="خياطة جزائرية معاصرة"
+                    alt={badge}
                     fill
                     className="hero-image"
                     priority
@@ -22,13 +34,11 @@ export function HomeHero() {
 
             <div className="hero-content">
                 <div className="hero-text-wrapper">
-                    <h1 className="hero-title">اختَر القطعة التي تعكس حضورك</h1>
-                    <p className="hero-description">
-                        تصاميم محدودة بجودة عالية وتفاصيل دقيقة لكل يوم
-                    </p>
-                    <Link href="/catalog" className="hero-cta-button">
-                        تصفح منتجاتنا
-                        <ArrowRight size={20} />
+                    <h1 className="hero-title">{title}</h1>
+                    <p className="hero-description">{description}</p>
+                    <Link href={`/${locale}/catalog`} className="hero-cta-button">
+                        <span>{cta}</span>
+                        {isEn ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
                     </Link>
                 </div>
             </div>

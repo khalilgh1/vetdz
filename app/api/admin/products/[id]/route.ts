@@ -11,9 +11,12 @@ const productSchema = z
             .min(2, "الـ slug مطلوب")
             .regex(/^[a-z0-9-]+$/, "الـ slug يجب أن يكون بحروف إنجليزية صغيرة وأرقام و-")
             .transform((value) => value.toLowerCase()),
-        nameAr: z.string().trim().min(2, "اسم المنتج مطلوب"),
-        subtitleAr: z.string().trim().min(2, "العنوان الفرعي مطلوب"),
-        descriptionAr: z.string().trim().min(10, "وصف المنتج يجب أن يكون أوضح"),
+        nameAr: z.string().trim().min(2, "اسم المنتج (بالعربية) مطلوب"),
+        nameEn: z.string().trim().min(2, "Product name (in English) is required"),
+        subtitleAr: z.string().trim().min(2, "العنوان الفرعي (بالعربية) مطلوب"),
+        subtitleEn: z.string().trim().min(2, "Subtitle (in English) is required"),
+        descriptionAr: z.string().trim().min(10, "وصف المنتج (بالعربية) يجب أن يكون 10 أحرف على الأقل"),
+        descriptionEn: z.string().trim().min(10, "Product description (in English) must be at least 10 characters"),
         price: z.coerce.number().positive("السعر يجب أن يكون أكبر من 0"),
         discountActive: z.coerce.boolean().default(false),
         discountedPrice: z.preprocess(

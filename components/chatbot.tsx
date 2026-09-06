@@ -13,6 +13,7 @@ interface Message {
 
 export function Chatbot() {
   const pathname = usePathname();
+  const isEn = pathname?.startsWith("/en");
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -20,17 +21,19 @@ export function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const requestTimestamps = useRef<number[]>([]);
 
-  // Initialize with greeting message on mount
+  // Initialize with greeting message on mount or locale change
   useEffect(() => {
     setMessages([
       {
         id: "greet",
-        text: "مرحباً بك في VetDz! 👋 أنا مساعدك الذكي لمتجر أزيائنا. كيف يمكنني مساعدتك اليوم؟",
+        text: isEn
+          ? "Welcome to VetDz! 👋 I'm your fashion assistant. How can I help you today?"
+          : "مرحباً بك في VetDz! 👋 أنا مساعدك الذكي لمتجر أزيائنا. كيف يمكنني مساعدتك اليوم؟",
         sender: "bot",
         timestamp: new Date(),
       },
     ]);
-  }, []);
+  }, [isEn]);
 
   // Scroll to bottom on new messages, typing state, or chat toggle
   useEffect(() => {
@@ -63,14 +66,16 @@ export function Chatbot() {
         userMessage,
         {
           id: (now + 1).toString(),
-          text: "لقد تجاوزت حد إرسال الرسائل (الحد الأقصى هو 5 رسائل في الدقيقة). يرجى الانتظار قليلاً قبل المحاولة مرة أخرى.",
+          text: isEn
+            ? "You have exceeded the message limit (max 5 per minute). Please wait a moment."
+            : "لقد تجاوزت حد إرسال الرسائل (الحد الأقصى هو 5 رسائل في الدقيقة). يرجى الانتظار قليلاً قبل المحاولة مرة أخرى.",
           sender: "bot",
           timestamp: new Date(),
         }
       ]);
-      setInput("");
       return;
     }
+
     requestTimestamps.current.push(now);
 
     const userMessage: Message = {
@@ -88,16 +93,16 @@ export function Chatbot() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: userMessage.text }),
+        body: JSON.stringify({ message: userMessage.text }),
       });
 
-      const data = await response.json().catch(() => ({}));
-
+      const data = await response.json();
+      
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: response.ok
-          ? (data.response ?? "عذراً، لم أستطع فهم ذلك. يرجى المحاولة مرة أخرى.")
-          : (data.error   ?? "عذراً، حدث خطأ في الخادم. يرجى المحاولة مرة أخرى."),
+        text: response.ok 
+          ? (data.reply   ?? (isEn ? "No response received." : "لم يتم استلام رد."))
+          : (data.error   ?? (isEn ? "Server error occurred. Please try again." : "عذراً، حدث خطأ في الخادم. يرجى المحاولة مرة أخرى.")),
         sender: "bot",
         timestamp: new Date(),
       };
@@ -106,7 +111,9 @@ export function Chatbot() {
       console.error("Chat error:", error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: "عذراً، تعذّر الاتصال بالخادم. تأكد من تشغيل backend ثم أعد المحاولة.",
+        text: isEn
+          ? "Failed to connect to the server. Please ensure backend is running."
+          : "عذراً، تعذّر الاتصال بالخادم. تأكد من تشغيل backend ثم أعد المحاولة.",
         sender: "bot",
         timestamp: new Date(),
       };
@@ -122,7 +129,7 @@ export function Chatbot() {
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         className={`vetdz-chatbot-trigger ${isOpen ? "active" : ""}`}
-        aria-label="مساعد VetDz"
+        aria-label={isEn ? "VetDz Assistant" : "مساعد VetDz"}
         type="button"
       >
         {isOpen ? <X size={26} /> : <Bot size={26} />}
@@ -130,7 +137,7 @@ export function Chatbot() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="vetdz-chatbot-window">
+        <div className="vetdz-chatbot-window" dir={isEn ? "ltr" : "rtl"}>
           {/* Header */}
           <div className="vetdz-chatbot-header">
             <div className="vetdz-chatbot-header-info">
@@ -138,17 +145,17 @@ export function Chatbot() {
                 <Bot size={20} />
               </div>
               <div className="vetdz-chatbot-title-container">
-                <h4 className="vetdz-chatbot-title">مساعد VetDz الذكي</h4>
+                <h4 className="vetdz-chatbot-title">{isEn ? "VetDz Smart Assistant" : "مساعد VetDz الذكي"}</h4>
                 <div className="vetdz-chatbot-status">
                   <span className="vetdz-chatbot-status-dot"></span>
-                  <span>متصل حالياً</span>
+                  <span>{isEn ? "Online" : "متصل حالياً"}</span>
                 </div>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
               className="vetdz-chatbot-close-btn"
-              aria-label="إغلاق المحادثة"
+              aria-label={isEn ? "Close chat" : "إغلاق المحادثة"}
               type="button"
             >
               <X size={20} />
@@ -171,7 +178,7 @@ export function Chatbot() {
                 >
                   <p className="vetdz-chatbot-bubble-text">{msg.text}</p>
                   <span className="vetdz-chatbot-bubble-time">
-                    {msg.timestamp.toLocaleTimeString("ar-DZ", {
+                    {msg.timestamp.toLocaleTimeString(isEn ? "en-US" : "ar-DZ", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
@@ -202,7 +209,7 @@ export function Chatbot() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="اكتب رسالتك هنا..."
+              placeholder={isEn ? "Type your message here..." : "اكتب رسالتك هنا..."}
               className="vetdz-chatbot-input"
               disabled={isLoading}
             />
@@ -210,12 +217,12 @@ export function Chatbot() {
               type="submit"
               className="vetdz-chatbot-send-btn"
               disabled={!input.trim() || isLoading}
-              aria-label="إرسال"
+              aria-label={isEn ? "Send" : "إرسال"}
             >
               {isLoading ? (
                 <Loader2 size={18} className="chatbot-spin" />
               ) : (
-                <Send size={18} className="rtl-flip" />
+                <Send size={18} className={isEn ? "" : "rtl-flip"} />
               )}
             </button>
           </form>

@@ -47,11 +47,15 @@ type ProductItem = {
     id: number;
     slug: string;
     nameAr: string;
+    nameEn: string;
     subtitleAr: string;
+    subtitleEn: string;
     descriptionAr: string;
+    descriptionEn: string;
     gender: "MALE" | "FEMALE" | "BOTH";
     productTypeId: number;
     productTypeNameAr: string;
+    productTypeNameEn?: string;
     price: number;
     discountActive: boolean;
     discountedPrice: number | null;
@@ -195,8 +199,11 @@ export function AdminPanel() {
     const [productForm, setProductForm] = useState({
         slug: "",
         nameAr: "",
+        nameEn: "",
         subtitleAr: "",
+        subtitleEn: "",
         descriptionAr: "",
+        descriptionEn: "",
         price: "",
         discountActive: false,
         discountedPrice: "",
@@ -381,8 +388,11 @@ export function AdminPanel() {
         setProductForm({
             slug: "",
             nameAr: "",
+            nameEn: "",
             subtitleAr: "",
+            subtitleEn: "",
             descriptionAr: "",
+            descriptionEn: "",
             price: "",
             discountActive: false,
             discountedPrice: "",
@@ -411,8 +421,11 @@ export function AdminPanel() {
         setProductForm({
             slug: item.slug,
             nameAr: item.nameAr,
+            nameEn: item.nameEn || "",
             subtitleAr: item.subtitleAr,
+            subtitleEn: item.subtitleEn || "",
             descriptionAr: item.descriptionAr,
+            descriptionEn: item.descriptionEn || "",
             price: String(item.price),
             discountActive: item.discountActive,
             discountedPrice: item.discountedPrice === null ? "" : String(item.discountedPrice),
@@ -653,8 +666,11 @@ export function AdminPanel() {
         const payload = {
             slug: productForm.slug,
             nameAr: productForm.nameAr,
+            nameEn: productForm.nameEn,
             subtitleAr: productForm.subtitleAr,
+            subtitleEn: productForm.subtitleEn,
             descriptionAr: productForm.descriptionAr,
+            descriptionEn: productForm.descriptionEn,
             price: productForm.price,
             discountActive: productForm.discountActive,
             discountedPrice: productForm.discountActive ? productForm.discountedPrice : null,
@@ -1103,7 +1119,7 @@ export function AdminPanel() {
                             </label>
 
                             <label className={styles.field}>
-                                <span>اسم المنتج</span>
+                                <span>اسم المنتج (بالعربية)</span>
                                 <input
                                     value={productForm.nameAr}
                                     onChange={(event) =>
@@ -1112,12 +1128,28 @@ export function AdminPanel() {
                                             nameAr: event.target.value,
                                         }))
                                     }
+                                    placeholder="مثال: قميص صوف خفيف"
                                     required
                                 />
                             </label>
 
                             <label className={styles.field}>
-                                <span>عنوان فرعي</span>
+                                <span>Product Name (English)</span>
+                                <input
+                                    value={productForm.nameEn}
+                                    onChange={(event) =>
+                                        setProductForm((current) => ({
+                                            ...current,
+                                            nameEn: event.target.value,
+                                        }))
+                                    }
+                                    placeholder="e.g. Sculpted Wool Overshirt"
+                                    required
+                                />
+                            </label>
+
+                            <label className={styles.field}>
+                                <span>عنوان فرعي (بالعربية)</span>
                                 <input
                                     value={productForm.subtitleAr}
                                     onChange={(event) =>
@@ -1126,6 +1158,22 @@ export function AdminPanel() {
                                             subtitleAr: event.target.value,
                                         }))
                                     }
+                                    placeholder="قصة معمارية مريحة"
+                                    required
+                                />
+                            </label>
+
+                            <label className={styles.field}>
+                                <span>Subtitle (English)</span>
+                                <input
+                                    value={productForm.subtitleEn}
+                                    onChange={(event) =>
+                                        setProductForm((current) => ({
+                                            ...current,
+                                            subtitleEn: event.target.value,
+                                        }))
+                                    }
+                                    placeholder="Relaxed architectural silhouette"
                                     required
                                 />
                             </label>
@@ -1232,14 +1280,29 @@ export function AdminPanel() {
                         </div>
 
                         <label className={`${styles.field} ${styles.fieldFull}`}>
-                            <span>وصف المنتج</span>
+                            <span>وصف المنتج (بالعربية)</span>
                             <textarea
-                                rows={4}
+                                rows={3}
                                 value={productForm.descriptionAr}
                                 onChange={(event) =>
                                     setProductForm((current) => ({
                                         ...current,
                                         descriptionAr: event.target.value,
+                                    }))
+                                }
+                                required
+                            />
+                        </label>
+
+                        <label className={`${styles.field} ${styles.fieldFull}`}>
+                            <span>Product Description (English)</span>
+                            <textarea
+                                rows={3}
+                                value={productForm.descriptionEn}
+                                onChange={(event) =>
+                                    setProductForm((current) => ({
+                                        ...current,
+                                        descriptionEn: event.target.value,
                                     }))
                                 }
                                 required
@@ -1345,7 +1408,7 @@ export function AdminPanel() {
                             {products.map((item) => (
                                 <article key={item.id} className={styles.productItem}>
                                     <div>
-                                        <strong>{item.nameAr}</strong>
+                                        <strong>{item.nameAr} {item.nameEn ? <span style={{ opacity: 0.75, fontWeight: 500, fontSize: "0.9em" }}>({item.nameEn})</span> : null}</strong>
                                         <span>
                                             النوع: {item.productTypeNameAr} | slug: {item.slug}
                                         </span>

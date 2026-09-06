@@ -17,7 +17,17 @@ body {
   min-height: 100vh;
   color: var(--text);
   background: var(--background);
-  font-family: var(--font-cairo), sans-serif;
+  font-family: var(--font-cairo), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+[dir="ltr"] body,
+html[dir="ltr"] body {
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+[dir="ltr"] .brand-title {
+  font-family: var(--font-outfit), sans-serif;
+  letter-spacing: 0.1em;
 }
 
 a {
@@ -130,8 +140,11 @@ a {
 
 .site-drawer {
   position: fixed;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
   width: 80vw;
+  max-width: 380px;
   height: 100vh !important;
   background: var(--panel);
   box-shadow: -20px 0 40px rgba(15, 23, 42, 0.15);
@@ -142,11 +155,23 @@ a {
   z-index: 31;
   transform: translateX(100%);
   opacity: 0;
-  animation: drawer-slide-in 280ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: drawer-slide-in-rtl 280ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+[dir="ltr"] .site-drawer {
+  right: auto;
+  left: 0;
+  box-shadow: 20px 0 40px rgba(15, 23, 42, 0.15);
+  transform: translateX(-100%);
+  animation: drawer-slide-in-ltr 280ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .site-drawer.is-closing {
-  animation: drawer-slide-out 280ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: drawer-slide-out-rtl 280ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+[dir="ltr"] .site-drawer.is-closing {
+  animation: drawer-slide-out-ltr 280ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 .site-drawer-head {
@@ -169,36 +194,67 @@ a {
   font-weight: 700;
 }
 
-@keyframes drawer-slide-in {
+.lang-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  background: rgba(17, 24, 39, 0.06);
+  color: var(--secondary);
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.lang-switch-btn:hover {
+  background: rgba(17, 24, 39, 0.12);
+  transform: translateY(-1px);
+}
+
+@keyframes drawer-slide-in-rtl {
   from {
     transform: translateX(100%);
     opacity: 0;
   }
-
   to {
     transform: translateX(0);
     opacity: 1;
   }
 }
 
-@keyframes drawer-backdrop-in {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes drawer-slide-out {
+@keyframes drawer-slide-out-rtl {
   from {
     transform: translateX(0);
     opacity: 1;
   }
-
   to {
     transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes drawer-slide-in-ltr {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes drawer-slide-out-ltr {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
     opacity: 0;
   }
 }

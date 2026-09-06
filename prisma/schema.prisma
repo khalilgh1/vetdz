@@ -27,6 +27,7 @@ model ProductType {
   id         Int         @id @default(autoincrement())
   slug       String      @unique
   nameAr     String
+  nameEn     String      @default("")
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   products   Product[]
@@ -37,8 +38,11 @@ model Product {
   id              Int                @id @default(autoincrement())
   slug            String             @unique
   nameAr          String
+  nameEn          String             @default("")
   subtitleAr      String
+  subtitleEn      String             @default("")
   descriptionAr   String
+  descriptionEn   String             @default("")
   price           Decimal
   discountActive  Boolean            @default(false)
   discountedPrice Decimal?
@@ -56,6 +60,7 @@ model ProductImage {
   id        Int      @id @default(autoincrement())
   url       String
   altAr     String
+  altEn     String   @default("")
   sortOrder Int      @default(0)
   productId Int
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -64,6 +69,7 @@ model ProductImage {
 model Variation {
   id            Int              @id @default(autoincrement())
   nameAr        String
+  nameEn        String?
   createdAt     DateTime         @default(now())
   productTypeId Int
   productType   ProductType      @relation(fields: [productTypeId], references: [id], onDelete: Cascade)
@@ -73,6 +79,7 @@ model Variation {
 model VariationValue {
   id                 Int                @id @default(autoincrement())
   valueAr            String
+  valueEn            String?
   hexColor           String?
   createdAt          DateTime           @default(now())
   variationId        Int

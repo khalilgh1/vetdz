@@ -30,11 +30,15 @@ export type AdminProductRecord = {
     id: number;
     slug: string;
     nameAr: string;
+    nameEn: string;
     subtitleAr: string;
+    subtitleEn: string;
     descriptionAr: string;
+    descriptionEn: string;
     gender: Gender;
     productTypeId: number;
     productTypeNameAr: string;
+    productTypeNameEn: string;
     price: number;
     discountActive: boolean;
     discountedPrice: number | null;
@@ -44,17 +48,22 @@ export type AdminProductRecord = {
     selectedVariations: {
         valueId: number;
         valueAr: string;
+        valueEn?: string | null;
         hexColor: string | null;
         variationId: number;
         variationNameAr: string;
+        variationNameEn?: string | null;
     }[];
 };
 
 export type AdminProductInput = {
     slug: string;
     nameAr: string;
+    nameEn: string;
     subtitleAr: string;
+    subtitleEn: string;
     descriptionAr: string;
+    descriptionEn: string;
     price: number;
     discountActive: boolean;
     discountedPrice: number | null;
@@ -68,11 +77,13 @@ export type AdminProductInput = {
 export type AdminVariationInput = {
     productTypeId: number;
     nameAr: string;
+    nameEn?: string;
 };
 
 export type AdminVariationValueInput = {
     variationId: number;
     valueAr: string;
+    valueEn?: string;
     hexColor?: string | null;
 };
 
@@ -94,11 +105,15 @@ function toAdminProduct(product: AdminRawProduct): AdminProductRecord {
         id: product.id,
         slug: product.slug,
         nameAr: product.nameAr,
+        nameEn: product.nameEn,
         subtitleAr: product.subtitleAr,
+        subtitleEn: product.subtitleEn,
         descriptionAr: product.descriptionAr,
+        descriptionEn: product.descriptionEn,
         gender: product.gender,
         productTypeId: product.productTypeId,
         productTypeNameAr: product.productType.nameAr,
+        productTypeNameEn: product.productType.nameEn,
         price: toNumber(product.price),
         discountActive: product.discountActive,
         discountedPrice: product.discountedPrice ? toNumber(product.discountedPrice) : null,
@@ -108,9 +123,11 @@ function toAdminProduct(product: AdminRawProduct): AdminProductRecord {
         selectedVariations: product.variations.map((relation) => ({
             valueId: relation.variationValueId,
             valueAr: relation.variationValue.valueAr,
+            valueEn: relation.variationValue.valueEn,
             hexColor: relation.variationValue.hexColor,
             variationId: relation.variationValue.variation.id,
             variationNameAr: relation.variationValue.variation.nameAr,
+            variationNameEn: relation.variationValue.variation.nameEn,
         })),
     };
 }
@@ -172,8 +189,11 @@ export async function createAdminProduct(input: AdminProductInput) {
         data: {
             slug: input.slug,
             nameAr: input.nameAr,
+            nameEn: input.nameEn,
             subtitleAr: input.subtitleAr,
+            subtitleEn: input.subtitleEn,
             descriptionAr: input.descriptionAr,
+            descriptionEn: input.descriptionEn,
             price: input.price,
             discountActive: input.discountActive,
             discountedPrice: input.discountActive ? input.discountedPrice : null,
@@ -184,6 +204,7 @@ export async function createAdminProduct(input: AdminProductInput) {
                 create: imageUrls.map((url, index) => ({
                     url,
                     altAr: input.nameAr,
+                    altEn: input.nameEn,
                     sortOrder: index,
                 })),
             },
@@ -226,8 +247,11 @@ export async function updateAdminProduct(id: number, input: AdminProductInput) {
         data: {
             slug: input.slug,
             nameAr: input.nameAr,
+            nameEn: input.nameEn,
             subtitleAr: input.subtitleAr,
+            subtitleEn: input.subtitleEn,
             descriptionAr: input.descriptionAr,
+            descriptionEn: input.descriptionEn,
             price: input.price,
             discountActive: input.discountActive,
             discountedPrice: input.discountActive ? input.discountedPrice : null,
@@ -239,6 +263,7 @@ export async function updateAdminProduct(id: number, input: AdminProductInput) {
                 create: imageUrls.map((url, index) => ({
                     url,
                     altAr: input.nameAr,
+                    altEn: input.nameEn,
                     sortOrder: index,
                 })),
             },
