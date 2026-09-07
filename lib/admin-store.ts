@@ -1,7 +1,16 @@
 import { Gender, type Prisma } from "@prisma/client";
+import { revalidateTag } from "next/cache";
 import { toNumber } from "@/lib/format";
 import { deleteCloudinaryImagesByUrls } from "@/lib/cloudinary";
 import { prisma } from "@/lib/prisma";
+
+function purgeTag(tag: string) {
+    try {
+        revalidateTag(tag, "max");
+    } catch {
+        // Ignored if called outside Next.js request context (e.g. scripts)
+    }
+}
 
 const adminProductInclude = {
     productType: true,
@@ -219,6 +228,7 @@ export async function createAdminProduct(input: AdminProductInput) {
         include: adminProductInclude,
     });
 
+    purgeTag("products");
     return toAdminProduct(product);
 }
 
@@ -296,6 +306,8 @@ export async function updateAdminProduct(id: number, input: AdminProductInput) {
         }
     }
 
+    purgeTag("products");
+    purgeTag(`product-${input.slug}`);
     return toAdminProduct(product);
 }
 
@@ -319,11 +331,14 @@ export async function deleteAdminProduct(id: number) {
 
     await deleteCloudinaryImagesByUrls(product.images.map((image) => image.url));
 
-    return prisma.product.delete({
+    const deleted = await prisma.product.delete({
         where: {
             id,
         },
     });
+
+    purgeTag("products");
+    return deleted;
 }
 
 export async function listAdminProductTypes() {
@@ -343,7 +358,7 @@ export async function listAdminProductTypes() {
 }
 
 export async function createAdminProductType(input: { slug: string; nameAr: string }) {
-    return prisma.productType.create({
+    const item = await prisma.productType.create({
         data: {
             slug: input.slug,
             nameAr: input.nameAr,
@@ -357,10 +372,14 @@ export async function createAdminProductType(input: { slug: string; nameAr: stri
             },
         },
     });
+
+    purgeTag("product-types");
+    purgeTag("products");
+    return item;
 }
 
 export async function updateAdminProductType(id: number, input: { slug: string; nameAr: string }) {
-    return prisma.productType.update({
+    const item = await prisma.productType.update({
         where: {
             id,
         },
@@ -377,14 +396,22 @@ export async function updateAdminProductType(id: number, input: { slug: string; 
             },
         },
     });
+
+    purgeTag("product-types");
+    purgeTag("products");
+    return item;
 }
 
 export async function deleteAdminProductType(id: number) {
-    return prisma.productType.delete({
+    const deleted = await prisma.productType.delete({
         where: {
             id,
         },
     });
+
+    purgeTag("product-types");
+    purgeTag("products");
+    return deleted;
 }
 
 const adminVariationInclude = {
@@ -422,17 +449,20 @@ export async function listAdminVariations(productTypeId?: number) {
 }
 
 export async function createAdminVariation(input: AdminVariationInput) {
-    return prisma.variation.create({
+    const item = await prisma.variation.create({
         data: {
             productTypeId: input.productTypeId,
             nameAr: input.nameAr,
         },
         include: adminVariationInclude,
     });
+
+    purgeTag("products");
+    return item;
 }
 
 export async function updateAdminVariation(id: number, input: { nameAr: string }) {
-    return prisma.variation.update({
+    const item = await prisma.variation.update({
         where: {
             id,
         },
@@ -441,18 +471,24 @@ export async function updateAdminVariation(id: number, input: { nameAr: string }
         },
         include: adminVariationInclude,
     });
+
+    purgeTag("products");
+    return item;
 }
 
 export async function deleteAdminVariation(id: number) {
-    return prisma.variation.delete({
+    const deleted = await prisma.variation.delete({
         where: {
             id,
         },
     });
+
+    purgeTag("products");
+    return deleted;
 }
 
 export async function createAdminVariationValue(input: AdminVariationValueInput) {
-    return prisma.variationValue.create({
+    const item = await prisma.variationValue.create({
         data: {
             variationId: input.variationId,
             valueAr: input.valueAr,
@@ -472,10 +508,13 @@ export async function createAdminVariationValue(input: AdminVariationValueInput)
             },
         },
     });
+
+    purgeTag("products");
+    return item;
 }
 
 export async function updateAdminVariationValue(id: number, input: { valueAr: string; hexColor?: string | null }) {
-    return prisma.variationValue.update({
+    const item = await prisma.variationValue.update({
         where: {
             id,
         },
@@ -497,14 +536,20 @@ export async function updateAdminVariationValue(id: number, input: { valueAr: st
             },
         },
     });
+
+    purgeTag("products");
+    return item;
 }
 
 export async function deleteAdminVariationValue(id: number) {
-    return prisma.variationValue.delete({
+    const deleted = await prisma.variationValue.delete({
         where: {
             id,
         },
     });
+
+    purgeTag("products");
+    return deleted;
 }
 
 export async function listAdminTestimonials() {
@@ -521,7 +566,7 @@ export async function createAdminTestimonial(input: {
     textAr: string;
     rating: number;
 }) {
-    return prisma.testimonial.create({
+    const item = await prisma.testimonial.create({
         data: {
             nameAr: input.nameAr,
             roleAr: input.roleAr,
@@ -529,6 +574,9 @@ export async function createAdminTestimonial(input: {
             rating: input.rating,
         },
     });
+
+    purgeTag("testimonials");
+    return item;
 }
 
 export async function updateAdminTestimonial(
@@ -540,7 +588,7 @@ export async function updateAdminTestimonial(
         rating: number;
     }
 ) {
-    return prisma.testimonial.update({
+    const item = await prisma.testimonial.update({
         where: {
             id,
         },
@@ -551,12 +599,18 @@ export async function updateAdminTestimonial(
             rating: input.rating,
         },
     });
+
+    purgeTag("testimonials");
+    return item;
 }
 
 export async function deleteAdminTestimonial(id: number) {
-    return prisma.testimonial.delete({
+    const deleted = await prisma.testimonial.delete({
         where: {
             id,
         },
     });
+
+    purgeTag("testimonials");
+    return deleted;
 }

@@ -4,6 +4,8 @@
  * database entities to UI-friendly formats.
  */
 
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import { type Gender, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { discountPercent, toNumber } from "@/lib/format";
@@ -147,15 +149,23 @@ function toUiProduct(product: RawProduct): UiProduct {
 
 /**
  * Fetches all product categories/types.
+ * Cached for 1 hour (product types rarely change).
+ * Deduplicated within a single render pass via React cache().
  * @returns Array of all product types (toppings, leggings, shoes, etc.) ordered by ID
  */
-export async function getProductTypes() {
-    return prisma.productType.findMany({
-        orderBy: {
-            id: "asc",
+export const getProductTypes = cache(
+    unstable_cache(
+        async () => {
+            return prisma.productType.findMany({
+                orderBy: {
+                    id: "asc",
+                },
+            });
         },
-    });
-}
+        ["product-types"],
+        { revalidate: 3600, tags: ["product-types"] }
+    )
+);
 
 /**
  * Fetches products for the home page with optional filtering.
@@ -166,32 +176,39 @@ export async function getProductTypes() {
  * @param search - Optional text search across name, subtitle, and description
  * @returns Array of UI-formatted products matching the filters
  */
-export async function getHomeProducts(gender: Gender | "ALL", productTypeSlug?: string, search?: string) {
-    const trimmedSearch = search?.trim();
+export function getHomeProducts(gender: Gender | "ALL", productTypeSlug?: string, search?: string) {
+    const trimmedSearch = search?.trim() ?? "";
+    const typeSlug = productTypeSlug ?? "";
 
-    const products = await prisma.product.findMany({
-        include: productInclude,
-        where: {
-            ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
-            ...(trimmedSearch
-                ? {
-                    OR: [
-                        { nameAr: { contains: trimmedSearch } },
-                        { subtitleAr: { contains: trimmedSearch } },
-                        { descriptionAr: { contains: trimmedSearch } },
-                    ],
-                }
-                : {}),
-            ...(gender === "ALL"
-                ? {}
-                : {
-                    OR: [{ gender }, { gender: "BOTH" }],
-                }),
+    return unstable_cache(
+        async () => {
+            const products = await prisma.product.findMany({
+                include: productInclude,
+                where: {
+                    ...(typeSlug ? { productType: { slug: typeSlug } } : {}),
+                    ...(trimmedSearch
+                        ? {
+                            OR: [
+                                { nameAr: { contains: trimmedSearch } },
+                                { subtitleAr: { contains: trimmedSearch } },
+                                { descriptionAr: { contains: trimmedSearch } },
+                            ],
+                        }
+                        : {}),
+                    ...(gender === "ALL"
+                        ? {}
+                        : {
+                            OR: [{ gender }, { gender: "BOTH" }],
+                        }),
+                },
+                orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+            });
+
+            return products.map(toUiProduct);
         },
-        orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-    });
-
-    return products.map(toUiProduct);
+        ["home-products", gender, typeSlug, trimmedSearch],
+        { revalidate: 300, tags: ["products"] }
+    )();
 }
 
 /**
@@ -208,6 +225,7 @@ export type ProductPageFilters = {
 
 /**
  * Fetches a paginated page of products with filtering and search.
+ * Cached for 2 minutes with composite key from all filter parameters.
  * Returns total count, current page items, and whether more pages exist.
  * Applies the same filters and ordering as getHomeProducts but with pagination.
  * Fetches one extra item to determine if hasMore is true.
@@ -215,69 +233,75 @@ export type ProductPageFilters = {
  * @param options - Filter and pagination parameters
  * @returns Object containing items array, hasMore flag, nextPage number, and totalCount
  */
-export async function getProductsPage({
-    gender = "ALL",
-    productTypeSlug,
-    search,
-    page = 1,
-    limit = 8,
-}: ProductPageFilters) {
-    const safePage = Math.max(1, page);
-    const safeLimit = Math.max(1, limit);
-    const skip = (safePage - 1) * safeLimit;
-    const trimmedSearch = search?.trim();
+export function getProductsPage(options: ProductPageFilters) {
+    const gender = options.gender ?? "ALL";
+    const productTypeSlug = options.productTypeSlug;
+    const search = options.search;
+    const page = options.page ?? 1;
+    const limit = options.limit ?? 8;
 
-    const searchFilter = trimmedSearch
-        ? {
-            OR: [
-                { nameAr: { contains: trimmedSearch, mode: "insensitive" as const } },
-                { nameEn: { contains: trimmedSearch, mode: "insensitive" as const } },
-                { subtitleAr: { contains: trimmedSearch, mode: "insensitive" as const } },
-                { subtitleEn: { contains: trimmedSearch, mode: "insensitive" as const } },
-                { descriptionAr: { contains: trimmedSearch, mode: "insensitive" as const } },
-                { descriptionEn: { contains: trimmedSearch, mode: "insensitive" as const } },
-            ],
-        }
-        : {};
+    return unstable_cache(
+        async () => {
+            const safePage = Math.max(1, page);
+            const safeLimit = Math.max(1, limit);
+            const skip = (safePage - 1) * safeLimit;
+            const trimmedSearch = search?.trim();
 
-    const [totalCount, products] = await Promise.all([
-        prisma.product.count({
-            where: {
-                ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
-                ...searchFilter,
-                ...(gender === "ALL"
-                    ? {}
-                    : {
-                        OR: [{ gender }, { gender: "BOTH" }],
-                    }),
-            },
-        }),
-        prisma.product.findMany({
-            include: productInclude,
-            where: {
-                ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
-                ...searchFilter,
-                ...(gender === "ALL"
-                    ? {}
-                    : {
-                        OR: [{ gender }, { gender: "BOTH" }],
-                    }),
-            },
-            orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
-            skip,
-            take: safeLimit + 1,
-        }),
-    ]);
+            const searchFilter = trimmedSearch
+                ? {
+                    OR: [
+                        { nameAr: { contains: trimmedSearch, mode: "insensitive" as const } },
+                        { nameEn: { contains: trimmedSearch, mode: "insensitive" as const } },
+                        { subtitleAr: { contains: trimmedSearch, mode: "insensitive" as const } },
+                        { subtitleEn: { contains: trimmedSearch, mode: "insensitive" as const } },
+                        { descriptionAr: { contains: trimmedSearch, mode: "insensitive" as const } },
+                        { descriptionEn: { contains: trimmedSearch, mode: "insensitive" as const } },
+                    ],
+                }
+                : {};
 
-    const hasMore = products.length > safeLimit;
-    const items = products.slice(0, safeLimit).map(toUiProduct);
+            const [totalCount, products] = await Promise.all([
+                prisma.product.count({
+                    where: {
+                        ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
+                        ...searchFilter,
+                        ...(gender === "ALL"
+                            ? {}
+                            : {
+                                OR: [{ gender }, { gender: "BOTH" }],
+                            }),
+                    },
+                }),
+                prisma.product.findMany({
+                    include: productInclude,
+                    where: {
+                        ...(productTypeSlug ? { productType: { slug: productTypeSlug } } : {}),
+                        ...searchFilter,
+                        ...(gender === "ALL"
+                            ? {}
+                            : {
+                                OR: [{ gender }, { gender: "BOTH" }],
+                            }),
+                    },
+                    orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+                    skip,
+                    take: safeLimit + 1,
+                }),
+            ]);
 
-    return {
-        items,
-        hasMore,
-        nextPage: hasMore ? safePage + 1 : null,
-        totalCount,
-    };
+            const hasMore = products.length > safeLimit;
+            const items = products.slice(0, safeLimit).map(toUiProduct);
+
+            return {
+                items,
+                hasMore,
+                nextPage: hasMore ? safePage + 1 : null,
+                totalCount,
+            };
+        },
+        ["products-page", gender, productTypeSlug ?? "", search ?? "", String(page), String(limit)],
+        { revalidate: 120, tags: ["products"] }
+    )();
 }
 
 /**
@@ -287,20 +311,31 @@ export async function getProductsPage({
  * @param limit - Maximum number of featured products to return (default: 6)
  * @returns Array of featured products ordered by creation date (newest first)
  */
-export async function getFeaturedProducts(limit = 6) {
-    const featured = await prisma.product.findMany({
-        include: productInclude,
-        where: {
-            isFeatured: true,
-        },
-        take: limit,
-        orderBy: {
-            createdAt: "desc",
-        },
-    });
-
-    return featured.map(toUiProduct);
+export function getFeaturedProducts(limit = 6) {
+    return _getCachedFeaturedProducts(limit);
 }
+
+const _getCachedFeaturedProducts = cache(
+    (limit: number) =>
+        unstable_cache(
+            async () => {
+                const featured = await prisma.product.findMany({
+                    include: productInclude,
+                    where: {
+                        isFeatured: true,
+                    },
+                    take: limit,
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                });
+
+                return featured.map(toUiProduct);
+            },
+            ["featured-products", String(limit)],
+            { revalidate: 300, tags: ["products"] }
+        )()
+);
 
 /**
  * Fetches a single product by its URL slug.
@@ -309,15 +344,26 @@ export async function getFeaturedProducts(limit = 6) {
  * @param slug - The unique URL-friendly product identifier
  * @returns Formatted product or null if not found
  */
-export async function getProductBySlug(slug: string) {
-    const product = await prisma.product.findUnique({
-        where: { slug },
-        include: productInclude,
-    });
-
-    if (!product) return null;
-    return toUiProduct(product);
+export function getProductBySlug(slug: string) {
+    return _getCachedProductBySlug(slug);
 }
+
+const _getCachedProductBySlug = cache(
+    (slug: string) =>
+        unstable_cache(
+            async () => {
+                const product = await prisma.product.findUnique({
+                    where: { slug },
+                    include: productInclude,
+                });
+
+                if (!product) return null;
+                return toUiProduct(product);
+            },
+            ["product", slug],
+            { revalidate: 300, tags: ["products", `product-${slug}`] }
+        )()
+);
 
 /**
  * CreateOrderInput type - Data required to create a new order.
@@ -441,10 +487,16 @@ export async function createOrder(input: CreateOrderInput) {
  *
  * @returns Array of testimonials ordered by creation date (newest first)
  */
-export async function getTestimonials() {
-    return prisma.testimonial.findMany({
-        orderBy: {
-            createdAt: "desc",
+export const getTestimonials = cache(
+    unstable_cache(
+        async () => {
+            return prisma.testimonial.findMany({
+                orderBy: {
+                    createdAt: "desc",
+                },
+            });
         },
-    });
-}
+        ["testimonials"],
+        { revalidate: 3600, tags: ["testimonials"] }
+    )
+);

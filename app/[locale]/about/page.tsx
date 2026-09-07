@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
@@ -28,7 +29,26 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <StorySection locale={locale} dict={dict} />
                 <ValuesSection locale={locale} dict={dict} />
                 <TeamSection locale={locale} dict={dict} />
-                <TestimonialsSection locale={locale} dict={dict} />
+                <Suspense fallback={
+                    <section className="testimonials-section-enhanced">
+                        <div className="section-header">
+                            <div className="skeleton-block" style={{ width: "200px", height: "28px", margin: "0 auto 0.75rem" }} />
+                            <div className="skeleton-block" style={{ width: "350px", maxWidth: "90%", height: "16px", margin: "0 auto" }} />
+                        </div>
+                        <div className="testimonials-grid-enhanced">
+                            {[1, 2, 3].map((i) => (
+                                <div key={i} className="skeleton-card" style={{ padding: "1.5rem" }}>
+                                    <div className="skeleton-block" style={{ width: "100px", height: "14px", marginBottom: "1rem" }} />
+                                    <div className="skeleton-block" style={{ width: "100%", height: "14px", marginBottom: "0.5rem" }} />
+                                    <div className="skeleton-block" style={{ width: "85%", height: "14px", marginBottom: "1.5rem" }} />
+                                    <div className="skeleton-block" style={{ width: "120px", height: "16px" }} />
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                }>
+                    <TestimonialsSection locale={locale} dict={dict} />
+                </Suspense>
 
                 {/* CTA Section */}
                 <section className="about-cta-section">

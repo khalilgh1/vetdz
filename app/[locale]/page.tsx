@@ -23,7 +23,7 @@ export default async function HomePage({ params }: HomePageProps) {
 
     const genderOptions = [
         { label: dict.home.genderSection.men, value: "MALE", image: "/men.jpg" },
-        { label: dict.home.genderSection.women, value: "FEMALE", image: "/women.jpg" },
+        { label: dict.home.genderSection.women, value: "FEMALE", image: "/women.png" },
     ] as const;
 
     const categoryOptions = [

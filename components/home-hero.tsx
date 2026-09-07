@@ -74,7 +74,7 @@ export function HomeHero({ locale = "ar", dict }: HomeHeroProps) {
                     </div>
                 </div>
 
-                {/* Bottom Slider Dots */}
+                {/* Bottom Slider Dots
                 <div className="luxury-hero-footer">
                     <div className="luxury-carousel-dots" role="tablist" aria-label="Hero Slides">
                         {[0, 1, 2, 3].map((dotIdx) => (
@@ -87,7 +87,7 @@ export function HomeHero({ locale = "ar", dict }: HomeHeroProps) {
                             />
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Vertical Scroll Indicator on Right Flank */}
                 <div className="luxury-scroll-indicator" aria-hidden="true">

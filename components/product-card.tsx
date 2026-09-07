@@ -17,6 +17,11 @@ export function ProductCard({ product, locale = "ar" }: ProductCardProps) {
     const alt = isEn ? (firstImage?.altEn || name) : (firstImage?.altAr || name);
     const currency = isEn ? "DZD" : "دج";
 
+    // Generate a tiny blurred placeholder URL from Cloudinary for blur-up effect
+    const blurUrl = firstImage?.url?.includes("/upload/")
+        ? firstImage.url.replace("/upload/", "/upload/e_blur:800,q_10,w_30/")
+        : undefined;
+
     return (
         <article className="product-card">
             <Link href={`/${locale}/products/${product.slug}`} className="product-image-link">
@@ -28,6 +33,7 @@ export function ProductCard({ product, locale = "ar" }: ProductCardProps) {
                             fill
                             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                             className="product-image"
+                            {...(blurUrl ? { placeholder: "blur" as const, blurDataURL: blurUrl } : {})}
                         />
                     ) : (
                         <div className="product-image-placeholder" />
