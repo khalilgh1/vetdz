@@ -92,11 +92,11 @@ type DeleteDialogState = {
 
 const ADMIN_UNAUTHORIZED_ERROR = "ADMIN_UNAUTHORIZED";
 
-const TABS: { key: TabKey; label: string; description: string }[] = [
-    { key: "products", label: "المنتجات", description: "إنشاء وتعديل منتجات المتجر" },
-    { key: "types", label: "الأنواع", description: "إدارة أنواع المنتجات (الفئات)" },
-    { key: "variations", label: "المتغيرات", description: "نوع -> متغير -> قيم -> ربط بالمنتج" },
-    { key: "testimonials", label: "الآراء", description: "إدارة آراء العملاء" },
+const TABS: { key: TabKey; label: string; labelEn: string; description: string; descriptionEn: string }[] = [
+    { key: "products", label: "المنتجات", labelEn: "Products", description: "إنشاء وتعديل منتجات المتجر", descriptionEn: "Manage catalog products & pricing" },
+    { key: "types", label: "الأنواع", labelEn: "Categories", description: "إدارة أنواع المنتجات (الفئات)", descriptionEn: "Manage product categories & slugs" },
+    { key: "variations", label: "المتغيرات", labelEn: "Variations", description: "نوع -> متغير -> قيم -> ربط بالمنتج", descriptionEn: "Attributes, values & product links" },
+    { key: "testimonials", label: "الآراء", labelEn: "Reviews", description: "إدارة آراء العملاء", descriptionEn: "Customer testimonials & ratings" },
 ];
 
 function toErrorMessage(error: unknown) {
@@ -162,7 +162,12 @@ async function uploadImagesToCloudinary(files: File[]) {
     return (data.items || []).map((item) => item.url);
 }
 
-export function AdminPanel() {
+type AdminPanelProps = {
+    locale?: "ar" | "en";
+};
+
+export function AdminPanel({ locale = "ar" }: AdminPanelProps) {
+    const isEn = locale === "en";
     const router = useRouter();
     const [activeTab, setActiveTab] = useState<TabKey>("products");
     const [loading, setLoading] = useState(true);
@@ -746,7 +751,7 @@ export function AdminPanel() {
     }
 
     if (loading) {
-        return <div className={styles.loading}>جارٍ تحميل لوحة التحكم...</div>;
+        return <div className={styles.loading}>{isEn ? "Loading administration console..." : "جارٍ تحميل لوحة التحكم..."}</div>;
     }
 
     const isDeleteBusy = Boolean(deleteDialog && busy === deleteDialog.busyKey);
@@ -754,11 +759,12 @@ export function AdminPanel() {
     return (
         <section className={styles.wrapper}>
             <div className={styles.hero}>
-                <p>لوحة إدارة VetDz</p>
-                <h1>تحكم كامل في المنتجات والمتغيرات والآراء</h1>
+                <p>{isEn ? "VETDZ ADMINISTRATION PORTAL" : "لوحة إدارة VetDz"}</p>
+                <h1>{isEn ? "Catalog, Variations & Reviews Console" : "تحكم كامل في المنتجات والمتغيرات والآراء"}</h1>
                 <span>
-                    الواجهة مبنية حول مخطط قاعدة البيانات: كل نوع منتج يمتلك عدة متغيرات، وكل متغير يمتلك قيمًا متعددة،
-                    والمنتجات ترتبط بقيم المتغيرات عبر ProductVariation.
+                    {isEn
+                        ? "Manage your luxury catalog effortlessly: configure categories, dynamic attributes with colors, rich product details, and verified customer testimonials."
+                        : "الواجهة مبنية حول مخطط قاعدة البيانات: كل نوع منتج يمتلك عدة متغيرات، وكل متغير يمتلك قيمًا متعددة، والمنتجات ترتبط بقيم المتغيرات عبر ProductVariation."}
                 </span>
             </div>
 
@@ -770,8 +776,8 @@ export function AdminPanel() {
                         className={`${styles.tabButton} ${activeTab === tab.key ? styles.tabButtonActive : ""}`}
                         onClick={() => setActiveTab(tab.key)}
                     >
-                        <strong>{tab.label}</strong>
-                        <span>{tab.description}</span>
+                        <strong>{isEn ? tab.labelEn : tab.label}</strong>
+                        <span>{isEn ? tab.descriptionEn : tab.description}</span>
                     </button>
                 ))}
             </div>
@@ -786,8 +792,8 @@ export function AdminPanel() {
                 <div className={styles.sectionGrid}>
                     <form className={styles.card} onSubmit={handleProductTypeSubmit}>
                         <div className={styles.cardHeader}>
-                            <h2>{editingProductTypeId ? "تعديل نوع" : "إضافة نوع جديد"}</h2>
-                            <p>أمثلة: toppings, leggings, shoes</p>
+                            <h2>{editingProductTypeId ? (isEn ? "Edit Category" : "تعديل نوع") : (isEn ? "Add New Category" : "إضافة نوع جديد")}</h2>
+                            <p>{isEn ? "Examples: toppings, leggings, shoes" : "أمثلة: toppings, leggings, shoes"}</p>
                         </div>
 
                         <label className={styles.field}>
@@ -806,7 +812,7 @@ export function AdminPanel() {
                         </label>
 
                         <label className={styles.field}>
-                            <span>الاسم بالعربية</span>
+                            <span>{isEn ? "Category Name (Arabic)" : "الاسم بالعربية"}</span>
                             <input
                                 value={productTypeForm.nameAr}
                                 onChange={(event) =>
@@ -815,18 +821,22 @@ export function AdminPanel() {
                                         nameAr: event.target.value,
                                     }))
                                 }
-                                placeholder="أقمصة"
+                                placeholder={isEn ? "e.g. Shirts" : "أقمصة"}
                                 required
                             />
                         </label>
 
                         <div className={styles.formActions}>
                             <button className={styles.primaryButton} type="submit" disabled={busy !== null}>
-                                {busy === "save-type" ? "جارٍ الحفظ..." : editingProductTypeId ? "حفظ التعديل" : "إضافة النوع"}
+                                {busy === "save-type"
+                                    ? (isEn ? "Saving..." : "جارٍ الحفظ...")
+                                    : editingProductTypeId
+                                        ? (isEn ? "Save Changes" : "حفظ التعديل")
+                                        : (isEn ? "Add Category" : "إضافة النوع")}
                             </button>
                             {editingProductTypeId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetProductTypeForm}>
-                                    إلغاء
+                                    {isEn ? "Cancel" : "إلغاء"}
                                 </button>
                             ) : null}
                         </div>
@@ -834,8 +844,8 @@ export function AdminPanel() {
 
                     <div className={styles.card}>
                         <div className={styles.cardHeader}>
-                            <h2>أنواع المنتجات</h2>
-                            <p>{productTypes.length} نوع</p>
+                            <h2>{isEn ? "Product Categories" : "أنواع المنتجات"}</h2>
+                            <p>{productTypes.length} {isEn ? "categories" : "نوع"}</p>
                         </div>
 
                         <div className={styles.list}>
@@ -845,29 +855,29 @@ export function AdminPanel() {
                                         <strong>{item.nameAr}</strong>
                                         <span>slug: {item.slug}</span>
                                         <small>
-                                            منتجات: {item._count.products} | متغيرات: {item._count.variations}
+                                            {isEn ? `Products: ${item._count.products} | Variations: ${item._count.variations}` : `منتجات: ${item._count.products} | متغيرات: ${item._count.variations}`}
                                         </small>
                                     </div>
 
                                     <div className={styles.inlineActions}>
                                         <button type="button" className={styles.ghostButton} onClick={() => startEditProductType(item)}>
-                                            تعديل
+                                            {isEn ? "Edit" : "تعديل"}
                                         </button>
                                         <button
                                             type="button"
                                             className={styles.dangerButton}
                                             onClick={() =>
                                                 openDeleteDialog({
-                                                    title: "تأكيد حذف نوع المنتج",
-                                                    description: "سيتم رفض الحذف إذا كان النوع مرتبطًا بمنتجات حالية.",
-                                                    successText: "تم حذف نوع المنتج",
+                                                    title: isEn ? "Confirm Category Deletion" : "تأكيد حذف نوع المنتج",
+                                                    description: isEn ? "Deletion will be rejected if the category is currently attached to existing products." : "سيتم رفض الحذف إذا كان النوع مرتبطًا بمنتجات حالية.",
+                                                    successText: isEn ? "Category deleted successfully" : "تم حذف نوع المنتج",
                                                     busyKey: `delete-type-${item.id}`,
                                                     url: `/api/admin/product-types/${item.id}`,
                                                 })
                                             }
                                             disabled={busy !== null}
                                         >
-                                            حذف
+                                            {isEn ? "Delete" : "حذف"}
                                         </button>
                                     </div>
                                 </article>
@@ -881,12 +891,12 @@ export function AdminPanel() {
                 <div className={styles.sectionGridWide}>
                     <form className={styles.card} onSubmit={handleVariationSubmit}>
                         <div className={styles.cardHeader}>
-                            <h2>{editingVariationId ? "تعديل متغير" : "إضافة متغير"}</h2>
-                            <p>المتغير مرتبط مباشرة بنوع المنتج</p>
+                            <h2>{editingVariationId ? (isEn ? "Edit Variation" : "تعديل متغير") : (isEn ? "Add Variation" : "إضافة متغير")}</h2>
+                            <p>{isEn ? "A variation is linked directly to a product category" : "المتغير مرتبط مباشرة بنوع المنتج"}</p>
                         </div>
 
                         <label className={styles.field}>
-                            <span>نوع المنتج</span>
+                            <span>{isEn ? "Product Category" : "نوع المنتج"}</span>
                             <select
                                 value={variationForm.productTypeId}
                                 onChange={(event) =>
@@ -907,7 +917,7 @@ export function AdminPanel() {
                         </label>
 
                         <label className={styles.field}>
-                            <span>اسم المتغير</span>
+                            <span>{isEn ? "Variation Name" : "اسم المتغير"}</span>
                             <input
                                 value={variationForm.nameAr}
                                 onChange={(event) =>
@@ -916,7 +926,7 @@ export function AdminPanel() {
                                         nameAr: event.target.value,
                                     }))
                                 }
-                                placeholder="المقاس"
+                                placeholder={isEn ? "e.g. Size or Color" : "المقاس"}
                                 required
                             />
                         </label>
@@ -924,14 +934,14 @@ export function AdminPanel() {
                         <div className={styles.formActions}>
                             <button className={styles.primaryButton} type="submit" disabled={busy !== null}>
                                 {busy === "save-variation"
-                                    ? "جارٍ الحفظ..."
+                                    ? (isEn ? "Saving..." : "جارٍ الحفظ...")
                                     : editingVariationId
-                                        ? "حفظ المتغير"
-                                        : "إضافة المتغير"}
+                                        ? (isEn ? "Save Variation" : "حفظ المتغير")
+                                        : (isEn ? "Add Variation" : "إضافة المتغير")}
                             </button>
                             {editingVariationId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetVariationForm}>
-                                    إلغاء
+                                    {isEn ? "Cancel" : "إلغاء"}
                                 </button>
                             ) : null}
                         </div>
@@ -939,12 +949,12 @@ export function AdminPanel() {
 
                     <form className={styles.card} onSubmit={handleVariationValueSubmit}>
                         <div className={styles.cardHeader}>
-                            <h2>{editingVariationValueId ? "تعديل قيمة" : "إضافة قيمة متغير"}</h2>
-                            <p>كل متغير يملك عدة قيم (مثال: S / M / L)</p>
+                            <h2>{editingVariationValueId ? (isEn ? "Edit Value" : "تعديل قيمة") : (isEn ? "Add Variation Value" : "إضافة قيمة متغير")}</h2>
+                            <p>{isEn ? "Each variation contains multiple values (e.g. S / M / L or colors)" : "كل متغير يملك عدة قيم (مثال: S / M / L)"}</p>
                         </div>
 
                         <label className={styles.field}>
-                            <span>المتغير</span>
+                            <span>{isEn ? "Variation Group" : "المتغير"}</span>
                             <select
                                 value={variationValueForm.variationId}
                                 onChange={(event) =>
@@ -965,7 +975,7 @@ export function AdminPanel() {
                         </label>
 
                         <label className={styles.field}>
-                            <span>القيمة</span>
+                            <span>{isEn ? "Value Label" : "القيمة"}</span>
                             <input
                                 value={variationValueForm.valueAr}
                                 onChange={(event) =>
@@ -974,13 +984,13 @@ export function AdminPanel() {
                                         valueAr: event.target.value,
                                     }))
                                 }
-                                placeholder="M"
+                                placeholder={isEn ? "e.g. M or Noir" : "M"}
                                 required
                             />
                         </label>
 
                         <label className={styles.field}>
-                            <span>لون HEX (اختياري)</span>
+                            <span>{isEn ? "HEX Color (Optional)" : "لون HEX (اختياري)"}</span>
                             <input
                                 value={variationValueForm.hexColor}
                                 onChange={(event) =>
@@ -996,14 +1006,14 @@ export function AdminPanel() {
                         <div className={styles.formActions}>
                             <button className={styles.primaryButton} type="submit" disabled={busy !== null}>
                                 {busy === "save-variation-value"
-                                    ? "جارٍ الحفظ..."
+                                    ? (isEn ? "Saving..." : "جارٍ الحفظ...")
                                     : editingVariationValueId
-                                        ? "حفظ القيمة"
-                                        : "إضافة القيمة"}
+                                        ? (isEn ? "Save Value" : "حفظ القيمة")
+                                        : (isEn ? "Add Value" : "إضافة القيمة")}
                             </button>
                             {editingVariationValueId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetVariationValueForm}>
-                                    إلغاء
+                                    {isEn ? "Cancel" : "إلغاء"}
                                 </button>
                             ) : null}
                         </div>
@@ -1011,8 +1021,8 @@ export function AdminPanel() {
 
                     <div className={`${styles.card} ${styles.spanTwo}`}>
                         <div className={styles.cardHeader}>
-                            <h2>المتغيرات والقيم</h2>
-                            <p>{variations.length} متغير</p>
+                            <h2>{isEn ? "Variations & Attributes" : "المتغيرات والقيم"}</h2>
+                            <p>{variations.length} {isEn ? "variations configured" : "متغير"}</p>
                         </div>
 
                         <div className={styles.list}>
@@ -1022,7 +1032,7 @@ export function AdminPanel() {
                                         <div>
                                             <strong>{variation.nameAr}</strong>
                                             <span>
-                                                النوع: {variation.productType.nameAr} ({variation.productType.slug})
+                                                {isEn ? `Category: ${variation.productType.nameAr} (${variation.productType.slug})` : `النوع: ${variation.productType.nameAr} (${variation.productType.slug})`}
                                             </span>
                                         </div>
                                         <div className={styles.inlineActions}>
@@ -1031,23 +1041,23 @@ export function AdminPanel() {
                                                 className={styles.ghostButton}
                                                 onClick={() => startEditVariation(variation)}
                                             >
-                                                تعديل
+                                                {isEn ? "Edit" : "تعديل"}
                                             </button>
                                             <button
                                                 type="button"
                                                 className={styles.dangerButton}
                                                 onClick={() =>
                                                     openDeleteDialog({
-                                                        title: "تأكيد حذف المتغير",
-                                                        description: "سيتم حذف جميع القيم المرتبطة بهذا المتغير.",
-                                                        successText: "تم حذف المتغير",
+                                                        title: isEn ? "Confirm Variation Deletion" : "تأكيد حذف المتغير",
+                                                        description: isEn ? "All values associated with this variation will be permanently deleted." : "سيتم حذف جميع القيم المرتبطة بهذا المتغير.",
+                                                        successText: isEn ? "Variation deleted successfully" : "تم حذف المتغير",
                                                         busyKey: `delete-variation-${variation.id}`,
                                                         url: `/api/admin/variations/${variation.id}`,
                                                     })
                                                 }
                                                 disabled={busy !== null}
                                             >
-                                                حذف
+                                                {isEn ? "Delete" : "حذف"}
                                             </button>
                                         </div>
                                     </div>
@@ -1065,23 +1075,23 @@ export function AdminPanel() {
                                                         className={styles.ghostButton}
                                                         onClick={() => startEditVariationValue(variation, value)}
                                                     >
-                                                        تعديل
+                                                        {isEn ? "Edit" : "تعديل"}
                                                     </button>
                                                     <button
                                                         type="button"
                                                         className={styles.dangerButton}
                                                         onClick={() =>
                                                             openDeleteDialog({
-                                                                title: "تأكيد حذف قيمة المتغير",
-                                                                description: "سيتم إزالة هذه القيمة من جميع روابط المنتجات.",
-                                                                successText: "تم حذف قيمة المتغير",
+                                                                title: isEn ? "Confirm Value Deletion" : "تأكيد حذف قيمة المتغير",
+                                                                description: isEn ? "This value will be unlinked from all connected products." : "سيتم إزالة هذه القيمة من جميع روابط المنتجات.",
+                                                                successText: isEn ? "Value deleted successfully" : "تم حذف قيمة المتغير",
                                                                 busyKey: `delete-variation-value-${value.id}`,
                                                                 url: `/api/admin/variation-values/${value.id}`,
                                                             })
                                                         }
                                                         disabled={busy !== null}
                                                     >
-                                                        حذف
+                                                        {isEn ? "Delete" : "حذف"}
                                                     </button>
                                                 </div>
                                             </div>
@@ -1098,8 +1108,8 @@ export function AdminPanel() {
                 <div className={styles.sectionGridWide}>
                     <form className={`${styles.card} ${styles.spanTwo}`} onSubmit={handleProductSubmit}>
                         <div className={styles.cardHeader}>
-                            <h2>{editingProductId ? "تعديل منتج" : "إضافة منتج"}</h2>
-                            <p>حدد النوع أولًا، ثم اختر قيم المتغيرات الموافقة له</p>
+                            <h2>{editingProductId ? (isEn ? "Edit Product" : "تعديل منتج") : (isEn ? "Add New Product" : "إضافة منتج")}</h2>
+                            <p>{isEn ? "Select the category first, then attach the relevant variation values" : "حدد النوع أولًا، ثم اختر قيم المتغيرات الموافقة له"}</p>
                         </div>
 
                         <div className={styles.formGrid}>
@@ -1119,7 +1129,7 @@ export function AdminPanel() {
                             </label>
 
                             <label className={styles.field}>
-                                <span>اسم المنتج (بالعربية)</span>
+                                <span>{isEn ? "Product Name (Arabic)" : "اسم المنتج (بالعربية)"}</span>
                                 <input
                                     value={productForm.nameAr}
                                     onChange={(event) =>
@@ -1128,13 +1138,13 @@ export function AdminPanel() {
                                             nameAr: event.target.value,
                                         }))
                                     }
-                                    placeholder="مثال: قميص صوف خفيف"
+                                    placeholder={isEn ? "e.g. قميص صوف خفيف" : "مثال: قميص صوف خفيف"}
                                     required
                                 />
                             </label>
 
                             <label className={styles.field}>
-                                <span>Product Name (English)</span>
+                                <span>{isEn ? "Product Name (English)" : "اسم المنتج (بالإنجليزية)"}</span>
                                 <input
                                     value={productForm.nameEn}
                                     onChange={(event) =>
@@ -1149,7 +1159,7 @@ export function AdminPanel() {
                             </label>
 
                             <label className={styles.field}>
-                                <span>عنوان فرعي (بالعربية)</span>
+                                <span>{isEn ? "Subtitle (Arabic)" : "عنوان فرعي (بالعربية)"}</span>
                                 <input
                                     value={productForm.subtitleAr}
                                     onChange={(event) =>
@@ -1164,7 +1174,7 @@ export function AdminPanel() {
                             </label>
 
                             <label className={styles.field}>
-                                <span>Subtitle (English)</span>
+                                <span>{isEn ? "Subtitle (English)" : "عنوان فرعي (بالإنجليزية)"}</span>
                                 <input
                                     value={productForm.subtitleEn}
                                     onChange={(event) =>
@@ -1179,7 +1189,7 @@ export function AdminPanel() {
                             </label>
 
                             <label className={styles.field}>
-                                <span>نوع المنتج</span>
+                                <span>{isEn ? "Category" : "نوع المنتج"}</span>
                                 <select
                                     value={productForm.productTypeId}
                                     onChange={(event) =>
@@ -1199,7 +1209,7 @@ export function AdminPanel() {
                             </label>
 
                             <label className={styles.field}>
-                                <span>السعر</span>
+                                <span>{isEn ? "Price (DZD)" : "السعر"}</span>
                                 <input
                                     type="number"
                                     min="1"
@@ -1215,7 +1225,7 @@ export function AdminPanel() {
                             </label>
 
                             <label className={styles.field}>
-                                <span>الجنس</span>
+                                <span>{isEn ? "Gender Collection" : "الجنس"}</span>
                                 <select
                                     value={productForm.gender}
                                     onChange={(event) =>
@@ -1226,9 +1236,9 @@ export function AdminPanel() {
                                     }
                                     required
                                 >
-                                    <option value="MALE">رجالي</option>
-                                    <option value="FEMALE">نسائي</option>
-                                    <option value="BOTH">للجميع</option>
+                                    <option value="MALE">{isEn ? "Men" : "رجالي"}</option>
+                                    <option value="FEMALE">{isEn ? "Women" : "نسائي"}</option>
+                                    <option value="BOTH">{isEn ? "Unisex / Both" : "للجميع"}</option>
                                 </select>
                             </label>
 
@@ -1243,7 +1253,7 @@ export function AdminPanel() {
                                         }))
                                     }
                                 />
-                                <span>تفعيل خصم</span>
+                                <span>{isEn ? "Enable Discount" : "تفعيل خصم"}</span>
                             </label>
 
                             <label className={styles.fieldCheckbox}>
@@ -1257,12 +1267,12 @@ export function AdminPanel() {
                                         }))
                                     }
                                 />
-                                <span>منتج مميز</span>
+                                <span>{isEn ? "Featured Product" : "منتج مميز"}</span>
                             </label>
 
                             {productForm.discountActive ? (
                                 <label className={styles.field}>
-                                    <span>السعر بعد الخصم</span>
+                                    <span>{isEn ? "Discounted Price (DZD)" : "السعر بعد الخصم"}</span>
                                     <input
                                         type="number"
                                         min="1"
@@ -1280,7 +1290,7 @@ export function AdminPanel() {
                         </div>
 
                         <label className={`${styles.field} ${styles.fieldFull}`}>
-                            <span>وصف المنتج (بالعربية)</span>
+                            <span>{isEn ? "Product Description (Arabic)" : "وصف المنتج (بالعربية)"}</span>
                             <textarea
                                 rows={3}
                                 value={productForm.descriptionAr}
@@ -1295,7 +1305,7 @@ export function AdminPanel() {
                         </label>
 
                         <label className={`${styles.field} ${styles.fieldFull}`}>
-                            <span>Product Description (English)</span>
+                            <span>{isEn ? "Product Description (English)" : "Product Description (English)"}</span>
                             <textarea
                                 rows={3}
                                 value={productForm.descriptionEn}
@@ -1310,7 +1320,7 @@ export function AdminPanel() {
                         </label>
 
                         <label className={`${styles.field} ${styles.fieldFull}`}>
-                            <span>صور المنتج (رفع مباشر إلى Cloudinary)</span>
+                            <span>{isEn ? "Product Images (Direct Cloudinary Upload)" : "صور المنتج (رفع مباشر إلى Cloudinary)"}</span>
                             <input
                                 type="file"
                                 accept="image/*"
@@ -1319,7 +1329,9 @@ export function AdminPanel() {
                                 disabled={busy !== null || isUploadingImages}
                             />
                             <small className={styles.inlineInfo}>
-                                اختر صورة أو أكثر من جهازك. سيتم الرفع تلقائيًا ثم حفظ الرابط في قاعدة البيانات.
+                                {isEn
+                                    ? "Select one or multiple images from your device. They will be uploaded and stored automatically."
+                                    : "اختر صورة أو أكثر من جهازك. سيتم الرفع تلقائيًا ثم حفظ الرابط في قاعدة البيانات."}
                             </small>
 
                             {productForm.imageUrls.length > 0 ? (
@@ -1341,18 +1353,18 @@ export function AdminPanel() {
                                                 onClick={() => removeProductImage(url)}
                                                 disabled={busy !== null || isUploadingImages}
                                             >
-                                                إزالة الصورة
+                                                {isEn ? "Remove Image" : "إزالة الصورة"}
                                             </button>
                                         </article>
                                     ))}
                                 </div>
                             ) : (
-                                <p className={styles.inlineInfo}>لم يتم رفع أي صورة بعد.</p>
+                                <p className={styles.inlineInfo}>{isEn ? "No images uploaded yet." : "لم يتم رفع أي صورة بعد."}</p>
                             )}
                         </label>
 
                         <div className={`${styles.field} ${styles.fieldFull}`}>
-                            <span>ربط قيم المتغيرات بالمنتج</span>
+                            <span>{isEn ? "Link Variations to Product" : "ربط قيم المتغيرات بالمنتج"}</span>
                             <div className={styles.variationGroupGrid}>
                                 {variationsForSelectedType.map((variation) => (
                                     <div key={variation.id} className={styles.variationGroupCard}>
@@ -1375,7 +1387,7 @@ export function AdminPanel() {
                                     </div>
                                 ))}
                                 {variationsForSelectedType.length === 0 ? (
-                                    <p className={styles.inlineInfo}>لا توجد متغيرات بعد لهذا النوع. أضفها من تبويب المتغيرات.</p>
+                                    <p className={styles.inlineInfo}>{isEn ? "No variations configured for this category yet. Add them in the Variations tab." : "لا توجد متغيرات بعد لهذا النوع. أضفها من تبويب المتغيرات."}</p>
                                 ) : null}
                             </div>
                         </div>
@@ -1383,16 +1395,16 @@ export function AdminPanel() {
                         <div className={styles.formActions}>
                             <button className={styles.primaryButton} type="submit" disabled={busy !== null || isUploadingImages}>
                                 {isUploadingImages
-                                    ? "جارٍ رفع الصور..."
+                                    ? (isEn ? "Uploading images..." : "جارٍ رفع الصور...")
                                     : busy === "save-product"
-                                        ? "جارٍ الحفظ..."
+                                        ? (isEn ? "Saving..." : "جارٍ الحفظ...")
                                         : editingProductId
-                                            ? "حفظ المنتج"
-                                            : "إضافة المنتج"}
+                                            ? (isEn ? "Save Product" : "حفظ المنتج")
+                                            : (isEn ? "Add Product" : "إضافة المنتج")}
                             </button>
                             {editingProductId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetProductForm}>
-                                    إلغاء
+                                    {isEn ? "Cancel" : "إلغاء"}
                                 </button>
                             ) : null}
                         </div>
@@ -1400,8 +1412,8 @@ export function AdminPanel() {
 
                     <div className={`${styles.card} ${styles.spanTwo}`}>
                         <div className={styles.cardHeader}>
-                            <h2>قائمة المنتجات</h2>
-                            <p>{products.length} منتج</p>
+                            <h2>{isEn ? "Product Catalog" : "قائمة المنتجات"}</h2>
+                            <p>{products.length} {isEn ? "products" : "منتج"}</p>
                         </div>
 
                         <div className={styles.list}>
@@ -1410,39 +1422,40 @@ export function AdminPanel() {
                                     <div>
                                         <strong>{item.nameAr} {item.nameEn ? <span style={{ opacity: 0.75, fontWeight: 500, fontSize: "0.9em" }}>({item.nameEn})</span> : null}</strong>
                                         <span>
-                                            النوع: {item.productTypeNameAr} | slug: {item.slug}
+                                            {isEn ? `Category: ${item.productTypeNameAr} | slug: ${item.slug}` : `النوع: ${item.productTypeNameAr} | slug: ${item.slug}`}
                                         </span>
                                         <small>
-                                            السعر: {formatPrice(item.price)} دج | خصم: {item.discountActive ? "نعم" : "لا"}
+                                            {isEn ? `Price: ${formatPrice(item.price)} DZD | Discount: ${item.discountActive ? "Yes" : "No"}` : `السعر: ${formatPrice(item.price)} دج | خصم: ${item.discountActive ? "نعم" : "لا"}`}
                                         </small>
                                         {item.discountActive && item.discountedPrice !== null ? (
-                                            <small>السعر بعد الخصم: {formatPrice(item.discountedPrice)} دج</small>
+                                            <small>{isEn ? `Discounted Price: ${formatPrice(item.discountedPrice)} DZD` : `السعر بعد الخصم: ${formatPrice(item.discountedPrice)} دج`}</small>
                                         ) : null}
                                         <small>
-                                            القيم المرتبطة: {item.selectedVariations.map((value) => `${value.variationNameAr}: ${value.valueAr}`).join(" | ") || "بدون"}
+                                            {isEn
+                                                ? `Attributes: ${item.selectedVariations.map((value) => `${value.variationNameAr}: ${value.valueAr}`).join(" | ") || "None"}`
+                                                : `القيم المرتبطة: ${item.selectedVariations.map((value) => `${value.variationNameAr}: ${value.valueAr}`).join(" | ") || "بدون"}`}
                                         </small>
                                     </div>
 
                                     <div className={styles.inlineActions}>
                                         <button type="button" className={styles.ghostButton} onClick={() => startEditProduct(item)}>
-                                            تعديل
+                                            {isEn ? "Edit" : "تعديل"}
                                         </button>
                                         <button
                                             type="button"
                                             className={styles.dangerButton}
                                             onClick={() =>
                                                 openDeleteDialog({
-                                                    title: "تأكيد حذف المنتج",
-                                                    description:
-                                                        "سيتم حذف المنتج من قاعدة البيانات وحذف صوره من Cloudinary لتفادي الصور غير المستخدمة.",
-                                                    successText: "تم حذف المنتج",
+                                                    title: isEn ? "Confirm Product Deletion" : "تأكيد حذف المنتج",
+                                                    description: isEn ? "This will delete the product and clear associated assets from Cloudinary." : "سيتم حذف المنتج من قاعدة البيانات وحذف صوره من Cloudinary لتفادي الصور غير المستخدمة.",
+                                                    successText: isEn ? "Product deleted successfully" : "تم حذف المنتج",
                                                     busyKey: `delete-product-${item.id}`,
                                                     url: `/api/admin/products/${item.id}`,
                                                 })
                                             }
                                             disabled={busy !== null}
                                         >
-                                            حذف
+                                            {isEn ? "Delete" : "حذف"}
                                         </button>
                                     </div>
                                 </article>
@@ -1456,12 +1469,12 @@ export function AdminPanel() {
                 <div className={styles.sectionGrid}>
                     <form className={styles.card} onSubmit={handleTestimonialSubmit}>
                         <div className={styles.cardHeader}>
-                            <h2>{editingTestimonialId ? "تعديل رأي" : "إضافة رأي"}</h2>
-                            <p>التقييم من 1 إلى 5</p>
+                            <h2>{editingTestimonialId ? (isEn ? "Edit Testimonial" : "تعديل رأي") : (isEn ? "Add Testimonial" : "إضافة رأي")}</h2>
+                            <p>{isEn ? "Rating from 1 to 5" : "التقييم من 1 إلى 5"}</p>
                         </div>
 
                         <label className={styles.field}>
-                            <span>الاسم</span>
+                            <span>{isEn ? "Client Name" : "الاسم"}</span>
                             <input
                                 value={testimonialForm.nameAr}
                                 onChange={(event) =>
@@ -1470,12 +1483,13 @@ export function AdminPanel() {
                                         nameAr: event.target.value,
                                     }))
                                 }
+                                placeholder={isEn ? "e.g. Karim B." : "الاسم"}
                                 required
                             />
                         </label>
 
                         <label className={styles.field}>
-                            <span>الدور / الصفة</span>
+                            <span>{isEn ? "Role / Title" : "الدور / الصفة"}</span>
                             <input
                                 value={testimonialForm.roleAr}
                                 onChange={(event) =>
@@ -1484,12 +1498,13 @@ export function AdminPanel() {
                                         roleAr: event.target.value,
                                     }))
                                 }
+                                placeholder={isEn ? "e.g. Verified Client" : "زبون دائم"}
                                 required
                             />
                         </label>
 
                         <label className={styles.field}>
-                            <span>التقييم</span>
+                            <span>{isEn ? "Rating (1 to 5)" : "التقييم"}</span>
                             <input
                                 type="number"
                                 min="1"
@@ -1506,7 +1521,7 @@ export function AdminPanel() {
                         </label>
 
                         <label className={styles.field}>
-                            <span>النص</span>
+                            <span>{isEn ? "Testimonial Text" : "النص"}</span>
                             <textarea
                                 rows={4}
                                 value={testimonialForm.textAr}
@@ -1523,14 +1538,14 @@ export function AdminPanel() {
                         <div className={styles.formActions}>
                             <button className={styles.primaryButton} type="submit" disabled={busy !== null}>
                                 {busy === "save-testimonial"
-                                    ? "جارٍ الحفظ..."
+                                    ? (isEn ? "Saving..." : "جارٍ الحفظ...")
                                     : editingTestimonialId
-                                        ? "حفظ الرأي"
-                                        : "إضافة الرأي"}
+                                        ? (isEn ? "Save Testimonial" : "حفظ الرأي")
+                                        : (isEn ? "Add Testimonial" : "إضافة الرأي")}
                             </button>
                             {editingTestimonialId ? (
                                 <button className={styles.ghostButton} type="button" onClick={resetTestimonialForm}>
-                                    إلغاء
+                                    {isEn ? "Cancel" : "إلغاء"}
                                 </button>
                             ) : null}
                         </div>
@@ -1538,8 +1553,8 @@ export function AdminPanel() {
 
                     <div className={styles.card}>
                         <div className={styles.cardHeader}>
-                            <h2>آراء العملاء</h2>
-                            <p>{testimonials.length} رأي</p>
+                            <h2>{isEn ? "Customer Testimonials" : "آراء العملاء"}</h2>
+                            <p>{testimonials.length} {isEn ? "reviews" : "رأي"}</p>
                         </div>
 
                         <div className={styles.list}>
@@ -1549,28 +1564,28 @@ export function AdminPanel() {
                                         <strong>{item.nameAr}</strong>
                                         <span>{item.roleAr}</span>
                                         <small>{item.textAr}</small>
-                                        <small>التقييم: {item.rating}/5</small>
+                                        <small>{isEn ? `Rating: ${item.rating}/5` : `التقييم: ${item.rating}/5`}</small>
                                     </div>
 
                                     <div className={styles.inlineActions}>
                                         <button type="button" className={styles.ghostButton} onClick={() => startEditTestimonial(item)}>
-                                            تعديل
+                                            {isEn ? "Edit" : "تعديل"}
                                         </button>
                                         <button
                                             type="button"
                                             className={styles.dangerButton}
                                             onClick={() =>
                                                 openDeleteDialog({
-                                                    title: "تأكيد حذف الرأي",
-                                                    description: "هل أنت متأكد من حذف هذا الرأي؟",
-                                                    successText: "تم حذف الرأي",
+                                                    title: isEn ? "Confirm Review Deletion" : "تأكيد حذف الرأي",
+                                                    description: isEn ? "Are you sure you want to remove this customer testimonial?" : "هل أنت متأكد من حذف هذا الرأي؟",
+                                                    successText: isEn ? "Testimonial removed successfully" : "تم حذف الرأي",
                                                     busyKey: `delete-testimonial-${item.id}`,
                                                     url: `/api/admin/testimonials/${item.id}`,
                                                 })
                                             }
                                             disabled={busy !== null}
                                         >
-                                            حذف
+                                            {isEn ? "Delete" : "حذف"}
                                         </button>
                                     </div>
                                 </article>
@@ -1601,7 +1616,7 @@ export function AdminPanel() {
                                 onClick={() => setDeleteDialog(null)}
                                 disabled={isDeleteBusy}
                             >
-                                إلغاء
+                                {isEn ? "Cancel" : "إلغاء"}
                             </button>
                             <button
                                 type="button"
@@ -1609,7 +1624,7 @@ export function AdminPanel() {
                                 onClick={() => void confirmDeleteDialog()}
                                 disabled={isDeleteBusy}
                             >
-                                {isDeleteBusy ? "جارٍ الحذف..." : "تأكيد الحذف"}
+                                {isDeleteBusy ? (isEn ? "Deleting..." : "جارٍ الحذف...") : (isEn ? "Confirm Delete" : "تأكيد الحذف")}
                             </button>
                         </div>
                     </div>

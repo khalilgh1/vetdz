@@ -38,17 +38,22 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
 
     // Build the switch URL for current page
     let switchHref: string;
-    if (pathname.startsWith(`/${locale}/`)) {
+    const currentSearch = searchParams?.toString();
+    const query = new URLSearchParams(currentSearch);
+
+    if (pathname.startsWith("/admin")) {
+        // Admin pages support ?lang=en or ?lang=ar
+        query.set("lang", targetLocale);
+        switchHref = `${pathname}?${query.toString()}`;
+    } else if (pathname.startsWith(`/${locale}/`)) {
         switchHref = `/${targetLocale}${pathname.slice(locale.length + 1)}`;
+        if (currentSearch) switchHref += `?${currentSearch}`;
     } else if (pathname === `/${locale}`) {
         switchHref = `/${targetLocale}`;
+        if (currentSearch) switchHref += `?${currentSearch}`;
     } else {
         switchHref = `/${targetLocale}${pathname}`;
-    }
-
-    const currentSearch = searchParams?.toString();
-    if (currentSearch) {
-        switchHref += `?${currentSearch}`;
+        if (currentSearch) switchHref += `?${currentSearch}`;
     }
 
     const navLinks = [

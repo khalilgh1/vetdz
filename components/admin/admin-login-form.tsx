@@ -8,7 +8,12 @@ type LoginResponse = {
     error?: string;
 };
 
-export function AdminLoginForm() {
+type AdminLoginFormProps = {
+    locale?: "ar" | "en";
+};
+
+export function AdminLoginForm({ locale = "ar" }: AdminLoginFormProps) {
+    const isEn = locale === "en";
     const router = useRouter();
     const [identifier, setIdentifier] = useState("");
     const [password, setPassword] = useState("");
@@ -41,14 +46,24 @@ export function AdminLoginForm() {
             const data = (await response.json().catch(() => ({}))) as LoginResponse;
 
             if (!response.ok) {
-                setError(data.error || "تعذر تسجيل الدخول. حاول مرة أخرى.");
+                setError(
+                    data.error ||
+                    (isEn
+                        ? "Unable to log in. Please check your credentials."
+                        : "تعذر تسجيل الدخول. حاول مرة أخرى.")
+                );
                 return;
             }
 
-            router.replace("/admin");
+            const destination = isEn ? "/admin?lang=en" : "/admin";
+            router.replace(destination);
             router.refresh();
         } catch {
-            setError("تعذر الاتصال بالخادم. حاول مرة أخرى.");
+            setError(
+                isEn
+                    ? "Server connection error. Please try again."
+                    : "تعذر الاتصال بالخادم. حاول مرة أخرى."
+            );
         } finally {
             setSubmitting(false);
         }
@@ -57,12 +72,16 @@ export function AdminLoginForm() {
     return (
         <form className={styles.card} onSubmit={handleSubmit}>
             <div className={styles.head}>
-                <h2>دخول المدير</h2>
-                <p>أدخل بيانات حساب المدير الذي تم إنشاؤه يدويًا.</p>
+                <h2>{isEn ? "Administrator Login" : "دخول المدير"}</h2>
+                <p>
+                    {isEn
+                        ? "Enter the credentials for your authorized administrator account."
+                        : "أدخل بيانات حساب المدير الذي تم إنشاؤه يدويًا."}
+                </p>
             </div>
 
             <label className={styles.label} htmlFor="admin-identifier">
-                اسم المستخدم أو البريد الإلكتروني
+                {isEn ? "Username or Email" : "اسم المستخدم أو البريد الإلكتروني"}
             </label>
             <input
                 id="admin-identifier"
@@ -74,7 +93,7 @@ export function AdminLoginForm() {
             />
 
             <label className={styles.label} htmlFor="admin-password">
-                كلمة المرور
+                {isEn ? "Password" : "كلمة المرور"}
             </label>
             <input
                 id="admin-password"
@@ -89,10 +108,16 @@ export function AdminLoginForm() {
             {error ? <p className={styles.error}>{error}</p> : null}
 
             <button className={styles.submit} disabled={submitting} type="submit">
-                {submitting ? "جاري التحقق..." : "تسجيل الدخول"}
+                {submitting
+                    ? (isEn ? "Verifying..." : "جاري التحقق...")
+                    : (isEn ? "Sign In" : "تسجيل الدخول")}
             </button>
 
-            <p className={styles.footnote}>لا يمكن إنشاء حساب مدير من الواجهة. يتم إنشاء الحسابات يدويًا فقط.</p>
+            <p className={styles.footnote}>
+                {isEn
+                    ? "Admin accounts cannot be registered via UI. They are provisioned securely on the backend."
+                    : "لا يمكن إنشاء حساب مدير من الواجهة. يتم إنشاء الحسابات يدويًا فقط."}
+            </p>
         </form>
     );
 }

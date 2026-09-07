@@ -1,82 +1,100 @@
 .card {
-    background: var(--panel);
-    border: 1px solid rgba(95, 103, 117, 0.15);
-    border-radius: 1.2rem;
-    padding: 1.15rem;
+    background: var(--surface);
+    border: 1px solid var(--hairline-border);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
     display: grid;
-    gap: 0.65rem;
-    box-shadow: 0 22px 46px rgba(15, 23, 42, 0.08);
+    gap: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
 .head h2 {
     margin: 0;
-    font-size: 1.35rem;
-    font-family: var(--font-changa), sans-serif;
+    font-size: 1.5rem;
+    font-family: var(--font-serif), var(--font-cairo), serif;
+    font-weight: 500;
+    color: #ffffff;
 }
 
 .head p {
     margin: 0.35rem 0 0;
-    color: var(--muted);
-    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-size: 0.925rem;
     line-height: 1.7;
 }
 
 .label {
     margin-top: 0.25rem;
-    font-size: 0.93rem;
-    font-weight: 700;
-    color: var(--secondary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .input {
     width: 100%;
-    min-height: 2.9rem;
-    border: 1px solid rgba(95, 103, 117, 0.2);
-    border-radius: 0.85rem;
-    background: rgba(248, 250, 252, 0.9);
-    padding: 0 0.9rem;
+    min-height: 3rem;
+    border: 1px solid var(--hairline-border);
+    border-radius: var(--radius-sm);
+    background: rgba(14, 16, 21, 0.8);
+    padding: 0 1rem;
     font: inherit;
-    color: var(--text);
+    font-size: 0.95rem;
+    color: #ffffff;
+    outline: none;
+    transition: border-color 0.2s ease;
 }
 
 .input:focus {
-    outline: 2px solid rgba(31, 75, 207, 0.25);
-    border-color: rgba(31, 75, 207, 0.35);
+    border-color: var(--gold);
 }
 
 .submit {
-    margin-top: 0.5rem;
-    min-height: 2.95rem;
+    margin-top: 0.75rem;
+    min-height: 3.2rem;
     border: 0;
-    border-radius: 999px;
-    background: linear-gradient(135deg, var(--secondary), #2d3648);
-    color: #fff;
-    font-family: var(--font-changa), sans-serif;
-    font-size: 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--champagne-sand);
+    color: #0a0b0d;
     font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
     cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.submit:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(223, 208, 184, 0.25);
 }
 
 .submit:disabled {
-    opacity: 0.7;
-    cursor: progress;
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .error {
     margin: 0.3rem 0 0;
-    color: #c81e1e;
-    font-size: 0.9rem;
+    color: #f87171;
+    font-size: 0.88rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 .footnote {
     margin: 0.2rem 0 0;
-    color: var(--muted);
-    font-size: 0.86rem;
-    line-height: 1.8;
+    color: var(--text-muted);
+    font-size: 0.825rem;
+    line-height: 1.7;
 }
 
 @media (max-width: 540px) {
     .card {
-        padding: 1rem;
+        padding: 1.25rem;
     }
 }

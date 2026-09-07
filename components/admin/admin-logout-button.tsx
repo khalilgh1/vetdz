@@ -4,7 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./admin-logout-button.module.css";
 
-export function AdminLogoutButton() {
+type AdminLogoutButtonProps = {
+    locale?: "ar" | "en";
+};
+
+export function AdminLogoutButton({ locale = "ar" }: AdminLogoutButtonProps) {
+    const isEn = locale === "en";
     const router = useRouter();
     const [busy, setBusy] = useState(false);
 
@@ -21,7 +26,7 @@ export function AdminLogoutButton() {
                 credentials: "same-origin",
             });
         } finally {
-            router.replace("/admin/login");
+            router.replace(isEn ? "/admin/login?lang=en" : "/admin/login");
             router.refresh();
             setBusy(false);
         }
@@ -29,7 +34,9 @@ export function AdminLogoutButton() {
 
     return (
         <button className={styles.button} onClick={handleLogout} disabled={busy} type="button">
-            {busy ? "جاري تسجيل الخروج..." : "تسجيل الخروج"}
+            {busy
+                ? (isEn ? "Logging out..." : "جاري تسجيل الخروج...")
+                : (isEn ? "Log Out" : "تسجيل الخروج")}
         </button>
     );
 }
