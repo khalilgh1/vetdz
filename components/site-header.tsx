@@ -102,6 +102,14 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
         setMenuClosing(true);
     }
 
+    function closeSearch() {
+        setSearchOpen(false);
+    }
+
+    function clearSearch() {
+        setSearchValue("");
+    }
+
     function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
@@ -115,98 +123,139 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
     }
 
     return (
-        <header className={`vetdz-header ${scrolled ? "is-scrolled" : ""} ${light ? "vetdz-header-light" : "vetdz-header-dark"}`}>
-            <div className="vetdz-shell vetdz-header-row">
-                <div className="vetdz-header-left">
-                    <button
-                        className="icon-btn nav-toggle"
-                        aria-label="Menu"
-                        onClick={() => {
-                            if (menuOpen) {
-                                closeMenu();
-                                return;
-                            }
-
-                            openMenu();
-                        }}
-                        type="button"
-                    >
-                        <Menu size={20} />
-                    </button>
-
-                    <Link href={`/${locale}`} className="brand-title" aria-label="VetDz">
-                        VETDZ
-                    </Link>
-
-                    <div className="brand-divider" aria-hidden="true" />
-
-                    <nav className="desktop-nav" aria-label="Main navigation">
-                        {navLinks.map((item) => {
-                            const isActive = pathname === item.href || (item.href !== `/${locale}` && pathname.startsWith(item.href));
-                            return (
-                                <Link
-                                    href={item.href}
-                                    className={`desktop-nav-link ${isActive ? "is-active" : ""}`}
-                                    key={item.href}
-                                >
-                                    {item.label}
-                                </Link>
-                            );
-                        })}
-                    </nav>
-                </div>
-
-                <div className="vetdz-header-right">
-                    <button
-                        className="icon-btn"
-                        aria-label={searchOpen ? "Close search" : dict.nav.searchButton}
-                        onClick={() => {
-                            setMenuOpen(false);
-                            setMenuClosing(false);
-                            setSearchOpen((value) => !value);
-                        }}
-                        type="button"
-                    >
-                        <Search size={19} />
-                    </button>
-
-                    {/* Language Switcher */}
-                    <Link
-                        href={switchHref}
-                        className="lang-switch-btn"
-                        aria-label={`Switch to ${targetLocale === "en" ? "English" : "العربية"}`}
-                    >
-                        <Globe size={15} />
-                        <span>{dict.nav.switchLanguage}</span>
-                    </Link>
-
-                    <div className="header-actions-divider" aria-hidden="true" />
-
-                    {/* Cart / Bag Icon */}
-                    <Link
-                        href={`/${locale}/catalog`}
-                        className="icon-btn cart-btn"
-                        aria-label="Shopping Bag"
-                    >
-                        <ShoppingBag size={19} />
-                    </Link>
-                </div>
-            </div>
-
+        <>
             {searchOpen ? (
-                <form className="vetdz-shell header-search" onSubmit={handleSearchSubmit} role="search">
-                    <input
-                        aria-label={dict.nav.searchPlaceholder}
-                        className="header-search-input"
-                        onChange={(event) => setSearchValue(event.target.value)}
-                        placeholder={dict.nav.searchPlaceholder}
-                        value={searchValue}
-                    />
-                    <button className="header-search-submit" type="submit">
-                        {dict.nav.searchButton}
-                    </button>
-                </form>
+                <div
+                    className="site-search-backdrop"
+                    onClick={closeSearch}
+                    aria-hidden="true"
+                />
             ) : null}
+
+            <header className={`vetdz-header ${scrolled ? "is-scrolled" : ""} ${light ? "vetdz-header-light" : "vetdz-header-dark"} ${searchOpen ? "search-is-open" : ""}`}>
+                <div className="vetdz-shell vetdz-header-row">
+                    <div className="vetdz-header-left">
+                        <button
+                            className="icon-btn nav-toggle"
+                            aria-label="Menu"
+                            onClick={() => {
+                                if (menuOpen) {
+                                    closeMenu();
+                                    return;
+                                }
+
+                                openMenu();
+                            }}
+                            type="button"
+                        >
+                            <Menu size={20} />
+                        </button>
+
+                        <Link href={`/${locale}`} className="brand-title" aria-label="VetDz">
+                            VETDZ
+                        </Link>
+
+                        <div className="brand-divider" aria-hidden="true" />
+
+                        <nav className="desktop-nav" aria-label="Main navigation">
+                            {navLinks.map((item) => {
+                                const isActive = pathname === item.href || (item.href !== `/${locale}` && pathname.startsWith(item.href));
+                                return (
+                                    <Link
+                                        href={item.href}
+                                        className={`desktop-nav-link ${isActive ? "is-active" : ""}`}
+                                        key={item.href}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                );
+                            })}
+                        </nav>
+                    </div>
+
+                    <div className="vetdz-header-right">
+                        <button
+                            className={`icon-btn search-toggle-btn ${searchOpen ? "is-active" : ""}`}
+                            aria-label={searchOpen ? "Close search" : dict.nav.searchButton}
+                            onClick={() => {
+                                setMenuOpen(false);
+                                setMenuClosing(false);
+                                setSearchOpen((value) => !value);
+                            }}
+                            type="button"
+                        >
+                            <Search size={19} />
+                        </button>
+
+                        {/* Language Switcher */}
+                        <Link
+                            href={switchHref}
+                            className="lang-switch-btn"
+                            aria-label={`Switch to ${targetLocale === "en" ? "English" : "العربية"}`}
+                        >
+                            <Globe size={15} />
+                            <span>{dict.nav.switchLanguage}</span>
+                        </Link>
+
+                        <div className="header-actions-divider" aria-hidden="true" />
+
+                        {/* Cart / Bag Icon */}
+                        <Link
+                            href={`/${locale}/catalog`}
+                            className="icon-btn cart-btn"
+                            aria-label="Shopping Bag"
+                        >
+                            <ShoppingBag size={19} />
+                        </Link>
+                    </div>
+                </div>
+
+                {searchOpen ? (
+                    <div className="header-search-wrapper">
+                        <form className="vetdz-shell header-search" onSubmit={handleSearchSubmit} role="search">
+                            <div className="header-search-field">
+                                <Search size={18} className="header-search-icon" aria-hidden="true" />
+                                <input
+                                    aria-label={dict.nav.searchPlaceholder}
+                                    className="header-search-input"
+                                    onChange={(event) => setSearchValue(event.target.value)}
+                                    placeholder={dict.nav.searchPlaceholder}
+                                    value={searchValue}
+                                    autoFocus
+                                />
+                                {searchValue.length > 0 ? (
+                                    <button
+                                        type="button"
+                                        className="header-search-clear-btn"
+                                        onClick={clearSearch}
+                                        aria-label="Clear search"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                ) : null}
+                            </div>
+
+                            <button
+                                className="header-search-submit"
+                                type="submit"
+                                aria-label={dict.nav.searchButton}
+                            >
+                                <span className="header-search-submit-text">{dict.nav.searchButton}</span>
+                                <Search size={18} className="header-search-submit-icon" aria-hidden="true" />
+                            </button>
+
+                            {/* Mobile explicit close button with X icon */}
+                            <button
+                                type="button"
+                                className="header-search-mobile-close-btn"
+                                onClick={closeSearch}
+                                aria-label="Close search"
+                            >
+                                <X size={20} />
+                            </button>
+                        </form>
+                    </div>
+                ) : null}
 
             {menuOpen ? (
                 <>
@@ -253,5 +302,6 @@ export function SiteHeader({ light = true, locale = DEFAULT_LOCALE, dict = ar }:
                 </>
             ) : null}
         </header>
+    </>
     );
 }

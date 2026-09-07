@@ -1,8 +1,0 @@
-there are multiple issues currently:
-1-the categories like male/female, toppings, leggings and shoes each type should have separate pages. so create a page template that displays the products of a sepcific type.
-2-the navbar is not consistent : there is a hamburger menu icon and a search icon but both do not work, so implement the query search functionality. also move the navbar links to be in the sidebar that opens when clicking on the hamburger menu
-3- remove the heart /add to favourite icon in product cards since it's not relevent and not working
-4-the featured products section should be above the all products section in home
-5-currently in the navbar there is a /orders section but this page must not exist on its own it must exist only when oredering a specific product like /orders/productID
-6- the page routes should use IDs not names like products/selvage-denim should be products/[some id]
-7-in product details, it should be easy for users to swipe the images
